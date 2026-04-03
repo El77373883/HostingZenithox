@@ -2,17 +2,18 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Zenithox Minecraft Hosting</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspective:1000px;}
 
 /* Promo Bar */
-.promo{position:relative;background:linear-gradient(90deg,#7c3aed,#6366f1);text-align:center;padding:10px;font-size:14px;display:flex;justify-content:center;align-items:center;gap:10px;overflow:hidden;border-radius:12px;margin:15px;}
-.copy-btn{background:white;color:#000;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;font-weight:600;transition:all .3s;}
+.promo{position:relative;background:linear-gradient(90deg,#7c3aed,#6366f1);text12px 10px;font-size:14px;display:flex;justify-content:center;align-items:center;gap:10px;overflow:hidden;border-radius:12px;margin:15px 10px;}
+.copy-btn{background:white;color:#000;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:600;transition:all .3s;font-size:14px;}
 .copy-btn:hover{background:#f3f3f3;transform:scale(1.05);}
 .copy-check{display:none;margin-left:5px;color:#22d399;font-weight:700;transition:all .3s;}
 
@@ -21,12 +22,11 @@ body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspecti
 @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(120px) rotate(360deg);opacity:0}}
 
 /* animated title */
-.animated-title{font-size:42px;font-weight:700;background:linear-gradient(90deg,#7c3aed,#22c55e,#38bdf8,#7c3aed);background-size:300%;-webkit-background-clip:text;color:transparent;animation:colorFlow 6s linear infinite;text-shadow:1px 1px 5px rgba(0,0,0,.3);}
+.animated-title{font-size:clamp(28px, 6vw, 42px);font-weight:700;background:linear-gradient(90deg,#7c3aed,#22c55e,#38bdf8,#7c3aed);background-size:300%;-webkit-background-clip:text;color:transparent;animation:colorFlow 6s linear infinite;text-shadow:1px 1px 5px rgba(0,0,0,.3);margin:20px 10px;}
 @keyframes colorFlow{0%{background-position:0%}100%{background-position:300%}}
 
 /* minecraft logo */
-.mc-logo{width:160px;margin-top:20px;animation:floatLogo 4s ease-in-out infinite;}
-@keyframes floatLogo{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
+.mc-logo{width:clamp(100px, 20vw, 160px);margin-top:20px;animation:floatLogo 4s ease-in-out infinite;margin:20px auto;}
 
 /* particles */
 #particles-js{position:fixed;width:100%;height:100%;z-index:-3;}
@@ -41,37 +41,35 @@ body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspecti
 .logo{font-size:22px;font-weight:700;color:#8b5cf6;}
 
 /* layout */
-.container{max-width:1200px;margin:auto;padding:40px;display:grid;grid-template-columns:1fr 420px;gap:40px;}
+.container{max-width:1200px;margin:auto;padding:20px;gap:20px;}
+@media (max-width: 900px){.container{grid-template-columns:1fr;}}
 
-/* card profesional 3D */
-.card{background:rgba(15,23,42,.95);padding:30px;border-radius:18px;border:1px solid rgba(255,255,255,.05);box-shadow:0 10px 25px rgba(0,0,0,.6);transition:transform .3s,box-shadow .3s;}
-.card:hover{transform:rotateY(8deg) rotateX(5deg) translateZ(10px);box-shadow:0 20px 40px rgba(0,0,0,.7);}
+/* card */
+.card{background:rgba(15,23,42,.95);padding:24px;border-radius:18px;border:1px solid rgba(255,255,255,.05);box-shadow:0 10px 25px rgba(0,0,0,.6);transition:transform .3s,box-shadow .3s;}
 .card h3{margin-bottom:15px;font-weight:700;font-size:20px;}
 .card p{margin-bottom:12px;font-size:14px;opacity:.9;line-height:1.4;}
 
 /* inputs y botones */
-.input{width:100%;padding:12px;border:none;background:#020617;border-radius:8px;color:white;margin-bottom:10px;transition:all .3s;}
+.input{width:100%;padding:14px 12px;border:none;background:#020617;border-radius:8px;color:white;margin-bottom:12px;transition:all .3s;font-size:16px;}
 .input:focus{outline:none;background:#1e293b;}
-button{padding:14px;border-radius:12px;border:none;background:#111827;color:white;cursor:pointer;transition:all .3s;}
+button{padding:14px 20px;border-radius:12px;border:none;background:#111827;color:white;cursor:pointer;transition:all .3s;font-size:16px;width:100%;}
 button:hover{transform:scale(1.03);}
-.primary{width:100%;margin-top:15px;background:linear-gradient(135deg,#7c3aed,#6366f1);box-shadow:0 5px 15px rgba(124,58,237,.5);}
+.primary{margin-top:15px;background:linear-gradient(135deg,#7c3aed,#6366f1);box-shadow:0 5px 15px rgba(124,58,237,.5);font-weight:600;}
 .primary:hover{box-shadow:0 10px 20px rgba(124,58,237,.7);}
 
 /* payments */
-.payments{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px;}
-.payment{background:#020617;padding:14px;border-radius:10px;cursor:pointer;text-align:center;border:2px solid transparent;transition:all .3s;position:relative;}
+.payments{display:grid;grid-template-columns:repeat(auto-fit, minmax(140px, 1fr));gap:10px;margin-top:10px;}
+.payment{background:#020617;padding:16px 10px;border-radius:10px;cursor:pointer;text-align:center;border:2px solid transparent;transition:all .3s;position:relative;font-size:14px;}
 .payment:hover{background:#1e293b;transform:scale(1.03);}
 .payment.active{border-color:#8b5cf6;background:#1e293b;}
-.payment span.tooltip{display:none;position:absolute;top:-25px;left:50%;transform:translateX(-50%);background:#111827;padding:3px 8px;border-radius:6px;font-size:12px;opacity:.9;}
+.payment span.tooltip{display:none;position:absolute;top:-30px;left:50%;transform:translateX(-50%);background:#111827;padding:4px 8px;border-radius:6px;font-size:12px;opacity:.9;white-space:nowrap;}
 .payment:hover span.tooltip{display:block;}
 
 /* 100% seguro */
 .secure-msg{margin-bottom:15px;font-size:14px;font-weight:700;color:#34d399;text-align:center;transition:all .3s;}
-.secure-msg:hover{transform:rotateY(5deg) rotateX(3deg) translateZ(5px);text-shadow:0 0 20px #34d399;}
 
 /* refund animación profesional */
-.refund{margin-top:20px;font-size:13px;opacity:.8;text-align:center;line-height:1.5;background:rgba(255,255,255,.05);padding:12px;border-radius:12px;transform-style:preserve-3d;transition:transform .3s;}
-.refund:hover{transform:rotateY(5deg) rotateX(3deg) translateZ(5px);box-shadow:0 8px 20px rgba(0,0,0,.6);}
+.refund{margin-top:20px;font-size:13px;opacity:.8;text-align:center;line-height:1.5;background:rgba(255,255,255,.05);padding:14px;border-radius:12px;transform-style:preserve-3d;transition:transform .3s;}
 
 /* footer */
 .footer{margin-top:30px;text-align:center;font-size:12px;color:rgba(255,255,255,.6);opacity:.8;}
@@ -82,7 +80,18 @@ button:hover{transform:scale(1.03);}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 
 /* responsive */
-@media (max-width:900px){.container{grid-template-columns:1fr;padding:20px;}}
+@media (max-width: 900px){
+    .header{padding:15px 20px;}
+    .logo{font-size:18px;}
+    .promo{padding:12px 8px;font-size:13px;}
+    .card{padding:20px;}
+    .payments{grid-template-columns:repeat(2,1fr);}
+    .payment{padding:14px 8px;font-size:13px;}
+    .input, button{padding:16px 12px;font-size:16px;}
+    .primary{padding:16px 20px;}
+    .refund{padding:12px;font-size:12px;}
+    .footer{font-size:11px;}
+}
 </style>
 </head>
 <body>
@@ -99,9 +108,8 @@ button:hover{transform:scale(1.03);}
 
 <div class="header"><div class="logo">Zenithox</div></div>
 
-<div style="text-align:center;padding:50px 20px">
-<h1 class="animated-title">Zenithox Minecraft Hosting</h1>
-<img class="mc-logo" src="https://pngimg.com/uploads/minecraft/minecraft_PNG7.png">
+<div style="text-align:center;padding:30px 10px">
+<h1 class="animated-title">Zenithox Minecraft Hosting</h1mc-logo" src="https://pngimg.com/uploads/minecraft/minecraft_PNG7.png">
 </div>
 
 <div class="container">
@@ -120,15 +128,15 @@ button:hover{transform:scale(1.03);}
 </div>
 
 <h3>Información del Cliente</h3>
-<input class="input" placeholder="Nombre Completo">
-<input class="input" placeholder="Correo Electrónico">
+<input class="input" id="fullName" placeholder="Nombre Completo">
+<input class="input" id="email" placeholder="Correo Electrónico">
 
 <h3>Resumen del Pedido</h3>
 <p>Servidores: <span id="sumServers">1</span></p>
 <p>Precio: <span id="price">$0</span></p>
 <input id="coupon" class="input" placeholder="Código de Descuento">
 <button onclick="applyCoupon()">Aplicar Código</button>
-<button class="primary" onclick="processPayment()">Pagar & Crear Servidor</button>
+<button class="primary" onclick="redirectToStripeCheckout()">Pagar & Crear Servidor</button>
 
 <div class="refund">
 Si no estás satisfecho con nuestro servicio, puedes solicitar un reembolso dentro de los primeros 15 días posteriores a tu compra.
@@ -143,12 +151,13 @@ Zenithox — Hecho por soyadrianyt001 Company 2026
 <!-- Overlay de pago -->
 <div id="paymentOverlay">
 <div class="loader"></div>
-<div id="paymentMessage">Verificando datos...</div>
+<div id="paymentMessage">Iniciando proceso de pago...</div>
 </div>
 
 <script>
 // Particles
 particlesJS("particles-js",{particles:{number:{value:80},size:{value:3},move:{speed:2},line_linked:{enable:true}}})
+
 // Lightning
 function createLightning(){let bolt=document.createElement("div");bolt.className="bolt";bolt.style.left=Math.random()*100+"%";document.getElementById("lightning").appendChild(bolt);setTimeout(()=>{bolt.remove()},500)}
 setInterval(()=>{if(Math.random()<0.5){createLightning()}},1200)
@@ -160,26 +169,52 @@ function selectPayment(el){document.querySelectorAll(".payment").forEach(p=>p.cl
 function copyCode(){navigator.clipboard.writeText("FIRST10");let check=document.getElementById("copyCheck");check.style.display="inline";setTimeout(()=>{check.style.display="none"},1200)}
 
 // Coupon
-function applyCoupon(){let code=document.getElementById("coupon").value.toUpperCase();if(code==="FIRST10"){alert("10% discount applied")}else{alert("Código inválido")}}
+function applyCoupon(){let code=documentFIRST10"){alert("10% discount applied")}else{alert("Código inválido")}}
 
 // Confetti
 function createConfetti(){const container=document.getElementById("confetti-container");for(let i=0;i<20;i++){let c=document.createElement("div");c.className="confetti-piece";c.style.backgroundColor=['#f87171','#34d399','#60a5fa','#facc15','#f472b6'][Math.floor(Math.random()*5)];c.style.left=Math.random()*100+"%";c.style.animationDelay=Math.random()*1+"s";container.appendChild(c);setTimeout(()=>{c.remove()},2000)}};setInterval(createConfetti,1500);
 
-// Payment simulation
-function processPayment(){
-    const overlay=document.getElementById("paymentOverlay");
-    const msg=document.getElementById("paymentMessage");
-    overlay.style.display="flex";
-    msg.innerText="Verificando datos...";
-    setTimeout(()=>{msg.innerText="Procesando pago 🔥😮‍💨";},1500);
-    setTimeout(()=>{
-        msg.innerText="Pago aprobado ✅";
-        setTimeout(()=>{
-            overlay.style.display="none";
-            alert("Servidor creado exitosamente en tu cuenta!");
-        },1500);
-    },4000);
+// Stripe integration
+const stripe = Stripe('pk_test_...'); // Reemplaza con tu clave pública real
+
+async function redirectToStripeCheckout() {
+    const fullName = document.getElementById('fullName').value;
+    const email = document.getElementById('email').value;
+
+    if (!fullName || !email) {
+        alert('Por favor, completa tu nombre y correo.');
+        return;
+    }
+
+    const overlay = document.getElementById("paymentOverlay");
+    const msg = document.getElementById("paymentMessage");
+
+    overlay.style.display = "flex";
+    msg.innerText = "Iniciando proceso de pago seguro...";
+
+    try {
+        // Llama a tu backend para crear la sesión de checkout
+        const response = await fetch('http://103.90.160.107:3000/create-checkout-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fullName, email, price: 0 }) // Cambia el precio real aquí
+        });
+
+        const session = await response.json();
+
+        if (session.url) {
+            // Redirige a Stripe Checkout
+            window.location.href = session.url;
+        } else {
+            throw new Error(session.error || 'Error desconocido');
+        }
+    } catch (e) {
+        console.error("Error al iniciar pago:", e);
+        alert("Hubo un error al iniciar el proceso de pago.");
+        overlay.style.display = "none";
+    }
 }
 </script>
 </body>
 </html>
+
