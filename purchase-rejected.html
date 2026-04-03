@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compra Rechazada | Zenithox</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0A0C15;
+            color: #EFF3F8;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow: hidden            position: relative;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .icon {
+            font-size: 6rem;
+            margin: 24px 0;
+            color: #EF4444;
+            animation: shake 0.6s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25%, 75% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #EF444;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #A78BFA;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius:16px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #EF4444, #DC2626);
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #6B7280;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">❌</div>
+        <h1>Compra Rechazada</h1>
+        <p class="subtitle">Tu pago no pudo procesarse</p>
+
+        <div class="message">
+            <strong>Motivo:</strong> El sistema detectó una anomalía en tu transacción.<br>
+ • Token expirado o inválido<br>
+            • Información de tarjeta no válida<br>
+            • Posible actividad sospechosa
+        </div>
+
+        <button class="btn" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> Volver al Panel
+        </button>
+
+        <div class="footer">
+            Contacta a soporte si crees que es un error: soporte@zenithox.com
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            // Opción 1: Volver al checkout
+            window.location.href = 'checkout.html';
+
+            // Opción 2: Volver al dashboard
+            // window.location.href = 'client-area.html';
+        }
+    </script>
+</body>
+</html>
+
