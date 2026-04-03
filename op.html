@@ -8,7 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspective:1000px;}
+body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspective:1200px;}
 
 /* Promo Bar */
 .promo{position:relative;background:linear-gradient(90deg,#7c3aed,#6366f1);text-align:center;padding:10px;font-size:14px;display:flex;justify-content:center;align-items:center;gap:10px;overflow:hidden;}
@@ -25,8 +25,8 @@ body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspecti
 @keyframes colorFlow{0%{background-position:0%}100%{background-position:300%}}
 
 /* minecraft logo */
-.mc-logo{width:180px;margin:20px auto;display:block;animation:floatLogo 4s ease-in-out infinite;}
-@keyframes floatLogo{0%{transform:translateY(0)}50%{transform:translateY(-15px)}100%{transform:translateY(0)}}
+.mc-logo{width:160px;margin-top:20px;animation:floatLogo 4s ease-in-out infinite;display:block;margin-left:auto;margin-right:auto;}
+@keyframes floatLogo{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
 
 /* particles */
 #particles-js{position:fixed;width:100%;height:100%;z-index:-3;}
@@ -41,11 +41,10 @@ body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspecti
 .logo{font-size:22px;font-weight:700;color:#8b5cf6;}
 
 /* layout */
-.container{max-width:1200px;margin:auto;padding:40px;display:grid;grid-template-columns:1fr 420px;gap:40px;}
+.container{max-width:1200px;margin:auto;padding:40px;display:grid;grid-template-columns:1fr;gap:40px;}
 
-/* card premium 3D */
-.card{background:rgba(15,23,42,.95);padding:30px;border-radius:18px;border:1px solid rgba(255,255,255,.05);box-shadow:0 10px 25px rgba(0,0,0,.6);transition:transform .3s,box-shadow .3s;}
-.card:hover{transform:rotateY(8deg) rotateX(5deg) translateZ(10px);box-shadow:0 20px 40px rgba(0,0,0,.7);}
+/* card profesional 3D */
+.card{background:rgba(15,23,42,.95);padding:30px;border-radius:18px;border:1px solid rgba(255,255,255,.05);box-shadow:0 10px 25px rgba(0,0,0,.6);transition:transform .5s,box-shadow .5s;transform-style:preserve-3d;}
 .card h3{margin-bottom:15px;font-weight:700;font-size:20px;}
 .card p{margin-bottom:12px;font-size:14px;opacity:.9;line-height:1.4;}
 
@@ -61,7 +60,9 @@ button:hover{transform:scale(1.03);}
 .payments{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px;}
 .payment{background:#020617;padding:14px;border-radius:10px;cursor:pointer;text-align:center;border:2px solid transparent;transition:all .3s;position:relative;}
 .payment:hover{background:#1e293b;transform:scale(1.03);}
-.payment.active{border-color:#8b3aed;background:#1e293b;box-shadow:0 0 25px #8b3aed;}
+.payment.active{border-color:#8b5cf6;background:#1e293b;box-shadow:0 0 25px #8b5cf6;}
+
+/* tooltips */
 .payment span.tooltip{display:none;position:absolute;top:-25px;left:50%;transform:translateX(-50%);background:#111827;padding:3px 8px;border-radius:6px;font-size:12px;opacity:.9;}
 .payment:hover span.tooltip{display:block;}
 
@@ -75,13 +76,18 @@ button:hover{transform:scale(1.03);}
 /* footer */
 .footer{margin-top:30px;text-align:center;font-size:12px;color:rgba(255,255,255,.6);opacity:.8;}
 
-/* loading overlay */
+/* payment overlay */
 #paymentOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;flex-direction:column;color:white;font-size:20px;z-index:999;display:none;}
 #paymentOverlay .loader{border:8px solid #f3f3f3;border-top:8px solid #7c3aed;border-radius:50%;width:60px;height:60px;animation:spin 1s linear infinite;margin-bottom:20px;}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 
+/* payment forms */
+.payment-form{display:none;margin-top:15px;transition:all .5s;}
+.payment-form.active{display:block;animation:fadeIn .5s;}
+@keyframes fadeIn{0%{opacity:0;transform:translateY(-10px)}100%{opacity:1;transform:translateY(0)}}
+
 /* responsive */
-@media (max-width:900px){.container{grid-template-columns:1fr;padding:20px;}}
+@media (max-width:600px){.payments{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -100,24 +106,54 @@ button:hover{transform:scale(1.03);}
 <div class="logo">Zenithox</div>
 </div>
 
-<div style="text-align:center;padding:20px">
+<div style="text-align:center;padding:50px 20px">
 <h1 class="animated-title">Zenithox Minecraft Hosting</h1>
 <img class="mc-logo" src="https://pngimg.com/uploads/minecraft/minecraft_PNG7.png">
 </div>
 
 <div class="container">
-<div class="card" id="checkoutCard">
+<div class="card">
 <h3>100% Seguro</h3>
 <p class="secure-msg">Tus métodos de pago están completamente protegidos y verificados.</p>
 
 <h3>Método de Pago</h3>
 <div class="payments">
-<div class="payment" onclick="selectPayment(this)">Card<span class="tooltip">VISA, Mastercard</span></div>
-<div class="payment" onclick="selectPayment(this)">PayPal<span class="tooltip">PayPal account</span></div>
-<div class="payment" onclick="selectPayment(this)">Apple Pay<span class="tooltip">Apple devices</span></div>
-<div class="payment" onclick="selectPayment(this)">Google Pay<span class="tooltip">Android devices</span></div>
-<div class="payment" onclick="selectPayment(this)">Gift Card<span class="tooltip">Use gift cards</span></div>
-<div class="payment" onclick="selectPayment(this)">Balance<span class="tooltip">Wallet balance</span></div>
+<div class="payment" data-method="card" onclick="selectPayment(this)">Card<span class="tooltip">VISA, Mastercard</span></div>
+<div class="payment" data-method="paypal" onclick="selectPayment(this)">PayPal<span class="tooltip">PayPal account</span></div>
+<div class="payment" data-method="apple" onclick="selectPayment(this)">Apple Pay<span class="tooltip">Apple devices</span></div>
+<div class="payment" data-method="google" onclick="selectPayment(this)">Google Pay<span class="tooltip">Android devices</span></div>
+<div class="payment" data-method="gift" onclick="selectPayment(this)">Gift Card<span class="tooltip">Use gift cards</span></div>
+<div class="payment" data-method="balance" onclick="selectPayment(this)">Balance<span class="tooltip">Wallet balance</span></div>
+</div>
+
+<div id="paymentForms">
+<!-- Card Form -->
+<div class="payment-form" id="cardForm">
+<input class="input" placeholder="Nombre en tarjeta">
+<input class="input" placeholder="Número de tarjeta">
+<input class="input" placeholder="Fecha de expiración MM/AA">
+<input class="input" placeholder="CVV">
+</div>
+<!-- PayPal Form -->
+<div class="payment-form" id="paypalForm">
+<input class="input" placeholder="Correo de PayPal">
+</div>
+<!-- Apple Pay Form -->
+<div class="payment-form" id="appleForm">
+<input class="input" placeholder="Apple ID">
+</div>
+<!-- Google Pay Form -->
+<div class="payment-form" id="googleForm">
+<input class="input" placeholder="Cuenta de Google">
+</div>
+<!-- Gift Card Form -->
+<div class="payment-form" id="giftForm">
+<input class="input" placeholder="Código de Gift Card">
+</div>
+<!-- Balance Form -->
+<div class="payment-form" id="balanceForm">
+<input class="input" placeholder="Wallet PIN">
+</div>
 </div>
 
 <h3>Información del Cliente</h3>
@@ -154,22 +190,6 @@ particlesJS("particles-js",{particles:{number:{value:80},size:{value:3},move:{sp
 function createLightning(){let bolt=document.createElement("div");bolt.className="bolt";bolt.style.left=Math.random()*100+"%";document.getElementById("lightning").appendChild(bolt);setTimeout(()=>{bolt.remove()},500)}
 setInterval(()=>{if(Math.random()<0.5){createLightning()}},1200)
 
-// Payment selection + Card Animation Premium
-function selectPayment(el){
-    document.querySelectorAll(".payment").forEach(p=>p.classList.remove("active"));
-    el.classList.add("active");
-
-    const card = document.getElementById("checkoutCard");
-    card.style.transition = "transform 0.3s ease, box-shadow 0.3s ease";
-    card.style.transform = "rotateY(6deg) rotateX(4deg) scale(1.03)";
-    card.style.boxShadow = "0 30px 50px rgba(124,58,237,0.7)";
-
-    setTimeout(()=>{
-        card.style.transform = "";
-        card.style.boxShadow = "";
-    },800);
-}
-
 // Copy code
 function copyCode(){navigator.clipboard.writeText("FIRST10");let check=document.getElementById("copyCheck");check.style.display="inline";setTimeout(()=>{check.style.display="none"},1200)}
 
@@ -179,25 +199,47 @@ function applyCoupon(){let code=document.getElementById("coupon").value.toUpperC
 // Confetti
 function createConfetti(){const container=document.getElementById("confetti-container");for(let i=0;i<20;i++){let c=document.createElement("div");c.className="confetti-piece";c.style.backgroundColor=['#f87171','#34d399','#60a5fa','#facc15','#f472b6'][Math.floor(Math.random()*5)];c.style.left=Math.random()*100+"%";c.style.animationDelay=Math.random()*1+"s";container.appendChild(c);setTimeout(()=>{c.remove()},2000)}};setInterval(createConfetti,1500);
 
-// Payment simulation with real redirection
+// Payment selection
+function selectPayment(el){
+  document.querySelectorAll(".payment").forEach(p=>p.classList.remove("active"));
+  el.classList.add("active");
+  // Inclinar card
+  const card=document.querySelector(".card");
+  card.style.transform="rotateY(8deg) rotateX(5deg) translateZ(10px)";
+  setTimeout(()=>{card.style.transform="rotateY(0deg) rotateX(0deg) translateZ(0px)";},400);
+
+  // Mostrar formulario correcto
+  document.querySelectorAll(".payment-form").forEach(f=>f.classList.remove("active"));
+  const method=el.getAttribute("data-method");
+  const form=document.getElementById(method+"Form");
+  if(form){form.classList.add("active")}
+}
+
+// Payment overlay real
 function processPayment(){
     const overlay=document.getElementById("paymentOverlay");
     const msg=document.getElementById("paymentMessage");
     overlay.style.display="flex";
     msg.innerText="Verificando datos...";
-    
-    // Aquí debes integrar con tu API real de pagos
+
+    // Simular request real
     setTimeout(()=>{
-        let success = Math.random() > 0.1; // simulación de éxito 90%
-        let insufficient = !success && Math.random() > 0.5; // 50% chance de insuficientes fondos si falla
-        if(success){
-            window.location.href = "congratulations.html";
-        } else if(insufficient){
-            window.location.href = "insufficient-funds.html";
-        } else{
-            window.location.href = "purchase-rejected.html";
-        }
-    },2500);
+        msg.innerText="Procesando pago 🔥😮‍💨";
+        // Aquí llamas tu API real de pagos
+        // Ejemplo:
+        let success=Math.random()>0.1; // 90% de éxito simulado
+        let insufficient=Math.random()>0.2; // 80% tiene fondos
+        setTimeout(()=>{
+            overlay.style.display="none";
+            if(success && insufficient){
+                window.location.href="congratulations.html";
+            }else if(!insufficient){
+                window.location.href="insufficient-funds.html";
+            }else{
+                window.location.href="purchase-rejected.html";
+            }
+        },3000);
+    },1500);
 }
 </script>
 </body>
