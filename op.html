@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout Premium</title>
+
+<title>Checkout Hosting</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
-body{background:#0f172a;color:white;min-height:100vh;}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter;
+}
+
+body{
+background:#0f172a;
+color:white;
+min-height:100vh;
+}
 
 .banner{
 background:linear-gradient(90deg,#6366f1,#8b5cf6);
@@ -20,65 +32,91 @@ font-weight:600;
 }
 
 .container{
-max-width:1100px;
+max-width:1200px;
 margin:auto;
-padding:30px;
+padding:40px;
 display:grid;
 grid-template-columns:1fr 420px;
 gap:40px;
 }
 
+/* cards */
+
 .card{
 background:#1e293b;
-border-radius:14px;
-padding:30px;
-box-shadow:0 20px 50px rgba(0,0,0,0.5);
+border-radius:12px;
+padding:25px;
+box-shadow:0 20px 60px rgba(0,0,0,.6);
 }
 
-h2{margin-bottom:20px;}
+/* plan selector */
+
+.plans{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+margin-bottom:20px;
+}
+
+.plan{
+background:#334155;
+padding:20px;
+border-radius:10px;
+cursor:pointer;
+text-align:center;
+border:2px solid transparent;
+transition:.25s;
+}
+
+.plan:hover{
+background:#6366f1;
+}
+
+.plan.active{
+border-color:#a78bfa;
+background:#6366f1;
+}
+
+/* inputs */
 
 .input{
 width:100%;
 padding:14px;
 margin-bottom:15px;
-border-radius:8px;
 border:none;
+border-radius:8px;
 background:#334155;
 color:white;
 }
 
+/* payments */
+
 .payments{
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:12px;
+gap:10px;
 }
 
 .payment{
 background:#334155;
-padding:14px;
+padding:12px;
 border-radius:8px;
 cursor:pointer;
-display:flex;
-align-items:center;
-justify-content:center;
-gap:10px;
-font-weight:600;
+text-align:center;
 border:2px solid transparent;
-transition:.25s;
 }
-
-.payment:hover{background:#6366f1;}
 
 .payment.active{
-background:#6366f1;
 border-color:#a78bfa;
+background:#6366f1;
 }
+
+/* summary */
 
 .summary-item{
 display:flex;
 justify-content:space-between;
 margin-bottom:10px;
-font-size:14px;
 }
 
 .total{
@@ -89,20 +127,11 @@ font-weight:700;
 margin-top:10px;
 }
 
-.coupon{
-display:flex;
-gap:10px;
-margin-top:10px;
-}
-
-.coupon input{flex:1;}
-
 button{
-padding:14px;
+padding:15px;
 border:none;
 border-radius:8px;
 cursor:pointer;
-font-weight:600;
 }
 
 .checkout{
@@ -110,6 +139,7 @@ width:100%;
 margin-top:20px;
 background:linear-gradient(90deg,#6366f1,#8b5cf6);
 color:white;
+font-weight:700;
 }
 
 .policy{
@@ -120,39 +150,51 @@ text-align:center;
 }
 
 @media(max-width:900px){
-.container{grid-template-columns:1fr;}
+.container{
+grid-template-columns:1fr;
 }
+}
+
 </style>
+
 </head>
 
 <body>
 
 <div class="banner">
-🎉 10% de descuento en tu primer servidor — Usa código <b>FIRST10</b>
+🎉 10% de descuento en tu primer servidor — código FIRST10
 </div>
 
 <div class="container">
 
 <div class="card">
 
-<h2><i class="fa-solid fa-user"></i> Información</h2>
+<h2>Selecciona tu plan</h2>
 
-<input class="input" placeholder="Nombre completo">
-<input class="input" placeholder="Correo electrónico">
-<input class="input" placeholder="Dirección">
-<input class="input" placeholder="Ciudad">
-<input class="input" placeholder="Código postal">
+<div class="plans">
 
-<h2><i class="fa-solid fa-credit-card"></i> Método de pago</h2>
+<div class="plan" data-plan="2GB">2GB RAM<br>$0</div>
+<div class="plan" data-plan="4GB">4GB RAM<br>$0</div>
+<div class="plan" data-plan="8GB">8GB RAM<br>$0</div>
+<div class="plan" data-plan="16GB">16GB RAM<br>$0</div>
+
+</div>
+
+<h2>Información</h2>
+
+<input class="input" placeholder="Nombre">
+<input class="input" placeholder="Email">
+
+<h2>Método de pago</h2>
 
 <div class="payments">
 
-<div class="payment"><i class="fa-brands fa-cc-visa"></i> Visa</div>
-<div class="payment"><i class="fa-brands fa-cc-mastercard"></i> Mastercard</div>
-<div class="payment"><i class="fa-brands fa-paypal"></i> PayPal</div>
-<div class="payment"><i class="fa-solid fa-gift"></i> Tarjeta de regalo</div>
-<div class="payment"><i class="fa-solid fa-wallet"></i> Usar saldo</div>
-<div class="payment"><i class="fa-brands fa-google-pay"></i> Google Pay</div>
+<div class="payment">Tarjeta</div>
+<div class="payment">PayPal</div>
+<div class="payment">Google Pay</div>
+<div class="payment">Apple Pay</div>
+<div class="payment">Gift Card</div>
+<div class="payment">Saldo</div>
 
 </div>
 
@@ -160,44 +202,39 @@ text-align:center;
 
 <div class="card">
 
-<h2><i class="fa-solid fa-cart-shopping"></i> Resumen</h2>
+<h2>Resumen</h2>
 
 <div class="summary-item">
-<span>Servidor Minecraft</span>
-<span>$10.00</span>
+<span>Plan</span>
+<span id="planName">Ninguno</span>
 </div>
 
 <div class="summary-item">
-<span>RAM</span>
-<span>4GB</span>
+<span>Precio</span>
+<span>$0</span>
 </div>
 
-<div id="discountRow" class="summary-item" style="display:none;">
+<div class="summary-item" id="discountRow" style="display:none">
 <span>Descuento</span>
-<span id="discountAmount"></span>
+<span id="discountValue"></span>
 </div>
 
-<hr style="opacity:.2;margin:10px 0;">
+<hr style="opacity:.2;margin:10px 0">
 
 <div class="total">
 <span>Total</span>
-<span id="total">$10.00</span>
+<span id="total">$0</span>
 </div>
 
-<div class="coupon">
+<input id="couponInput" class="input" placeholder="Código descuento">
 
-<input id="couponInput" class="input" placeholder="Código de descuento">
-
-<button onclick="applyCoupon()">Canjear</button>
-
-</div>
+<button onclick="applyCoupon()">Aplicar código</button>
 
 <button class="checkout" onclick="checkout()">
-<i class="fa-solid fa-lock"></i> Pagar ahora
+Crear servidor
 </button>
 
 <div class="policy">
-🔒 Pagos protegidos con SSL<br>
 📜 Si no estás satisfecho con nuestros servicios, los reembolsos estarán disponibles hasta 15 días vigentes desde el día de tu compra.
 </div>
 
@@ -207,35 +244,40 @@ text-align:center;
 
 <script>
 
-let price = 10;
-let selectedPayment = null;
+let selectedPlan=null
+let selectedPayment=null
 
-document.querySelectorAll(".payment").forEach(el=>{
-el.onclick=()=>{
-document.querySelectorAll(".payment").forEach(p=>p.classList.remove("active"));
-el.classList.add("active");
-selectedPayment = el.innerText;
+document.querySelectorAll(".plan").forEach(plan=>{
+plan.onclick=()=>{
+document.querySelectorAll(".plan").forEach(p=>p.classList.remove("active"))
+plan.classList.add("active")
+selectedPlan=plan.dataset.plan
+document.getElementById("planName").innerText=selectedPlan
+}
+})
+
+document.querySelectorAll(".payment").forEach(pay=>{
+pay.onclick=()=>{
+document.querySelectorAll(".payment").forEach(p=>p.classList.remove("active"))
+pay.classList.add("active")
+selectedPayment=pay.innerText
 }
 })
 
 function applyCoupon(){
 
-let code=document.getElementById("couponInput").value.toUpperCase();
+let code=document.getElementById("couponInput").value.toUpperCase()
 
 if(code==="FIRST10"){
 
-let discount=price*0.10;
-let total=price-discount;
+document.getElementById("discountRow").style.display="flex"
+document.getElementById("discountValue").innerText="10%"
 
-document.getElementById("discountRow").style.display="flex";
-document.getElementById("discountAmount").innerText="- $"+discount.toFixed(2);
-document.getElementById("total").innerText="$"+total.toFixed(2);
-
-alert("Código aplicado: 10% de descuento");
+alert("Código aplicado")
 
 }else{
 
-alert("Código inválido");
+alert("Código inválido")
 
 }
 
@@ -243,15 +285,23 @@ alert("Código inválido");
 
 function checkout(){
 
-if(!selectedPayment){
+if(!selectedPlan){
 
-alert("Selecciona un método de pago");
+alert("Selecciona un plan")
 
-return;
+return
 
 }
 
-alert("Procesando pago con: "+selectedPayment);
+if(!selectedPayment){
+
+alert("Selecciona un método de pago")
+
+return
+
+}
+
+alert("Servidor creado con plan "+selectedPlan)
 
 }
 
