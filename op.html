@@ -3,36 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Zenithox Checkout</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter;
-}
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter}
 
 body{
 background:#020617;
 color:white;
-min-height:100vh;
-overflow-x:hidden;
+min-height:100vh
 }
-
-/* particles */
 
 #particles-js{
 position:fixed;
 width:100%;
 height:100%;
-z-index:-1;
+z-index:-1
 }
 
 /* header */
@@ -40,18 +30,15 @@ z-index:-1;
 .header{
 display:flex;
 justify-content:space-between;
-align-items:center;
 padding:20px 40px;
-background:rgba(2,6,23,.7);
-backdrop-filter:blur(10px);
-border-bottom:1px solid rgba(255,255,255,.05);
+background:#020617;
+border-bottom:1px solid rgba(255,255,255,.05)
 }
 
 .logo{
-font-size:22px;
 font-weight:700;
-letter-spacing:1px;
-color:#a78bfa;
+font-size:22px;
+color:#a78bfa
 }
 
 .currency{
@@ -59,37 +46,26 @@ background:#0f172a;
 border:none;
 padding:8px 12px;
 border-radius:6px;
-color:white;
+color:white
 }
 
 /* hero */
 
 .hero{
 text-align:center;
-padding:60px 20px;
+padding:50px 20px
 }
 
 .hero img{
-width:140px;
+width:130px;
 margin-bottom:20px;
-animation:float 6s infinite ease-in-out;
+animation:float 6s infinite ease-in-out
 }
 
 @keyframes float{
-
-0%{transform:translateY(0px)}
+0%{transform:translateY(0)}
 50%{transform:translateY(-10px)}
-100%{transform:translateY(0px)}
-
-}
-
-.hero h1{
-font-size:40px;
-margin-bottom:10px;
-}
-
-.hero p{
-opacity:.7;
+100%{transform:translateY(0)}
 }
 
 /* layout */
@@ -100,62 +76,31 @@ margin:auto;
 padding:40px;
 display:grid;
 grid-template-columns:1fr 420px;
-gap:40px;
+gap:40px
 }
-
-/* cards */
 
 .card{
-background:rgba(15,23,42,.7);
-border-radius:14px;
-padding:30px;
-backdrop-filter:blur(20px);
-border:1px solid rgba(255,255,255,.05);
-transition:.3s;
-}
-
-.card:hover{
-transform:translateY(-4px);
-}
-
-/* plans */
-
-.plans{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:15px;
-margin-bottom:25px;
-}
-
-.plan{
-background:#020617;
-padding:20px;
-border-radius:10px;
-cursor:pointer;
-text-align:center;
-border:2px solid transparent;
-transition:.25s;
-}
-
-.plan:hover{
-border-color:#7c3aed;
-}
-
-.plan.active{
-border-color:#a78bfa;
 background:#0f172a;
+padding:30px;
+border-radius:14px;
+border:1px solid rgba(255,255,255,.05)
 }
 
-/* inputs */
+.section-title{
+margin-bottom:10px;
+font-weight:600
+}
 
-.input{
+/* sliders */
+
+.slider{
 width:100%;
-padding:12px;
-margin-bottom:12px;
-border-radius:8px;
-border:none;
-background:#020617;
-color:white;
+margin-bottom:15px
+}
+
+.slider-value{
+margin-bottom:10px;
+opacity:.8
 }
 
 /* payments */
@@ -163,7 +108,7 @@ color:white;
 .payments{
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:10px;
+gap:10px
 }
 
 .payment{
@@ -172,11 +117,24 @@ padding:12px;
 border-radius:8px;
 cursor:pointer;
 text-align:center;
-border:2px solid transparent;
+border:2px solid transparent
 }
 
 .payment.active{
 border-color:#a78bfa;
+background:#1e293b
+}
+
+/* inputs */
+
+.input{
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+background:#020617;
+color:white;
+margin-bottom:10px
 }
 
 /* summary */
@@ -184,7 +142,7 @@ border-color:#a78bfa;
 .summary-item{
 display:flex;
 justify-content:space-between;
-margin-bottom:10px;
+margin-bottom:10px
 }
 
 .total{
@@ -192,53 +150,36 @@ display:flex;
 justify-content:space-between;
 font-size:20px;
 font-weight:700;
-margin-top:10px;
+margin-top:10px
 }
-
-/* button */
 
 button{
 padding:14px;
 border:none;
 border-radius:8px;
-cursor:pointer;
+cursor:pointer
 }
 
-.checkout{
+.primary{
 width:100%;
 margin-top:20px;
 background:linear-gradient(90deg,#7c3aed,#6366f1);
 color:white;
-font-weight:700;
-transition:.3s;
+font-weight:600
 }
-
-.checkout:hover{
-transform:scale(1.03);
-box-shadow:0 10px 30px rgba(124,58,237,.4);
-}
-
-/* policy */
 
 .policy{
 margin-top:20px;
 font-size:13px;
 opacity:.7;
-text-align:center;
+text-align:center
 }
-
-/* responsive */
 
 @media(max-width:900px){
-
-.container{
-grid-template-columns:1fr;
-}
-
+.container{grid-template-columns:1fr}
 }
 
 </style>
-
 </head>
 
 <body>
@@ -249,21 +190,19 @@ grid-template-columns:1fr;
 
 <div class="logo">Zenithox</div>
 
-<select class="currency">
-<option>USD</option>
-<option>EUR</option>
-<option>MXN</option>
+<select id="currency" class="currency">
+<option value="USD">USD</option>
+<option value="EUR">EUR</option>
+<option value="MXN">MXN</option>
 </select>
 
 </div>
 
 <div class="hero">
 
-<img src="https://media.giphy.com/media/3o7TKtnuHOHHUjR38Y/giphy.gif">
+<img src="https://media.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif">
 
 <h1>Zenithox Cloud Servers</h1>
-
-<p>High performance hosting infrastructure</p>
 
 </div>
 
@@ -271,24 +210,23 @@ grid-template-columns:1fr;
 
 <div class="card">
 
-<h2>Server Plan</h2>
+<div class="section-title">Server Configuration</div>
 
-<div class="plans">
+<div class="slider-value">RAM: <span id="ramValue">4</span> GB</div>
+<input type="range" min="2" max="64" value="4" step="2" id="ram" class="slider">
 
-<div class="plan">2GB RAM</div>
-<div class="plan">4GB RAM</div>
-<div class="plan">8GB RAM</div>
-<div class="plan">16GB RAM</div>
+<div class="slider-value">CPU: <span id="cpuValue">2</span> vCores</div>
+<input type="range" min="1" max="16" value="2" step="1" id="cpu" class="slider">
 
-</div>
+<div class="slider-value">Storage: <span id="storageValue">40</span> GB SSD</div>
+<input type="range" min="20" max="500" value="40" step="20" id="storage" class="slider">
 
-<h2>Billing Information</h2>
+<div class="section-title">Customer</div>
 
 <input class="input" placeholder="Full Name">
-
 <input class="input" placeholder="Email">
 
-<h2>Payment Method</h2>
+<div class="section-title">Payment Method</div>
 
 <div class="payments">
 
@@ -305,37 +243,42 @@ grid-template-columns:1fr;
 
 <div class="card">
 
-<h2>Order Summary</h2>
+<div class="section-title">Order Summary</div>
 
 <div class="summary-item">
-<span>Plan</span>
-<span>None</span>
+<span>RAM</span>
+<span id="sumRam">4GB</span>
+</div>
+
+<div class="summary-item">
+<span>CPU</span>
+<span id="sumCpu">2</span>
+</div>
+
+<div class="summary-item">
+<span>Storage</span>
+<span id="sumStorage">40GB</span>
 </div>
 
 <div class="summary-item">
 <span>Price</span>
-<span>$0</span>
+<span id="price">$0</span>
 </div>
 
 <hr style="opacity:.2;margin:10px 0">
 
 <div class="total">
 <span>Total</span>
-<span>$0</span>
+<span id="total">$0</span>
 </div>
 
-<input class="input" placeholder="Discount Code">
+<input id="coupon" class="input" placeholder="Discount Code">
+<button onclick="applyCoupon()">Apply Code</button>
 
-<button class="checkout">
-
-Create Server
-
-</button>
+<button class="primary" onclick="checkout()">Create Server</button>
 
 <div class="policy">
-
-Refunds are available up to 15 days from the date of purchase.
-
+Refunds available up to 15 days after purchase
 </div>
 
 </div>
@@ -344,16 +287,114 @@ Refunds are available up to 15 days from the date of purchase.
 
 <script>
 
-particlesJS("particles-js",{
+/* particles */
 
+particlesJS("particles-js",{
 particles:{
 number:{value:80},
 size:{value:3},
 move:{speed:2},
 line_linked:{enable:true}
 }
+})
 
-});
+let currency="USD"
+let discount=0
+
+let ram=4
+let cpu=2
+let storage=40
+
+let payment=null
+
+/* sliders */
+
+function update(){
+
+ram=document.getElementById("ram").value
+cpu=document.getElementById("cpu").value
+storage=document.getElementById("storage").value
+
+document.getElementById("ramValue").innerText=ram
+document.getElementById("cpuValue").innerText=cpu
+document.getElementById("storageValue").innerText=storage
+
+document.getElementById("sumRam").innerText=ram+"GB"
+document.getElementById("sumCpu").innerText=cpu
+document.getElementById("sumStorage").innerText=storage+"GB"
+
+/* pricing formula */
+
+let price=(ram*1)+(cpu*2)+(storage*0.02)
+
+price=price-(price*discount)
+
+document.getElementById("price").innerText=format(price)
+document.getElementById("total").innerText=format(price)
+
+}
+
+document.querySelectorAll(".slider").forEach(s=>{
+s.oninput=update
+})
+
+/* payment */
+
+document.querySelectorAll(".payment").forEach(p=>{
+p.onclick=()=>{
+document.querySelectorAll(".payment").forEach(x=>x.classList.remove("active"))
+p.classList.add("active")
+payment=p.innerText
+}
+})
+
+/* currency */
+
+document.getElementById("currency").onchange=e=>{
+currency=e.target.value
+update()
+}
+
+function format(v){
+
+v=v.toFixed(2)
+
+if(currency==="EUR") return "€"+v
+if(currency==="MXN") return "$"+v+" MXN"
+
+return "$"+v
+
+}
+
+/* coupon */
+
+function applyCoupon(){
+
+let code=document.getElementById("coupon").value.toUpperCase()
+
+if(code==="FIRST10"){
+discount=.10
+alert("Discount applied")
+}else{
+alert("Invalid code")
+}
+
+update()
+
+}
+
+function checkout(){
+
+if(!payment){
+alert("Select payment method")
+return
+}
+
+alert("Server created: "+ram+"GB RAM / "+cpu+" CPU / "+storage+"GB Storage")
+
+}
+
+update()
 
 </script>
 
