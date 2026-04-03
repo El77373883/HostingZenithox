@@ -11,10 +11,10 @@
 body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspective:1000px;}
 
 /* Promo Bar */
-.promo{position:relative;background:linear-gradient(90deg,#7c3aed,#6366f1);text-align:center;padding:10px;font-size:14px;display:flex;justify-content:center;align-items:center;gap:10px;overflow:hidden;}
+.promo{position:relative;background:linear-gradient(90deg,#7c3aed,#6366f1);text-align:center;padding:10px;font-size:14px;display:flex;justify-content:center;align-items:center;gap:10px;overflow:hidden;border-radius:12px;margin:15px;}
 .copy-btn{background:white;color:#000;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;font-weight:600;transition:all .3s;}
 .copy-btn:hover{background:#f3f3f3;transform:scale(1.05);}
-.copy-check{display:none;margin-left:5px;color:#22c55e;font-weight:700;transition:all .3s;}
+.copy-check{display:none;margin-left:5px;color:#22d399;font-weight:700;transition:all .3s;}
 
 /* Confetti */
 .confetti-piece{position:absolute;width:8px;height:8px;background:yellow;top:0;animation:fall 2s linear infinite;opacity:0;}
@@ -66,7 +66,8 @@ button:hover{transform:scale(1.03);}
 .payment:hover span.tooltip{display:block;}
 
 /* 100% seguro */
-.secure-msg{margin-bottom:15px;font-size:14px;font-weight:700;color:#34d399;text-align:center;}
+.secure-msg{margin-bottom:15px;font-size:14px;font-weight:700;color:#34d399;text-align:center;transition:all .3s;}
+.secure-msg:hover{transform:rotateY(5deg) rotateX(3deg) translateZ(5px);text-shadow:0 0 20px #34d399;}
 
 /* refund animación profesional */
 .refund{margin-top:20px;font-size:13px;opacity:.8;text-align:center;line-height:1.5;background:rgba(255,255,255,.05);padding:12px;border-radius:12px;transform-style:preserve-3d;transition:transform .3s;}
@@ -96,9 +97,7 @@ button:hover{transform:scale(1.03);}
 <div id="particles-js"></div>
 <div id="lightning"></div>
 
-<div class="header">
-<div class="logo">Zenithox</div>
-</div>
+<div class="header"><div class="logo">Zenithox</div></div>
 
 <div style="text-align:center;padding:50px 20px">
 <h1 class="animated-title">Zenithox Minecraft Hosting</h1>
