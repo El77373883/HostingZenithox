@@ -3,152 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zenithox Minecraft Hosting</title>
+<title>Zenithox Premium Host</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<!-- Stripe.js -->
 <script src="https://js.stripe.com/v3/"></script>
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspective:1000px;}
-
-/* Promo Bar */
-.promo{position:relative;background:linear-gradient(90deg,#7c3aed,#6366f1);text-align:center;padding:10px;font-size:14px;display:flex;justify-content:center;align-items:center;gap:10px;overflow:hidden;border-radius:8px;margin:10px;}
-.copy-btn{background:white;color:#000;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;font-weight:600;transition:all .3s;}
-.copy-btn:hover{background:#f3f3f3;transform:scale(1.05);}
-.copy-check{display:none;margin-left:5px;color:#22d399;font-weight:700;transition:all .3s;}
-
-/* Confetti */
-.confetti-piece{position:absolute;width:8px;height:8px;background:yellow;top:0;animation:fall 2s linear infinite;opacity:0;}
-@keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(120px) rotate(360deg);opacity:0}}
-
-/* animated title */
-.animated-title{font-size:42px;font-weight:700;background:linear-gradient(90deg,#7c3aed,#22c55e,#38bdf8,#7c3aed);background-size:300%;-webkit-background-clip:text;color:transparent;animation:colorFlow 6s linear infinite;text-shadow:1px 1px 5px rgba(0,0,0,.3);}
-@keyframes colorFlow{0%{background-position:0%}100%{background-position:300%}}
-
-/* minecraft logo */
-.mc-logo{width:160px;margin-top:20px;animation:floatLogo 4s ease-in-out infinite;}
-@keyframes floatLogo{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
-
-/* layout */
-.container{max-width:1200px;margin:auto;padding:40px;display:grid;grid-template-columns:1fr 420px;gap:40px;}
-
-/* card profesional 3D */
-.card{background:rgba(15,23,42,.95);padding:30px;border-radius:18px;border:1px solid rgba(255,255,255,.05);box-shadow:0 10px 25px rgba(0,0,0,.6);transition:transform .3s,box-shadow .3s;}
-.card:hover{transform:rotateY(8deg) rotateX(5deg) translateZ(10px);box-shadow:0 20px 40px rgba(0,0,0,.7);}
-.card h3{margin-bottom:15px;font-weight:700;font-size:20px;}
-.card p{margin-bottom:12px;font-size:14px;opacity:.9;line-height:1.4;}
-
-/* inputs y botones */
-.input{width:100%;padding:12px;border:none;background:#020617;border-radius:8px;color:white;margin-bottom:10px;transition:all .3s;}
-.input:focus{outline:none;background:#1e293b;}
-button{padding:14px;border-radius:12px;border:none;background:#111827;color:white;cursor:pointer;transition:all .3s;}
-button:hover{transform:scale(1.03);}
-.primary{width:100%;margin-top:15px;background:linear-gradient(135deg,#7c3aed,#6366f1);box-shadow:0 5px 15px rgba(124,58,237,.5);}
-.primary:hover{box-shadow:0 10px 20px rgba(124,58,237,.7);}
-
-/* payments */
-.payments{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px;}
-.payment{background:#020617;padding:14px;border-radius:10px;cursor:pointer;text-align:center;border:2px solid transparent;transition:all .3s;position:relative;}
-.payment:hover{background:#1e293b;transform:scale(1.03);}
-.payment.active{border-color:#8b5cf6;background:#1e293b;}
-.payment span.tooltip{display:none;position:absolute;top:-25px;left:50%;transform:translateX(-50%);background:#111827;padding:3px 8px;border-radius:6px;font-size:12px;opacity:.9;}
-.payment:hover span.tooltip{display:block;}
-
-/* 100% seguro */
-.secure-msg{margin-bottom:15px;font-size:14px;font-weight:700;color:#34d399;text-align:center;}
-
-/* refund animación profesional */
-.refund{margin-top:20px;font-size:13px;opacity:.8;text-align:center;line-height:1.5;background:rgba(255,255,255,.05);padding:12px;border-radius:12px;transform-style:preserve-3d;transition:transform .3s;}
-.refund:hover{transform:rotateY(5deg) rotateX(3deg) translateZ(5px);box-shadow:0 8px 20px rgba(0,0,0,.6);}
-
-/* footer */
-.footer{margin-top:30px;text-align:center;font-size:12px;color:rgba(255,255,255,.6);opacity:.8;}
-
-/* Stripe Element styling */
-#card-element{padding:12px;border-radius:8px;background:#020617;border:1px solid #333;color:white;}
-#card-errors{color:#f87171;margin-top:8px;font-size:14px;}
-
-/* loading overlay */
-#paymentOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;flex-direction:column;color:white;font-size:20px;z-index:999;display:none;}
+body{margin:0;background:#0b0f1e;color:white;font-family:Inter;overflow-x:hidden;}
+.header{padding:30px;text-align:center;}
+.header h1{font-size:42px;background:linear-gradient(90deg,#7c3aed,#22c55e,#38bdf8);-webkit-background-clip:text;color:transparent;animation:gradientMove 6s linear infinite;}
+@keyframes gradientMove{0%{background-position:0%}100%{background-position:300%}}
+.container{display:flex;justify-content:center;align-items:flex-start;padding:40px;gap:40px;flex-wrap:wrap;}
+.card{background:rgba(20,25,50,.95);padding:30px;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,.7);transition:all .3s;max-width:400px;}
+.card:hover{transform:rotateY(5deg) rotateX(3deg) translateZ(10px);box-shadow:0 25px 50px rgba(0,0,0,.8);}
+.card h2{margin-bottom:20px;text-align:center;}
+.card p{opacity:.9;line-height:1.4;margin-bottom:15px;text-align:center;}
+.input{width:100%;padding:12px;border:none;border-radius:10px;background:#0b0f1e;color:white;margin-bottom:12px;}
+.input:focus{outline:none;background:#11162a;}
+#card-element{padding:12px;border-radius:10px;background:#0b0f1e;border:1px solid #333;margin-bottom:12px;}
+button{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#6366f1);cursor:pointer;color:white;font-weight:600;transition:all .3s;margin-top:10px;}
+button:hover{transform:scale(1.03);box-shadow:0 8px 20px rgba(124,58,237,.6);}
+.secure{display:flex;align-items:center;justify-content:center;margin-bottom:20px;}
+.secure div{margin-left:10px;font-weight:700;color:#34d399;}
+.footer{text-align:center;font-size:12px;margin-top:30px;color:rgba(255,255,255,.6);}
+#paymentOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;flex-direction:column;z-index:999;}
 #paymentOverlay .loader{border:8px solid #f3f3f3;border-top:8px solid #7c3aed;border-radius:50%;width:60px;height:60px;animation:spin 1s linear infinite;margin-bottom:20px;}
 @keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.confetti-piece{position:absolute;width:10px;height:10px;background:red;top:0;animation:fall 2s linear infinite;opacity:0;}
+@keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(120px) rotate(360deg);opacity:0}}
 </style>
 </head>
 <body>
 
-<div class="promo">
-10% de descuento en tu primer servidor — Código: <b>FIRST10</b>
-<button class="copy-btn" onclick="copyCode()">Copiar</button>
-<span class="copy-check" id="copyCheck">✔</span>
-<div id="confetti-container"></div>
-</div>
-
 <div class="header">
-<div class="logo">Zenithox</div>
-</div>
-
-<div style="text-align:center;padding:50px 20px">
-<h1 class="animated-title">Zenithox Minecraft Hosting</h1>
-<img class="mc-logo" src="https://pngimg.com/uploads/minecraft/minecraft_PNG7.png">
+<h1>Zenithox Premium Hosting</h1>
 </div>
 
 <div class="container">
 <div class="card">
-<h3>100% Seguro</h3>
-<p class="secure-msg">Tus métodos de pago están completamente protegidos y verificados.</p>
-
-<h3>Método de Pago</h3>
-<div class="payments">
-<div class="payment" onclick="selectPayment(this)">Card<span class="tooltip">VISA, Mastercard</span></div>
-<div class="payment" onclick="selectPayment(this)">PayPal<span class="tooltip">PayPal account</span></div>
-<div class="payment" onclick="selectPayment(this)">Apple Pay<span class="tooltip">Apple devices</span></div>
-<div class="payment" onclick="selectPayment(this)">Google Pay<span class="tooltip">Android devices</span></div>
-<div class="payment" onclick="selectPayment(this)">Gift Card<span class="tooltip">Use gift cards</span></div>
-<div class="payment" onclick="selectPayment(this)">Balance<span class="tooltip">Wallet balance</span></div>
-</div>
-
-<h3>Información del Cliente</h3>
+<div class="secure"><img src="https://img.icons8.com/ios-glyphs/30/34d399/lock.png"/><div>100% Seguro</div></div>
+<h2>Formulario de Pago</h2>
 <input class="input" id="customerName" placeholder="Nombre Completo">
 <input class="input" id="customerEmail" placeholder="Correo Electrónico">
-
-<h3>Pago con Tarjeta</h3>
 <div id="card-element"></div>
-<div id="card-errors" role="alert"></div>
-
-<h3>Resumen del Pedido</h3>
-<p>Servidores: <span id="sumServers">1</span></p>
-<p>Precio: <span id="price">$10.00</span></p>
-<input id="coupon" class="input" placeholder="Código de Descuento">
-<button onclick="applyCoupon()">Aplicar Código</button>
-<button class="primary" id="payButton">Pagar & Crear Servidor</button>
-
-<div class="refund">
-Si no estás satisfecho con nuestro servicio, puedes solicitar un reembolso dentro de los primeros 15 días posteriores a tu compra.
-</div>
-
-<div class="footer">
-Zenithox — Hecho por soyadrianyt001 Company 2026
-</div>
+<div id="card-errors" role="alert" style="color:#f87171;margin-bottom:12px;"></div>
+<button id="payButton">Pagar & Crear Servidor</button>
 </div>
 </div>
 
-<!-- Overlay de pago -->
+<div class="footer">Zenithox — Hecho por soyadrianyt001 Company 2026</div>
+
 <div id="paymentOverlay">
 <div class="loader"></div>
-<div id="paymentMessage">Procesando pago...</div>
+<div id="paymentMessage" style="color:white;font-size:18px;">Procesando pago...</div>
 </div>
 
+<div id="confetti-container"></div>
+
 <script>
-// Stripe Initialization
-const stripe = Stripe("TU_PUBLISHABLE_KEY_AQUI"); // <-- Cambiar por tu clave pública
+const stripe = Stripe("TU_PUBLISHABLE_KEY_AQUI"); // Cambiar por tu clave pública
 const elements = stripe.elements();
 const card = elements.create("card",{style:{base:{color:"#fff",fontFamily:"Inter",fontSize:"16px",::placeholder:{color:"#888"}}}});
 card.mount("#card-element");
 
-// Handle real payment
-document.getElementById("payButton").addEventListener("click", async () => {
+document.getElementById("payButton").addEventListener("click", async ()=>{
     const overlay=document.getElementById("paymentOverlay");
     const msg=document.getElementById("paymentMessage");
     overlay.style.display="flex";
@@ -156,40 +72,35 @@ document.getElementById("payButton").addEventListener("click", async () => {
     const name=document.getElementById("customerName").value;
     const email=document.getElementById("customerEmail").value;
 
-    // Aquí envías los datos a tu backend para crear PaymentIntent
-    const response=await fetch("/create-payment-intent", {
+    // Envía datos al backend
+    const response=await fetch("/create-payment-intent",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({name,email,amount:1000}) // monto en centavos
+        body:JSON.stringify({name,email,amount:1000})
     });
     const paymentIntent=await response.json();
+    const result=await stripe.confirmCardPayment(paymentIntent.client_secret,{payment_method:{card,billing_details:{name,email}}});
 
-    const result=await stripe.confirmCardPayment(paymentIntent.client_secret,{payment_method:{card, billing_details:{name,email}}});
-    if(result.error){
-        msg.innerText=result.error.message;
-        setTimeout(()=>{overlay.style.display="none"},2000);
-    } else {
-        if(result.paymentIntent.status==="succeeded"){
-            msg.innerText="Pago aprobado ✅";
-            setTimeout(()=>{
-                overlay.style.display="none";
-                alert("Servidor creado exitosamente!");
-            },1500);
-        }
+    if(result.error){msg.innerText=result.error.message;setTimeout(()=>{overlay.style.display="none"},2000);}
+    else if(result.paymentIntent.status==="succeeded"){
+        msg.innerText="Pago aprobado ✅";
+        launchConfetti();
+        setTimeout(()=>{overlay.style.display="none";alert("Servidor creado exitosamente!");},1500);
     }
 });
 
-// Payment selection
-function selectPayment(el){document.querySelectorAll(".payment").forEach(p=>p.classList.remove("active"));el.classList.add("active")}
-
-// Copy code
-function copyCode(){navigator.clipboard.writeText("FIRST10");let check=document.getElementById("copyCheck");check.style.display="inline";setTimeout(()=>{check.style.display="none"},1200)}
-
-// Coupon
-function applyCoupon(){let code=document.getElementById("coupon").value.toUpperCase();if(code==="FIRST10"){alert("10% discount applied")}else{alert("Código inválido")}}
-
-// Confetti
-function createConfetti(){const container=document.getElementById("confetti-container");for(let i=0;i<20;i++){let c=document.createElement("div");c.className="confetti-piece";c.style.backgroundColor=['#f87171','#34d399','#60a5fa','#facc15','#f472b6'][Math.floor(Math.random()*5)];c.style.left=Math.random()*100+"%";c.style.animationDelay=Math.random()*1+"s";container.appendChild(c);setTimeout(()=>{c.remove()},2000)}};setInterval(createConfetti,1500);
+function launchConfetti(){
+    const container=document.getElementById("confetti-container");
+    for(let i=0;i<30;i++){
+        let c=document.createElement("div");
+        c.className="confetti-piece";
+        c.style.backgroundColor=['#f87171','#34d399','#60a5fa','#facc15','#f472b6'][Math.floor(Math.random()*5)];
+        c.style.left=Math.random()*100+"%";
+        c.style.animationDelay=Math.random()*1+"s";
+        container.appendChild(c);
+        setTimeout(()=>{c.remove()},2000);
+    }
+}
 </script>
 </body>
 </html>
