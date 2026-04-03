@@ -192,7 +192,7 @@
             border-radius: 20px; padding: 20px;
         }
         .metric-value { font-size: 32px; font-weight: 700; margin: 12px 0; }
-        .progress-bar { background: rgba(255,255,255,0.1); border-radius: 20px; height: 8px; overflow: hidden; }
+        .progress-bar { background: rgba(255,255,255,0.1); border-radius: 20px; height; overflow: hidden; }
         .progress-fill { background: linear-gradient(90deg, #6366F1, #A78BFA); height: 100%; border-radius: 20px; width: 0%; }
         .server-status {
             display: inline-flex; align-items: center; gap: 8px;
@@ -227,7 +227,7 @@
         }
         .console-header {
             padding: 20px 24px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,25.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -602,6 +602,70 @@
             }, 5000);
         }
         
+        // ✅ VERIFICAR ESTADO REAL DEL SERVIDOR (NO SIMULADO)
+        async function checkRealServerStatus() {
+            const ip = serverData.ipPublica;
+            const port = serverData.puertoMC;
+
+            if (!ip || !port) {
+                serverData.status = 'offline';
+                updateServerUI();
+                return;
+            }
+
+            try {
+                // Hacemos una petición HEAD al puerto del servidor (sin CORS, solo para detectar si responde)
+                const response = await fetch(`http://${ip}:${port}`, {
+                    method: 'HEAD',
+                    mode: 'no-cors',
+                    timeout: 3000
+                });
+
+                // Si llega aquí, el puerto está abierto → online
+                serverData.status = 'online';
+            } catch (e) {
+                // Si falla, el puerto está cerrado → offline
+                serverData.status = 'offline';
+            }
+
+            updateServerUI();
+        }
+
+        // ✅ ACTUALIZAR UI CON DATOS REALES
+        function updateServerUI() {
+            // Actualizar métricas
+            const metricValues = document.querySelectorAll('.metric-value');
+            if (metricValues[0]) metricValues[0].textContent = `${serverData.cpu.toFixed(2)}% / ∞`;
+            if (metricValues[1]) metricValues[1].textContent = `${serverData.memoryUsed.toFixed(2)} GB / ${serverData.memoryTotal} GB`;
+            if (metricValues[2]) metricValues[2].textContent = `${serverData.diskUsed.toFixed(2)} MB / ${serverData.diskTotal} MB`;
+
+            // Actualizar IP y Puerto REALES
+            const ipEl = document.querySelector('[data-id="server-ip"]');
+            const portEl = document.querySelector('[data-id="server-port"]');
+            const hostnameEl = document.querySelector('[data-id="hostname"]');
+            const serverIdEl = document.querySelector('[data-id="server-id"]');
+
+            if (ipEl) ipEl.textContent = serverData.ipPublica || 'N/A';
+            if (portEl) portEl.textContent = serverData.puertoMC || 'N/A';
+            if (hostnameEl) hostnameEl.textContent = `${serverData.ipPublica}:${serverData.puertoMC}`;
+            if (serverIdEl) serverIdEl.textContent = serverData.serverId || 'N/A';
+
+            // Actualizar estado con LED real
+            const statusIndicator = document.querySelector('.server-status');
+            if (statusIndicator) {
+                statusIndicator.innerHTML = `
+                    <span class="led ${serverData.status === 'online' ? 'led-green' : 'led-red'}"></span>
+                    ${serverData.status === 'online' ? 'Online' : 'Offline'}
+                `;
+            }
+
+            // Actualizar SFTP
+            const sftpHostEl = document.querySelector('[data-id="sftp-host"]');
+            const sftpUserEl = document.querySelector('[data-id="sftp-user"]');
+            if (sftpHostEl) sftpHostEl.textContent = `sftp://${serverData.sftp.host}:${serverData.sftp.port}`;
+            if (sftpUserEl) sftpUserEl.textContent = serverData.sftp.user;
+        }
+
         async function createServer() {
             const createBtn = document.getElementById('createServerBtn');
             if (createBtn) { createBtn.disabled = true; createBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creando...'; }
@@ -634,6 +698,9 @@
                     serverData.hostname = `${data.ip}:${data.port}`; serverData.serverId = data.containerName; serverData.sftp.host = data.ip; serverData.sftp.user = data.containerName;
                     serverData.ipPublica = data.ip; serverData.puertoMC = data.port; serverData.dominio = data.connectionString;
                     saveServerState(); renderPage();
+                    
+                    // ✅ Verificar estado real del servidor
+                    setTimeout(checkRealServerStatus, 2000);
                 }
             } catch (e) { console.log("Error loading from Firestore:", e); }
         }
@@ -692,9 +759,61 @@
             const ctx = document.getElementById('cpuChart')?.getContext('2d');
             if (ctx) { if (cpuChart) cpuChart.destroy(); cpuChart = new Chart(ctx, { type: 'line', data: { labels: ['13:00','13:15','13:30','13:45','14:00'], datasets: [{ label: 'CPU %', data: [5,8,7,9,8.5], borderColor: '#A78BFA', tension: 0.4, fill: true }] }, options: { responsive: true } }); }
             startUptimeCounter();
-            document.getElementById('startBtn')?.addEventListener('click', () => { serverData.status = 'online'; addLog('info', 'Servidor iniciado manualmente'); saveServerState(); renderPage(); addConsoleMessage('> Servidor iniciado correctamente'); showNotification('Servidor Iniciado', 'El servidor se ha iniciado correctamente', 'success'); });
-            document.getElementById('stopBtn')?.addEventListener('click', () => { serverData.status = 'offline'; addLog('warning', 'Servidor detenido manualmente'); saveServerState(); renderPage(); addConsoleMessage('> Servidor detenido'); showNotification('Servidor Detenido', 'El servidor se ha detenido', 'warning'); });
-            document.getElementById('restartBtn')?.addEventListener('click', () => { addLog('info', 'Reiniciando servidor...'); addConsoleMessage('> Reiniciando servidor...'); showNotification('Reiniciando', 'El servidor se está reiniciando', 'info'); setTimeout(() => { addLog('info', 'Servidor reiniciado correctamente'); addConsoleMessage('> Servidor reiniciado correctamente'); showNotification('Servidor Reiniciado', 'El servidor se ha reiniciado correctamente', 'success'); }, 1500); });
+            
+            // ✅ ACTUALIZAR BOTONES DE CONTROL PARA LLAMAR AL BACKEND
+            document.getElementById('startBtn')?.addEventListener('click', async () => {
+                try {
+                    const response = await fetch(`http://103.90.160.107:3000/api/server/${serverData.serverId}/start`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        serverData.status = 'online';
+                        addLog('info', 'Servidor iniciado via Docker');
+                        showNotification('Servidor Iniciado', 'El servidor se ha iniciado correctamente', 'success');
+                        updateServerUI();
+                    }
+                } catch (e) {
+                    showNotification('Error', 'No se pudo iniciar el servidor', 'error');
+                }
+            });
+            
+            document.getElementById('stopBtn')?.addEventListener('click', async () => {
+                try {
+                    const response = await fetch(`http://103.90.160.107:3000/api/server/${serverData.serverId}/stop`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        serverData.status = 'offline';
+                        addLog('info', 'Servidor detenido via Docker');
+                        showNotification('Servidor Detenido', 'El servidor se ha detenido correctamente', 'warning');
+                        updateServerUI();
+                    }
+                } catch (e) {
+                    showNotification('Error', 'No se pudo detener el servidor', 'error');
+                }
+            });
+            
+            document.getElementById('restartBtn')?.addEventListener('click', async () => {
+                try {
+                    const response = await fetch(`http://103.90.160.107:3000/api/server/${serverData.serverId}/restart`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        serverData.status = 'online';
+                        addLog('info', 'Servidor reiniciado via Docker');
+                        showNotification('Servidor Reiniciado', 'El servidor se ha reiniciado correctamente', 'info');
+                        updateServerUI();
+                    }
+                } catch (e) {
+                    showNotification('Error', 'No se pudo reiniciar el servidor', 'error');
+                }
+            });
         }
         
         function renderConsole(container) {
@@ -747,9 +866,65 @@
             if (consoleHistory.length === 0) termOut.innerHTML = '> Sistema listo. Escribe \'help\' para comandos.<br>';
             else termOut.innerHTML = consoleHistory.join('');
             document.getElementById('termInput')?.addEventListener('keypress', (e) => { if(e.key==='Enter') executeCommand(e.target.value); });
-            document.getElementById('consoleStartBtn')?.addEventListener('click', () => { serverData.status = 'online'; addLog('info', 'Servidor iniciado'); saveServerState(); addConsoleMessage('> Servidor iniciado correctamente'); renderPage(); showNotification('Servidor Iniciado', 'El servidor se ha iniciado correctamente', 'success'); });
-            document.getElementById('consoleStopBtn')?.addEventListener('click', () => { serverData.status = 'offline'; addLog('warning', 'Servidor detenido'); saveServerState(); addConsoleMessage('> Servidor detenido'); renderPage(); showNotification('Servidor Detenido', 'El servidor se ha detenido', 'warning'); });
-            document.getElementById('consoleRestartBtn')?.addEventListener('click', () => { addLog('info', 'Reiniciando servidor'); addConsoleMessage('> Reiniciando servidor...'); showNotification('Reiniciando', 'El servidor se está reiniciando', 'info'); setTimeout(() => { addLog('info', 'Servidor reiniciado'); addConsoleMessage('> Servidor reiniciado correctamente'); showNotification('Servidor Reiniciado', 'El servidor se ha reiniciado correctamente', 'success'); }, 1500); });
+            
+            // ✅ ACTUALIZAR BOTONES DE CONSOLE PARA LLAMAR AL BACKEND
+            document.getElementById('consoleStartBtn')?.addEventListener('click', async () => {
+                try {
+                    const response = await fetch(`http://103.90.160.107:3000/api/server/${serverData.serverId}/start`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        serverData.status = 'online';
+                        addLog('info', 'Servidor iniciado via Docker');
+                        addConsoleMessage('> Servidor iniciado correctamente');
+                        showNotification('Servidor Iniciado', 'El servidor se ha iniciado correctamente', 'success');
+                        updateServerUI();
+                    }
+                } catch (e) {
+                    showNotification('Error', 'No se pudo iniciar el servidor', 'error');
+                }
+            });
+            
+            document.getElementById('consoleStopBtn')?.addEventListener('click', async () => {
+                try {
+                    const response = await fetch(`http://103.90.160.107:3000/api/server/${serverData.serverId}/stop`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        serverData.status = 'offline';
+                        addLog('info', 'Servidor detenido via Docker');
+                        addConsoleMessage('> Servidor detenido');
+                        showNotification('Servidor Detenido', 'El servidor se ha detenido', 'warning');
+                        updateServerUI();
+                    }
+                } catch (e) {
+                    showNotification('Error', 'No se pudo detener el servidor', 'error');
+                }
+            });
+            
+            document.getElementById('consoleRestartBtn')?.addEventListener('click', async () => {
+                try {
+                    const response = await fetch(`http://103.90.160.107:3000/api/server/${serverData.serverId}/restart`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        serverData.status = 'online';
+                        addLog('info', 'Servidor reiniciado via Docker');
+                        addConsoleMessage('> Reiniciando servidor...');
+                        showNotification('Reiniciando', 'El servidor se está reiniciando', 'info');
+                        updateServerUI();
+                    }
+                } catch (e) {
+                    showNotification('Error', 'No se pudo reiniciar el servidor', 'error');
+                }
+            });
+            
             document.getElementById('consoleClearBtn')?.addEventListener('click', () => { consoleHistory = []; document.getElementById('termOut').innerHTML = '> Sistema listo. Escribe \'help\' para comandos.<br>'; });
             document.getElementById('copyConsoleBtn')?.addEventListener('click', () => { copyText(consoleHistory.join('')); });
         }
@@ -811,7 +986,13 @@
         window.addEventListener('resize', resizeCanvas); resizeCanvas(); drawParticles();
         
         startMetricsSimulation();
-        loadServerFromFirestore().then(() => renderPage());
+        loadServerFromFirestore().then(() => {
+            // ✅ Verificar estado real cada 10 segundos
+            setInterval(checkRealServerStatus, 10000);
+            // Y verificar una vez al cargar
+            setTimeout(checkRealServerStatus, 2000);
+        });
     </script>
 </body>
 </html>
+
