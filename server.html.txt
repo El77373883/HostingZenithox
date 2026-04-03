@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=yes">
+    <title>Zenithox | Panel de Control Premium</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0A0C15;
+            font-family: 'Inter', sans-serif;
+            color: #EFF3F8;
+            overflow-x: hidden;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+        body.light {
+            background: #F3F4F6;
+            color: #1F2937;
+        }
+        body.light .card { background: rgba(255,255,255,0.85); border-color: rgba(0,0,0,0.1); }
+        body.light .sidebar { background: rgba(255,255,255,0.98); border-right-color: rgba(0,0,0,0.1); }
+        body.light .sidebar-item { color: #374151; }
+        body.light .terminal { background: #1F2937; }
+        
+        #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        .app { position: relative; z-index: 1; min-height: 100vh; }
+        
+        /* Notificaciones Premium */
+        .notification-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 380px;
+        }
+        .notification {
+            background: linear-gradient(135deg, rgba(18, 22, 35, 0.95), rgba(10, 12, 21, 0.95));
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 16px 20px;
+            border-left: 4px solid;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .notification.success { border-left-color: #10B981; }
+        .notification.error { border-left-color: #EF4444; }
+        .notification.warning { border-left-color: #F59E0B; }
+        .notification.info { border-left-color: #6366F1; }
+        .notification-icon { font-size: 20px; }
+        .notification-content { flex: 1; }
+        .notification-title { font-weight: 600; margin-bottom: 4px; }
+        .notification-message { font-size: 13px; color: #A0A5C0; }
+        .notification-close {
+            background: none;
+            border: none;
+            color: #6B7280;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            background: rgba(10, 12, 21, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        body.light .header { background: rgba(255,255,255,0.85); border-bottom-color: rgba(0,0,0,0.1); }
+        .logo-area { display: flex; align-items: center; gap: 20px; }
+        .menu-btn {
+            background: none; border: none; color: white; font-size: 24px;
+            cursor: pointer; padding: 8px; transition: color 0.2s;
+        }
+        body.light .menu-btn { color: #1F2937; }
+        .menu-btn:hover { color: #A78BFA; }
+        .logo h1 {
+            font-size: 24px; font-weight: 800;
+            background: linear-gradient(135deg, #FFF, #A78BFA, #6366F1);
+            -webkit-background-clip: text; background-clip: text; color: transparent;
+            animation: logoGlow 2s ease-in-out infinite;
+        }
+        @keyframes logoGlow { 0%,100% { text-shadow: 0 0 20px rgba(99,102,241,0.3); } 50% { text-shadow: 0 0 40px rgba(139,92,246,0.5); } }
+        .header-actions { display: flex; align-items: center; gap: 20px; position: relative; }
+        .lang-selector {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px; padding: 8px 16px; cursor: pointer; font-size: 14px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .lang-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 80px;
+            background: #121623;
+            border-radius: 16px;
+            padding: 12px 0;
+            min-width: 140px;
+            z-index: 200;
+            border: 1px solid rgba(139,92,246,0.3);
+            display: none;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+        }
+        .lang-dropdown.active { display: block; }
+        .lang-option {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .lang-option:hover { background: rgba(139,92,246,0.2); }
+        .theme-toggle { background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 8px; }
+        body.light .theme-toggle { color: #1F2937; }
+        .avatar {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: linear-gradient(135deg, #6366F1, #A78BFA);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: transform 0.2s; overflow: hidden;
+        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar:hover { transform: scale(1.05); }
+        
+        .sidebar {
+            position: fixed; top: 0; left: -320px; width: 300px; height: 100vh;
+            background: rgba(10, 12, 21, 0.98); backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(99,102,241,0.3); z-index: 200;
+            transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            overflow-y: auto; padding: 24px 0;
+        }
+        .sidebar.open { left: 0; }
+        .sidebar-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 150; display: none;
+        }
+        .sidebar-overlay.active { display: block; }
+        .sidebar-header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 20px 20px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .close-sidebar {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+        }
+        body.light .close-sidebar { color: #1F2937; }
+        .sidebar-section { padding: 16px 24px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .sidebar-section h4 { color: #A78BFA; font-size: 12px; letter-spacing: 1px; margin-bottom: 16px; }
+        .sidebar-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 0;
+            color: #C4C9F0; cursor: pointer; transition: color 0.2s; font-size: 14px;
+        }
+        .sidebar-item:hover { color: #A78BFA; }
+        
+        .main-content { padding: 24px; max-width: 1400px; margin: 0 auto; }
+        .card {
+            background: rgba(18, 22, 35, 0.7); backdrop-filter: blur(10px);
+            border-radius: 24px; padding: 24px; border: 1px solid rgba(99,102,241,0.2);
+            transition: all 0.3s; margin-bottom: 20px;
+        }
+        .card:hover { border-color: rgba(139,92,246,0.4); }
+        .grid-3, .grid-2 { display: grid; gap: 20px; margin-bottom: 24px; }
+        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
+        .metric-card {
+            background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.05));
+            border-radius: 20px; padding: 20px;
+        }
+        .metric-value { font-size: 32px; font-weight: 700; margin: 12px 0; }
+        .progress-bar { background: rgba(255,255,255,0.1); border-radius: 20px; height: 8px; overflow: hidden; }
+        .progress-fill { background: linear-gradient(90deg, #6366F1, #A78BFA); height: 100%; border-radius: 20px; width: 0%; }
+        .server-status {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(34,197,94,0.2); padding: 6px 14px; border-radius: 40px; font-size: 13px;
+        }
+        .led {
+            width: 10px; height: 10px; border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
+            animation: pulse 1.5s infinite;
+        }
+        .led-green { background: #22C55E; color: #22C55E; }
+        .led-red { background: #EF4444; color: #EF4444; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .btn {
+            background: rgba(99,102,241,0.2); border: 1px solid rgba(99,102,241,0.4);
+            padding: 10px 20px; border-radius: 40px; color: white; cursor: pointer;
+            transition: all 0.2s; font-weight: 500; margin: 4px; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary { background: linear-gradient(135deg, #6366F1, #8B5CF6); border: none; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99,102,241,0.3); }
+        .btn-success { background: linear-gradient(135deg, #10B981, #059669); border: none; }
+        .btn-danger { background: linear-gradient(135deg, #EF4444, #DC2626); border: none; }
+        .btn-warning { background: linear-gradient(135deg, #F59E0B, #D97706); border: none; }
+        
+        /* Consola Premium */
+        .console-premium {
+            background: rgba(18, 22, 35, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            border: 1px solid rgba(99,102,241,0.2);
+            overflow: hidden;
+        }
+        .console-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .console-controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 16px;
+            padding: 20px 24px;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .info-card-premium {
+            background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(139,92,246,0.05));
+            border-radius: 20px;
+            padding: 16px;
+            border: 1px solid rgba(139,92,246,0.2);
+        }
+        .info-card-premium h4 {
+            color: #A78BFA;
+            font-size: 12px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-card-premium p {
+            font-size: 14px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .terminal {
+            background: #0A0C15;
+            margin: 0 24px 24px 24px;
+            border-radius: 16px;
+            padding: 16px;
+            font-family: monospace;
+            font-size: 13px;
+            height: 300px;
+            overflow-y: auto;
+        }
+        .terminal-output { color: #A0E7A0; margin-bottom: 8px; white-space: pre-wrap; font-family: monospace; }
+        .terminal-input-line { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
+        .terminal-prompt { color: #A78BFA; }
+        .terminal-input { background: none; border: none; color: white; font-family: monospace; flex: 1; outline: none; }
+        .hosting-footer {
+            text-align: center;
+            padding: 16px 24px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 12px;
+            color: #6B7280;
+        }
+        
+        .world-card {
+            background: rgba(255,255,255,0.03); border-radius: 16px; padding: 16px;
+            margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer;
+        }
+        .world-portada {
+            width: 100%; height: 120px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; background: #1F2937;
+        }
+        .log-entry {
+            font-family: monospace; font-size: 12px; padding: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 300;
+            display: flex; align-items: center; justify-content: center;
+            visibility: hidden; opacity: 0; transition: all 0.2s;
+        }
+        .modal.active { visibility: visible; opacity: 1; }
+        .modal-content {
+            background: #121623; border-radius: 32px; max-width: 500px;
+            width: 90%; padding: 28px; border: 1px solid rgba(139,92,246,0.3);
+        }
+        .upgrade-plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 20px 0; }
+        .plan-card {
+            background: rgba(255,255,255,0.03); border-radius: 16px; padding: 16px;
+            text-align: center; cursor: pointer; border: 1px solid transparent; transition: all 0.2s;
+        }
+        .plan-card.selected { border-color: #A78BFA; background: rgba(167,139,250,0.1); }
+        .plugin-card, .ftp-user-card {
+            background: rgba(255,255,255,0.03); border-radius: 16px; padding: 16px;
+            margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .ftp-card-premium {
+            background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.1));
+            border-radius: 24px; padding: 24px; margin-top: 20px;
+            animation: cardPulse 1.5s ease-in-out infinite;
+            border: 1px solid rgba(139,92,246,0.5);
+        }
+        @keyframes cardPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(139,92,246,0.4); } 50% { box-shadow: 0 0 20px 5px rgba(139,92,246,0.3); } }
+        input, select, textarea {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 12px;
+            border-radius: 20px;
+            outline: none;
+        }
+        body.light input, body.light select, body.light textarea {
+            background: rgba(0,0,0,0.05);
+            color: #1F2937;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        @media (max-width: 768px) {
+            .grid-2 { grid-template-columns: 1fr; }
+            .main-content { padding: 16px; }
+            .header { padding: 12px 16px; }
+            .info-cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="notification-container" id="notificationContainer"></div>
+    <canvas id="particles-canvas"></canvas>
+    <div class="app">
+        <div class="header">
+            <div class="logo-area">
+                <button class="menu-btn" id="menuToggle"><i class="fas fa-bars"></i></button>
+                <div class="logo"><h1>ZENITHOX</h1></div>
+            </div>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <div class="lang-selector" id="langSelectorBtn"><i class="fas fa-globe"></i> <span id="currentLangText">Español</span> <i class="fas fa-chevron-down"></i></div>
+                <div class="lang-dropdown" id="langDropdown">
+                    <div class="lang-option" data-lang="es"><i class="fas fa-flag"></i> Español</div>
+                    <div class="lang-option" data-lang="en"><i class="fas fa-flag"></i> English</div>
+                    <div class="lang-option" data-lang="pt"><i class="fas fa-flag"></i> Português</div>
+                    <div class="lang-option" data-lang="fr"><i class="fas fa-flag"></i> Français</div>
+                    <div class="lang-option" data-lang="de"><i class="fas fa-flag"></i> Deutsch</div>
+                    <div class="lang-option" data-lang="zh"><i class="fas fa-flag"></i> 中文</div>
+                </div>
+                <div class="avatar" id="avatarBtn"><i class="fas fa-user-astronaut"></i></div>
+            </div>
+        </div>
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button class="close-sidebar" id="closeSidebarBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="sidebar-section"><h4><i class="fas fa-chart-line"></i> GENERAL</h4>
+                <div class="sidebar-item" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
+                <div class="sidebar-item" data-page="console"><i class="fas fa-terminal"></i> Console</div>
+                <div class="sidebar-item" data-page="logs"><i class="fas fa-scroll"></i> Server Logs</div>
+                <div class="sidebar-item" data-page="create-server"><i class="fas fa-plus-circle"></i> Crear Servidor</div>
+                <div class="sidebar-item" data-page="settings"><i class="fas fa-sliders-h"></i> Settings</div>
+            </div>
+            <div class="sidebar-section"><h4><i class="fas fa-cubes"></i> MANAGEMENT</h4>
+                <div class="sidebar-item" data-page="files"><i class="fas fa-folder-tree"></i> Files</div>
+                <div class="sidebar-item" data-page="plugins"><i class="fas fa-puzzle-piece"></i> Plugins</div>
+                <div class="sidebar-item" data-page="versions"><i class="fas fa-code-branch"></i> Versions</div>
+                <div class="sidebar-item" data-page="modpacks"><i class="fas fa-cubes"></i> Modpacks</div>
+                <div class="sidebar-item" data-page="worlds"><i class="fas fa-globe"></i> Worlds</div>
+                <div class="sidebar-item" data-page="players"><i class="fas fa-users"></i> Players</div>
+                <div class="sidebar-item" data-page="ftp"><i class="fas fa-folder-open"></i> FTP Access</div>
+            </div>
+            <div class="sidebar-section"><h4><i class="fas fa-microchip"></i> ADVANCED</h4>
+                <div class="sidebar-item" data-page="backups"><i class="fas fa-database"></i> Backups</div>
+                <div class="sidebar-item" data-page="billing"><i class="fas fa-credit-card"></i> Billing</div>
+                <div class="sidebar-item" data-page="api"><i class="fas fa-key"></i> API Keys</div>
+                <div class="sidebar-item" data-page="domains"><i class="fas fa-globe"></i> Dominios & IPs</div>
+                <div class="sidebar-item" id="upgradeRamBtn"><i class="fas fa-microchip"></i> Upgrade RAM</div>
+            </div>
+            <div class="sidebar-section"><h4><i class="fas fa-headset"></i> SUPPORT</h4>
+                <div class="sidebar-item" data-page="help"><i class="fas fa-circle-info"></i> Help Center</div>
+                <div class="sidebar-item" data-page="tickets"><i class="fas fa-ticket"></i> Tickets</div>
+            </div>
+            <div class="sidebar-section"><h4><i class="fas fa-user"></i> PROFILE</h4>
+                <div class="sidebar-item" data-page="profile"><i class="fas fa-user-circle"></i> Mi Perfil</div>
+            </div>
+        </div>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        <div class="main-content" id="mainContent"></div>
+    </div>
+
+    <div class="modal" id="upgradeModal">
+        <div class="modal-content"><h3><i class="fas fa-microchip"></i> Upgrade RAM</h3><p>RAM actual: <strong id="currentRam">3.5 GB</strong></p>
+        <div class="upgrade-plans" id="ramPlans"></div><button class="btn btn-primary" id="confirmUpgrade"><i class="fas fa-credit-card"></i> Comprar Ahora</button>
+        <button class="btn" id="closeModal"><i class="fas fa-times"></i> Cancelar</button></div>
+    </div>
+
+    <script>
+        // ==================== FIREBASE CONFIG ====================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOXL8av7biKDr3x7C8EWJWPtllwKw68U8",
+            authDomain: "zenithox-3628f.firebaseapp.com",
+            projectId: "zenithox-3628f"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // ==================== DATA CON PERSISTENCIA ====================
+        let currentPage = localStorage.getItem('zenithox_current_page') || 'dashboard';
+        let currentLang = localStorage.getItem('zenithox_lang') || 'es';
+        let uptimeInterval;
+        let metricsInterval;
+        let consoleHistory = [];
+        let cpuChart = null;
+        let lastAlertShown = { cpu: false, memory: false };
+        
+        // Notificaciones
+        function showNotification(title, message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', warning: 'fa-triangle-exclamation', info: 'fa-circle-info' };
+            notification.innerHTML = `
+                <div class="notification-icon"><i class="fas ${icons[type]}"></i></div>
+                <div class="notification-content">
+                    <div class="notification-title">${title}</div>
+                    <div class="notification-message">${message}</div>
+                </div>
+                <button class="notification-close"><i class="fas fa-times"></i></button>
+            `;
+            notification.querySelector('.notification-close').onclick = () => notification.remove();
+            container.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        }
+        
+        // Datos del servidor desde API
+        let serverInfo = {
+            ip: localStorage.getItem('zenithox_server_ip') || null,
+            port: localStorage.getItem('zenithox_server_port') || null,
+            connectionString: localStorage.getItem('zenithox_connection_string') || null,
+            containerName: localStorage.getItem('zenithox_container_name') || null,
+            userId: localStorage.getItem('zenithox_user_id') || 'user_' + Math.random().toString(36).substr(2, 8)
+        };
+        
+        if (!localStorage.getItem('zenithox_user_id')) {
+            localStorage.setItem('zenithox_user_id', serverInfo.userId);
+        }
+        
+        let serverData = {
+            name: 'Minecraft Server', 
+            status: localStorage.getItem('zenithox_server_status') || 'online', 
+            cpu: parseFloat(localStorage.getItem('zenithox_cpu')) || 8.57, 
+            memoryUsed: parseFloat(localStorage.getItem('zenithox_memory_used')) || 1.54, 
+            memoryTotal: 3.5,
+            diskUsed: parseFloat(localStorage.getItem('zenithox_disk_used')) || 221.21, 
+            diskTotal: 81920, 
+            uptimeSeconds: parseInt(localStorage.getItem('zenithox_uptime')) || 44, 
+            hostname: serverInfo.ip ? `${serverInfo.ip}:${serverInfo.port}` : 'empire.playminecraft.online',
+            nodeId: 'AU02', 
+            serverId: serverInfo.containerName || '#03717ac5', 
+            version: 'Paper 1.21',
+            sftp: { host: serverInfo.ip || 'au02.zenithox.com', port: 22, user: serverInfo.containerName || 'gio.03717ac5', pass: '********' },
+            ipPublica: serverInfo.ip || '185.247.35.42', 
+            puertoMC: serverInfo.port || 25565, 
+            dominio: serverInfo.connectionString || 'empire.playminecraft.online'
+        };
+        
+        let serverLogs = JSON.parse(localStorage.getItem('zenithox_logs')) || [
+            { timestamp: new Date().toISOString(), type: 'info', message: 'Servidor iniciado correctamente' }
+        ];
+        
+        let pluginsList = [
+            { name: 'EssentialsX', version: '2.20.1', desc: 'Comandos básicos, kits, hogar, warp', author: 'EssentialsTeam', active: true, icon: 'fa-crown' },
+            { name: 'LuckPerms', version: '5.4.102', desc: 'Sistema de permisos avanzado', author: 'lucko', active: true, icon: 'fa-key' },
+            { name: 'WorldEdit', version: '7.3.5', desc: 'Edición masiva de mundos', author: 'sk89q', active: false, icon: 'fa-pen-ruler' },
+            { name: 'WorldGuard', version: '7.0.9', desc: 'Protección de regiones', author: 'sk89q', active: true, icon: 'fa-shield-haltered' },
+            { name: 'Vault', version: '1.7.3', desc: 'API de economía y permisos', author: 'MilkBowl', active: true, icon: 'fa-box' },
+            { name: 'ChestShop', version: '3.12', desc: 'Tiendas entre jugadores', author: 'Phoenix616', active: true, icon: 'fa-store' },
+            { name: 'McMMO', version: '2.2.0', desc: 'Habilidades y progresión RPG', author: 'mcthelma', active: true, icon: 'fa-chart-simple' },
+            { name: 'CoreProtect', version: '22.2', desc: 'Antigriefing y rollback', author: 'Intelli', active: true, icon: 'fa-clock' },
+            { name: 'PlaceholderAPI', version: '2.11.3', desc: 'Placeholders para mensajes', author: 'extended_clip', active: true, icon: 'fa-percent' },
+            { name: 'Dynmap', version: '3.7.0', desc: 'Mapa interactivo del servidor', author: 'webbukkit', active: false, icon: 'fa-map' },
+            { name: 'Citizens', version: '2.0.32', desc: 'NPCs personalizables', author: 'fullwall', active: false, icon: 'fa-users' },
+            { name: 'QuestCreator', version: '4.0.0', desc: 'Creación de misiones', author: 'PikaMug', active: false, icon: 'fa-scroll' }
+        ];
+        
+        let worldsList = [
+            { name: 'world', size: '2.3 GB', players: 5, date: '20/03/2025', portada: 'https://i.ibb.co/GfZwG2kX/IMG-6091.jpg' },
+            { name: 'world_nether', size: '890 MB', players: 2, date: '25/03/2025', portada: 'https://i.ibb.co/GfZwG2kX/IMG-6091.jpg' },
+            { name: 'world_the_end', size: '450 MB', players: 0, date: '28/03/2025', portada: 'https://i.ibb.co/GfZwG2kX/IMG-6091.jpg' }
+        ];
+        
+        let ftpUsers = [
+            { user: serverData.sftp.user, pass: '********', dir: '/home/server', perms: ['lectura','escritura','eliminar'], active: true, created: '01/03/2025' }
+        ];
+        
+        let playersOnline = [
+            { name: 'Zenith_Player1', ping: 32, time: '2h 15m' },
+            { name: 'MinerPro', ping: 45, time: '1h 30m' }
+        ];
+        
+        let backups = [{ date: '30/03/2025', size: '2.1 GB', type: 'automático' }];
+        let apiKeys = [{ key: 'zk_abc123', created: '01/03/2025' }];
+        let tickets = [{ id: 1, subject: 'Problema con plugin', status: 'abierto' }];
+        
+        let userProfile = {
+            username: serverInfo.userId, email: 'usuario@zenithox.com', bio: 'Fundador de Zenithox Hosting', avatar: '', cover: ''
+        };
+        
+        function saveServerState() {
+            localStorage.setItem('zenithox_server_status', serverData.status);
+            localStorage.setItem('zenithox_uptime', serverData.uptimeSeconds);
+            localStorage.setItem('zenithox_logs', JSON.stringify(serverLogs));
+            localStorage.setItem('zenithox_cpu', serverData.cpu);
+            localStorage.setItem('zenithox_memory_used', serverData.memoryUsed);
+            localStorage.setItem('zenithox_disk_used', serverData.diskUsed);
+            if (serverInfo.ip) localStorage.setItem('zenithox_server_ip', serverInfo.ip);
+            if (serverInfo.port) localStorage.setItem('zenithox_server_port', serverInfo.port);
+            if (serverInfo.connectionString) localStorage.setItem('zenithox_connection_string', serverInfo.connectionString);
+            if (serverInfo.containerName) localStorage.setItem('zenithox_container_name', serverInfo.containerName);
+            localStorage.setItem('zenithox_current_page', currentPage);
+        }
+        
+        function addLog(type, message) {
+            const logEntry = { timestamp: new Date().toISOString(), type: type, message: message };
+            serverLogs.unshift(logEntry);
+            if (serverLogs.length > 100) serverLogs.pop();
+            localStorage.setItem('zenithox_logs', JSON.stringify(serverLogs));
+        }
+        
+        function checkResourceLimits() {
+            const cpuWarning = serverData.cpu > 85;
+            const memoryWarning = (serverData.memoryUsed / serverData.memoryTotal) * 100 > 85;
+            
+            if (cpuWarning && !lastAlertShown.cpu) {
+                lastAlertShown.cpu = true;
+                showNotification('Límite de CPU Alcanzado', `El uso de CPU está en ${serverData.cpu.toFixed(1)}%. Te recomendamos optimizar tu servidor o actualizar tu plan.`, 'warning');
+                addLog('warning', `CPU al ${serverData.cpu.toFixed(1)}% - Se recomienda optimizar o actualizar plan`);
+            } else if (!cpuWarning) lastAlertShown.cpu = false;
+            
+            if (memoryWarning && !lastAlertShown.memory) {
+                lastAlertShown.memory = true;
+                showNotification('Límite de RAM Alcanzado', `La memoria está al ${((serverData.memoryUsed/serverData.memoryTotal)*100).toFixed(1)}%. Actualiza tu plan para evitar caídas de rendimiento.`, 'warning');
+                addLog('warning', `RAM al ${((serverData.memoryUsed/serverData.memoryTotal)*100).toFixed(1)}% - Se recomienda actualizar plan`);
+            } else if (!memoryWarning) lastAlertShown.memory = false;
+        }
+        
+        function startMetricsSimulation() {
+            if (metricsInterval) clearInterval(metricsInterval);
+            metricsInterval = setInterval(() => {
+                serverData.cpu = Math.min(100, Math.max(0, serverData.cpu + (Math.random() - 0.5) * 2));
+                serverData.memoryUsed = Math.min(serverData.memoryTotal, Math.max(0, serverData.memoryUsed + (Math.random() - 0.5) * 0.1));
+                serverData.diskUsed = Math.min(serverData.diskTotal, Math.max(0, serverData.diskUsed + (Math.random() - 0.5) * 5));
+                saveServerState();
+                checkResourceLimits();
+                
+                if (currentPage === 'dashboard') {
+                    const cpuEl = document.querySelector('.metric-card:first-child .metric-value');
+                    const memoryEl = document.querySelector('.metric-card:nth-child(2) .metric-value');
+                    const diskEl = document.querySelector('.metric-card:nth-child(3) .metric-value');
+                    const cpuFill = document.querySelector('.metric-card:first-child .progress-fill');
+                    const memoryFill = document.querySelector('.metric-card:nth-child(2) .progress-fill');
+                    if (cpuEl) cpuEl.innerText = serverData.cpu.toFixed(2) + '% / ∞';
+                    if (memoryEl) memoryEl.innerText = serverData.memoryUsed.toFixed(2) + ' GB / ' + serverData.memoryTotal + ' GB';
+                    if (diskEl) diskEl.innerText = serverData.diskUsed.toFixed(2) + ' MB / ' + serverData.diskTotal + ' MB';
+                    if (cpuFill) cpuFill.style.width = serverData.cpu + '%';
+                    if (memoryFill) memoryFill.style.width = (serverData.memoryUsed / serverData.memoryTotal * 100) + '%';
+                    if (cpuChart) { cpuChart.data.datasets[0].data.push(serverData.cpu); if (cpuChart.data.datasets[0].data.length > 10) cpuChart.data.datasets[0].data.shift(); cpuChart.update(); }
+                }
+            }, 5000);
+        }
+        
+        async function createServer() {
+            const createBtn = document.getElementById('createServerBtn');
+            if (createBtn) { createBtn.disabled = true; createBtn.innerHTML = '<i class="fas fa-spinner fa-pulse"></i> Creando...'; }
+            try {
+                const response = await fetch('http://103.90.160.107:3000/create-server', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: serverInfo.userId, engine: 'spigot', version: '1.21.1' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    serverInfo.ip = data.ip; serverInfo.port = data.port; serverInfo.connectionString = data.connectionString; serverInfo.containerName = data.containerName;
+                    serverData.hostname = `${data.ip}:${data.port}`; serverData.serverId = data.containerName; serverData.sftp.host = data.ip; serverData.sftp.user = data.containerName;
+                    serverData.ipPublica = data.ip; serverData.puertoMC = data.port; serverData.dominio = data.connectionString;
+                    serverData.status = 'online'; saveServerState();
+                    await db.collection('servers').doc(serverInfo.userId).set({ ip: data.ip, port: data.port, connectionString: data.connectionString, containerName: data.containerName, userId: serverInfo.userId, createdAt: new Date().toISOString() });
+                    addLog('info', `Servidor creado: ${data.connectionString}`);
+                    showNotification('Servidor Creado', `IP: ${data.ip}:${data.port} | Conexión: ${data.connectionString}`, 'success');
+                    renderPage();
+                } else alert('Error al crear servidor');
+            } catch (error) { alert('Error de conexión con la API'); }
+            if (createBtn) { createBtn.disabled = false; createBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Crear Servidor'; }
+        }
+        
+        async function loadServerFromFirestore() {
+            try {
+                const doc = await db.collection('servers').doc(serverInfo.userId).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    serverInfo.ip = data.ip; serverInfo.port = data.port; serverInfo.connectionString = data.connectionString; serverInfo.containerName = data.containerName;
+                    serverData.hostname = `${data.ip}:${data.port}`; serverData.serverId = data.containerName; serverData.sftp.host = data.ip; serverData.sftp.user = data.containerName;
+                    serverData.ipPublica = data.ip; serverData.puertoMC = data.port; serverData.dominio = data.connectionString;
+                    saveServerState(); renderPage();
+                }
+            } catch (e) { console.log("Error loading from Firestore:", e); }
+        }
+        
+        const translations = {
+            es: { dashboard: 'Dashboard', console: 'Consola', online: 'Online', offline: 'Offline', cpu: 'CPU Usage', memory: 'Memory Usage', disk: 'Disk Usage', start: 'Start', stop: 'Stop', restart: 'Restart', save: 'Guardar', plugins: 'Plugins', worlds: 'Mundos', ftp: 'FTP Access', profile: 'Mi Perfil', players: 'Jugadores', backups: 'Backups', logs: 'Server Logs', node: 'Nodo', server_logs: 'Registros del Servidor', versions: 'Versiones' },
+            en: { dashboard: 'Dashboard', console: 'Console', online: 'Online', offline: 'Offline', cpu: 'CPU Usage', memory: 'Memory Usage', disk: 'Disk Usage', start: 'Start', stop: 'Stop', restart: 'Restart', save: 'Save', plugins: 'Plugins', worlds: 'Worlds', ftp: 'FTP Access', profile: 'My Profile', players: 'Players', backups: 'Backups', logs: 'Server Logs', node: 'Node', server_logs: 'Server Logs', versions: 'Versions' },
+            pt: { dashboard: 'Painel', console: 'Console', online: 'Online', offline: 'Offline', cpu: 'Uso de CPU', memory: 'Uso de Memória', disk: 'Uso de Disco', start: 'Iniciar', stop: 'Parar', restart: 'Reiniciar', save: 'Salvar', plugins: 'Plugins', worlds: 'Mundos', ftp: 'Acesso FTP', profile: 'Meu Perfil', players: 'Jogadores', backups: 'Backups', logs: 'Registros', node: 'Nó', server_logs: 'Registros do Servidor', versions: 'Versões' }
+        };
+        function t(key) { return translations[currentLang][key] || key; }
+        
+        function updateUILanguage() {
+            const langNames = { es: 'Español', en: 'English', pt: 'Português', fr: 'Français', de: 'Deutsch', zh: '中文' };
+            document.getElementById('currentLangText').innerText = langNames[currentLang] || 'Español';
+            localStorage.setItem('zenithox_lang', currentLang);
+            document.querySelectorAll('.sidebar-item').forEach(item => {
+                const page = item.dataset.page;
+                if (page && translations[currentLang][page]) {
+                    const icon = item.querySelector('i');
+                    const text = translations[currentLang][page];
+                    item.innerHTML = ''; if (icon) item.appendChild(icon.cloneNode(true));
+                    item.appendChild(document.createTextNode(' ' + text));
+                }
+            });
+            renderPage();
+        }
+        
+        function renderPage() {
+            const container = document.getElementById('mainContent');
+            if (currentPage === 'dashboard') renderDashboard(container);
+            else if (currentPage === 'console') renderConsole(container);
+            else if (currentPage === 'logs') renderServerLogs(container);
+            else if (currentPage === 'create-server') renderCreateServer(container);
+            else if (currentPage === 'plugins') renderPlugins(container);
+            else if (currentPage === 'worlds') renderWorlds(container);
+            else if (currentPage === 'profile') renderProfile(container);
+            else if (currentPage === 'versions') renderVersions(container);
+            else if (currentPage === 'ftp') renderFTP(container);
+            else if (currentPage === 'players') renderPlayers(container);
+            else if (currentPage === 'backups') renderBackups(container);
+            else if (currentPage === 'domains') renderDomains(container);
+            else if (currentPage === 'api') renderAPI(container);
+            else if (currentPage === 'tickets') renderTickets(container);
+            else if (currentPage === 'files') renderFiles(container);
+            else if (currentPage === 'billing') renderBilling(container);
+            else renderDashboard(container);
+        }
+        
+        function renderCreateServer(container) {
+            container.innerHTML = `<div class="card"><h2><i class="fas fa-plus-circle"></i> Crear Nuevo Servidor</h2><p>Configuración: Spigot 1.21.1</p>${serverInfo.ip ? `<div class="info-row"><strong>IP:</strong> ${serverInfo.ip} <button class="btn" onclick="copyText('${serverInfo.ip}')"><i class="fas fa-copy"></i> Copiar</button></div><div class="info-row"><strong>Puerto:</strong> ${serverInfo.port} <button class="btn" onclick="copyText('${serverInfo.port}')"><i class="fas fa-copy"></i> Copiar</button></div><div class="info-row"><strong>Conexión:</strong> ${serverInfo.connectionString} <button class="btn" onclick="copyText('${serverInfo.connectionString}')"><i class="fas fa-copy"></i> Copiar</button></div><p><span class="led ${serverData.status === 'online' ? 'led-green' : 'led-red'}"></span> Estado: ${serverData.status === 'online' ? 'Online' : 'Offline'}</p>` : `<p>No tienes un servidor creado aún.</p><button class="btn btn-primary" id="createServerBtn"><i class="fas fa-plus-circle"></i> Crear Servidor</button>`}</div>`;
+            if (!serverInfo.ip) document.getElementById('createServerBtn')?.addEventListener('click', createServer);
+        }
+        
+        function renderDashboard(container) {
+            container.innerHTML = `<div class="grid-3"><div class="card metric-card"><i class="fas fa-microchip"></i> ${t('cpu')}<div class="metric-value">${serverData.cpu.toFixed(2)}% / ∞</div><div class="progress-bar"><div class="progress-fill" style="width:${serverData.cpu}%"></div></div></div><div class="card metric-card"><i class="fas fa-memory"></i> ${t('memory')}<div class="metric-value">${serverData.memoryUsed.toFixed(2)} GB / ${serverData.memoryTotal} GB</div><div class="progress-bar"><div class="progress-fill" style="width:${(serverData.memoryUsed/serverData.memoryTotal)*100}%"></div></div></div><div class="card metric-card"><i class="fas fa-hard-drive"></i> ${t('disk')}<div class="metric-value">${serverData.diskUsed.toFixed(2)} MB / ${serverData.diskTotal} MB</div><div class="progress-bar"><div class="progress-fill" style="width:${(serverData.diskUsed/serverData.diskTotal)*100}%"></div></div></div></div><div class="grid-2"><div class="card"><i class="fas fa-chart-line"></i> Rendimiento<div style="height:200px"><canvas id="cpuChart"></canvas></div></div><div class="card"><i class="fas fa-server"></i> Server Info<div class="metric-value"><span class="server-status"><span class="led ${serverData.status === 'online' ? 'led-green' : 'led-red'}"></span> ${serverData.status === 'online' ? t('online') : t('offline')}</span></div><p><i class="fas fa-clock"></i> Uptime: <span id="uptimeDisplay">0h 0m 44s</span></p><p><i class="fas fa-globe"></i> ${serverData.hostname}</p><p><i class="fas fa-microchip"></i> ${t('node')}: ${serverData.nodeId}</p><p><i class="fas fa-code-branch"></i> ${serverData.version}</p><p><i class="fas fa-id-card"></i> ${serverData.serverId} <button class="btn" onclick="copyText('${serverData.serverId}')"><i class="fas fa-copy"></i></button></p></div></div><div class="card"><i class="fas fa-plug"></i> SFTP Details<p><i class="fas fa-server"></i> sftp://${serverData.sftp.host}:${serverData.sftp.port}</p><p><i class="fas fa-user"></i> ${serverData.sftp.user}</p><button class="btn" onclick="copyText('${serverData.sftp.user}')"><i class="fas fa-copy"></i> Copiar</button></div><div class="card"><i class="fas fa-power-off"></i> Controles<button class="btn btn-success" id="startBtn"><i class="fas fa-play"></i> ${t('start')}</button><button class="btn btn-danger" id="stopBtn"><i class="fas fa-stop"></i> ${t('stop')}</button><button class="btn btn-warning" id="restartBtn"><i class="fas fa-rotate-right"></i> ${t('restart')}</button></div>`;
+            const ctx = document.getElementById('cpuChart')?.getContext('2d');
+            if (ctx) { if (cpuChart) cpuChart.destroy(); cpuChart = new Chart(ctx, { type: 'line', data: { labels: ['13:00','13:15','13:30','13:45','14:00'], datasets: [{ label: 'CPU %', data: [5,8,7,9,8.5], borderColor: '#A78BFA', tension: 0.4, fill: true }] }, options: { responsive: true } }); }
+            startUptimeCounter();
+            document.getElementById('startBtn')?.addEventListener('click', () => { serverData.status = 'online'; addLog('info', 'Servidor iniciado manualmente'); saveServerState(); renderPage(); addConsoleMessage('> Servidor iniciado correctamente'); showNotification('Servidor Iniciado', 'El servidor se ha iniciado correctamente', 'success'); });
+            document.getElementById('stopBtn')?.addEventListener('click', () => { serverData.status = 'offline'; addLog('warning', 'Servidor detenido manualmente'); saveServerState(); renderPage(); addConsoleMessage('> Servidor detenido'); showNotification('Servidor Detenido', 'El servidor se ha detenido', 'warning'); });
+            document.getElementById('restartBtn')?.addEventListener('click', () => { addLog('info', 'Reiniciando servidor...'); addConsoleMessage('> Reiniciando servidor...'); showNotification('Reiniciando', 'El servidor se está reiniciando', 'info'); setTimeout(() => { addLog('info', 'Servidor reiniciado correctamente'); addConsoleMessage('> Servidor reiniciado correctamente'); showNotification('Servidor Reiniciado', 'El servidor se ha reiniciado correctamente', 'success'); }, 1500); });
+        }
+        
+        function renderConsole(container) {
+            container.innerHTML = `
+                <div class="console-premium">
+                    <div class="console-header">
+                        <div class="console-controls">
+                            <button class="btn btn-success" id="consoleStartBtn"><i class="fas fa-play"></i> ${t('start')}</button>
+                            <button class="btn btn-danger" id="consoleStopBtn"><i class="fas fa-stop"></i> ${t('stop')}</button>
+                            <button class="btn btn-warning" id="consoleRestartBtn"><i class="fas fa-rotate-right"></i> ${t('restart')}</button>
+                            <button class="btn" id="consoleClearBtn"><i class="fas fa-eraser"></i> Limpiar</button>
+                            <button class="btn" id="copyConsoleBtn"><i class="fas fa-copy"></i> Copiar</button>
+                        </div>
+                        <div class="server-indicator">
+                            <span class="led ${serverData.status === 'online' ? 'led-green' : 'led-red'}"></span>
+                            <span>${serverData.status === 'online' ? t('online') : t('offline')}</span>
+                            <span><i class="fas fa-microchip"></i> ${serverData.nodeId}</span>
+                        </div>
+                    </div>
+                    <div class="info-cards">
+                        <div class="info-card-premium">
+                            <h4><i class="fas fa-server"></i> SERVER INFO</h4>
+                            <p><i class="fas fa-circle" style="color: ${serverData.status === 'online' ? '#22C55E' : '#EF4444'}; font-size: 10px;"></i> Estado: ${serverData.status === 'online' ? 'Online' : 'Offline'}</p>
+                            <p><i class="fas fa-clock"></i> Uptime: ${Math.floor(serverData.uptimeSeconds/3600)}h ${Math.floor((serverData.uptimeSeconds%3600)/60)}m ${serverData.uptimeSeconds%60}s</p>
+                            <p><i class="fas fa-globe"></i> Host: ${serverData.hostname}</p>
+                            <p><i class="fas fa-microchip"></i> Nodo: ${serverData.nodeId}</p>
+                            <p><i class="fas fa-code-branch"></i> Versión: ${serverData.version}</p>
+                        </div>
+                        <div class="info-card-premium">
+                            <h4><i class="fas fa-plug"></i> SFTP DETAILS</h4>
+                            <p><i class="fas fa-server"></i> Servidor: ${serverData.sftp.host}:${serverData.sftp.port}</p>
+                            <p><i class="fas fa-user"></i> Usuario: ${serverData.sftp.user}</p>
+                            <p><i class="fas fa-lock"></i> Contraseña: ********</p>
+                            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                                <button class="btn" style="flex:1;" onclick="copyText('${serverData.sftp.user}')"><i class="fas fa-copy"></i> Copiar usuario</button>
+                                <button class="btn" style="flex:1;" onclick="copyText('sftp://${serverData.sftp.host}:${serverData.sftp.port}')"><i class="fas fa-copy"></i> Copiar dirección</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="terminal" id="terminal">
+                        <div class="terminal-output" id="termOut"></div>
+                        <div class="terminal-input-line">
+                            <span class="terminal-prompt"><i class="fas fa-chevron-right"></i></span>
+                            <input type="text" id="termInput" class="terminal-input" placeholder="Escribe un comando...">
+                        </div>
+                    </div>
+                    <div class="hosting-footer"><i class="fas fa-globe"></i> hosting-zenithox.vercel.app</div>
+                </div>`;
+            const termOut = document.getElementById('termOut');
+            if (consoleHistory.length === 0) termOut.innerHTML = '> Sistema listo. Escribe \'help\' para comandos.<br>';
+            else termOut.innerHTML = consoleHistory.join('');
+            document.getElementById('termInput')?.addEventListener('keypress', (e) => { if(e.key==='Enter') executeCommand(e.target.value); });
+            document.getElementById('consoleStartBtn')?.addEventListener('click', () => { serverData.status = 'online'; addLog('info', 'Servidor iniciado'); saveServerState(); addConsoleMessage('> Servidor iniciado correctamente'); renderPage(); showNotification('Servidor Iniciado', 'El servidor se ha iniciado correctamente', 'success'); });
+            document.getElementById('consoleStopBtn')?.addEventListener('click', () => { serverData.status = 'offline'; addLog('warning', 'Servidor detenido'); saveServerState(); addConsoleMessage('> Servidor detenido'); renderPage(); showNotification('Servidor Detenido', 'El servidor se ha detenido', 'warning'); });
+            document.getElementById('consoleRestartBtn')?.addEventListener('click', () => { addLog('info', 'Reiniciando servidor'); addConsoleMessage('> Reiniciando servidor...'); showNotification('Reiniciando', 'El servidor se está reiniciando', 'info'); setTimeout(() => { addLog('info', 'Servidor reiniciado'); addConsoleMessage('> Servidor reiniciado correctamente'); showNotification('Servidor Reiniciado', 'El servidor se ha reiniciado correctamente', 'success'); }, 1500); });
+            document.getElementById('consoleClearBtn')?.addEventListener('click', () => { consoleHistory = []; document.getElementById('termOut').innerHTML = '> Sistema listo. Escribe \'help\' para comandos.<br>'; });
+            document.getElementById('copyConsoleBtn')?.addEventListener('click', () => { copyText(consoleHistory.join('')); });
+        }
+        
+        function addConsoleMessage(msg) { const termOut = document.getElementById('termOut'); if (termOut) { termOut.innerHTML += msg + '<br>'; termOut.scrollTop = termOut.scrollHeight; } consoleHistory.push(msg + '<br>'); }
+        
+        function executeCommand(cmd) {
+            const out = document.getElementById('termOut'); if (!out) return;
+            out.innerHTML += `<span style="color:#A78BFA">$></span> ${cmd}<br>`;
+            const lowerCmd = cmd.toLowerCase().trim();
+            if (lowerCmd === 'help') out.innerHTML += 'Comandos: help, status, start, stop, restart, memory, players, version, logs, clear<br>';
+            else if (lowerCmd === 'status') out.innerHTML += `Servidor: ${serverData.status}<br>Uptime: ${Math.floor(serverData.uptimeSeconds/3600)}h ${Math.floor((serverData.uptimeSeconds%3600)/60)}m ${serverData.uptimeSeconds%60}s<br>Nodo: ${serverData.nodeId}<br>IP: ${serverInfo.ip || 'No asignada'}<br>Puerto: ${serverInfo.port || 'N/A'}<br>`;
+            else if (lowerCmd === 'start') { serverData.status = 'online'; addLog('info', 'Servidor iniciado por comando'); saveServerState(); out.innerHTML += '> Servidor iniciado correctamente<br>'; renderPage(); showNotification('Servidor Iniciado', 'El servidor se ha iniciado por comando', 'success'); }
+            else if (lowerCmd === 'stop') { serverData.status = 'offline'; addLog('warning', 'Servidor detenido por comando'); saveServerState(); out.innerHTML += '> Servidor detenido<br>'; renderPage(); showNotification('Servidor Detenido', 'El servidor se ha detenido por comando', 'warning'); }
+            else if (lowerCmd === 'restart') { addLog('info', 'Servidor reiniciado por comando'); out.innerHTML += '> Reiniciando servidor...<br>'; setTimeout(() => out.innerHTML += '> Servidor reiniciado correctamente<br>', 1000); }
+            else if (lowerCmd === 'memory') out.innerHTML += `RAM: ${serverData.memoryUsed.toFixed(2)}/${serverData.memoryTotal} GB (${Math.round((serverData.memoryUsed/serverData.memoryTotal)*100)}%)<br>`;
+            else if (lowerCmd === 'players') out.innerHTML += `Jugadores: ${playersOnline.map(p=>p.name).join(', ') || 'Ninguno'}<br>`;
+            else if (lowerCmd === 'version') out.innerHTML += `Versión: ${serverData.version}<br>`;
+            else if (lowerCmd === 'logs') { out.innerHTML += `Últimos 5 logs:<br>`; serverLogs.slice(0,5).forEach(l => { out.innerHTML += `[${new Date(l.timestamp).toLocaleTimeString()}] ${l.message}<br>`; }); }
+            else if (lowerCmd === 'clear') { out.innerHTML = '> Consola limpiada<br>'; consoleHistory = ['> Consola limpiada<br>']; }
+            else out.innerHTML += `Comando no reconocido: ${cmd}<br>`;
+            document.getElementById('termInput').value = ''; out.scrollTop = out.scrollHeight;
+        }
+        
+        function renderServerLogs(container) { let html = `<div class="card"><i class="fas fa-scroll"></i> ${t('server_logs')}<div style="max-height: 500px; overflow-y: auto;"><button class="btn" id="clearLogsBtn"><i class="fas fa-trash-can"></i> Limpiar Logs</button><div id="logsList"></div></div></div>`; container.innerHTML = html; const list = document.getElementById('logsList'); serverLogs.forEach(l => { const date = new Date(l.timestamp).toLocaleString(); const icon = l.type === 'error' ? 'fa-circle-exclamation' : (l.type === 'warning' ? 'fa-triangle-exclamation' : 'fa-circle-info'); const color = l.type === 'error' ? '#EF4444' : (l.type === 'warning' ? '#F59E0B' : '#10B981'); list.innerHTML += `<div class="log-entry"><i class="fas ${icon}" style="color: ${color};"></i> [${date}] ${l.message}</div>`; }); document.getElementById('clearLogsBtn')?.addEventListener('click', () => { serverLogs = []; localStorage.setItem('zenithox_logs', JSON.stringify(serverLogs)); renderServerLogs(container); }); }
+        function renderPlugins(container) { let html = `<div class="card"><i class="fas fa-puzzle-piece"></i> ${t('plugins')} (${pluginsList.length})<div id="pluginsList"></div></div>`; container.innerHTML = html; const list = document.getElementById('pluginsList'); pluginsList.forEach(p => { list.innerHTML += `<div class="plugin-card"><i class="fas ${p.icon}"></i> <strong>${p.name}</strong> v${p.version}<br><small>${p.desc}</small><br><button class="btn">${p.active ? 'Desactivar' : 'Activar'}</button></div>`; }); }
+        function renderWorlds(container) { let html = `<div class="card"><i class="fas fa-globe"></i> ${t('worlds')}<div id="worldsGrid"></div></div>`; container.innerHTML = html; const grid = document.getElementById('worldsGrid'); worldsList.forEach(w => { grid.innerHTML += `<div class="world-card"><img src="${w.portada}" class="world-portada"><div><strong>${w.name}</strong></div><div>${w.size} | ${w.players} jugadores</div><button class="btn"><i class="fas fa-trash-can"></i></button></div>`; }); }
+        function renderFTP(container) { container.innerHTML = `<div class="card"><i class="fas fa-folder-open"></i> ${t('ftp')}<p>Servidor: ${serverData.sftp.host}:${serverData.sftp.port}</p><p>Usuario: ${serverData.sftp.user}</p><button class="btn" onclick="copyText('${serverData.sftp.user}')"><i class="fas fa-copy"></i> Copiar</button></div>`; }
+        function renderProfile(container) { container.innerHTML = `<div class="card"><i class="fas fa-user-circle"></i> ${t('profile')}<div><img id="avatarPreview" src="${userProfile.avatar || ''}" style="width:100px;height:100px;border-radius:50%;"><input type="file" id="avatarUpload" accept="image/*"><br><label>Usuario:</label><input type="text" id="profileUsername" value="${userProfile.username}"><br><button class="btn btn-primary" id="saveProfileBtn">${t('save')}</button></div></div>`; document.getElementById('saveProfileBtn')?.addEventListener('click', () => { userProfile.username = document.getElementById('profileUsername').value; alert('Perfil guardado'); }); }
+        function renderVersions(container) { container.innerHTML = `<div class="card"><i class="fas fa-code-branch"></i> ${t('versions')}<br>Actual: ${serverData.version}<br><select id="versionSelect"><option>Paper 1.21.4</option><option>Paper 1.21</option></select><button class="btn btn-primary" id="changeVersionBtn">Instalar</button></div>`; document.getElementById('changeVersionBtn')?.addEventListener('click', () => { serverData.version = document.getElementById('versionSelect').value; renderPage(); }); }
+        function renderPlayers(container) { let html = `<div class="card"><i class="fas fa-users"></i> ${t('players')} (${playersOnline.length})<div id="playersList"></div></div>`; container.innerHTML = html; const list = document.getElementById('playersList'); playersOnline.forEach(p => { list.innerHTML += `<div class="plugin-card"><i class="fas fa-user"></i> ${p.name} - Ping: ${p.ping}ms<button class="btn">Kick</button></div>`; }); }
+        function renderBackups(container) { let html = `<div class="card"><i class="fas fa-database"></i> ${t('backups')}<div id="backupsList"></div><button class="btn btn-primary" id="createBackupBtn">Crear Backup</button></div>`; container.innerHTML = html; const list = document.getElementById('backupsList'); backups.forEach(b => { list.innerHTML += `<div class="plugin-card">${b.date} - ${b.size} - ${b.type}<button class="btn">Restaurar</button></div>`; }); document.getElementById('createBackupBtn')?.addEventListener('click', () => { backups.push({ date: new Date().toLocaleDateString(), size: '2.2 GB', type: 'manual' }); renderBackups(container); }); }
+        function renderDomains(container) { container.innerHTML = `<div class="card"><i class="fas fa-globe"></i> Dominios & IPs<p>IP: ${serverData.ipPublica}</p><p>Puerto: ${serverData.puertoMC}</p><p>Dominio: ${serverData.dominio}</p><input type="text" id="customDomain" placeholder="tu-dominio.com"><button class="btn btn-primary" id="setDomainBtn">Aplicar</button></div>`; document.getElementById('setDomainBtn')?.addEventListener('click', () => { serverData.dominio = document.getElementById('customDomain').value; renderDomains(container); }); }
+        function renderAPI(container) { let html = `<div class="card"><i class="fas fa-key"></i> API Keys<div id="apiKeysList"></div><button class="btn btn-primary" id="generateApiKey">Generar</button></div>`; container.innerHTML = html; const list = document.getElementById('apiKeysList'); apiKeys.forEach(k => { list.innerHTML += `<div class="plugin-card">${k.key} - ${k.created}<button class="btn">Revocar</button></div>`; }); document.getElementById('generateApiKey')?.addEventListener('click', () => { apiKeys.push({ key: 'zk_' + Math.random().toString(36).substr(2, 8), created: new Date().toLocaleDateString() }); renderAPI(container); }); }
+        function renderTickets(container) { let html = `<div class="card"><i class="fas fa-ticket"></i> Tickets<div id="ticketsList"></div><button class="btn btn-primary">Nuevo Ticket</button></div>`; container.innerHTML = html; const list = document.getElementById('ticketsList'); tickets.forEach(t => { list.innerHTML += `<div class="plugin-card">Ticket #${t.id}: ${t.subject} - ${t.status}</div>`; }); }
+        function renderFiles(container) { container.innerHTML = `<div class="card"><i class="fas fa-folder-tree"></i> Files<p>/home/server/</p><div>server.properties <button class="btn">Editar</button></div></div>`; }
+        function renderBilling(container) { container.innerHTML = `<div class="card"><i class="fas fa-credit-card"></i> Billing<p>Plan: ${serverData.memoryTotal} GB - $9.99/mes</p><button class="btn btn-primary">Actualizar método</button></div>`; }
+        
+        function startUptimeCounter() { if(uptimeInterval) clearInterval(uptimeInterval); uptimeInterval = setInterval(() => { if (serverData.status === 'online') { serverData.uptimeSeconds++; localStorage.setItem('zenithox_uptime', serverData.uptimeSeconds); } const d = document.getElementById('uptimeDisplay'); if(d) d.innerText = `${Math.floor(serverData.uptimeSeconds/3600)}h ${Math.floor((serverData.uptimeSeconds%3600)/60)}m ${serverData.uptimeSeconds%60}s`; }, 1000); }
+        window.copyText = (t) => { navigator.clipboard.writeText(t); alert('Copiado'); };
+        
+        const menuBtn = document.getElementById('menuToggle'), sidebar = document.getElementById('sidebar'), overlay = document.getElementById('sidebarOverlay'), closeSidebarBtn = document.getElementById('closeSidebarBtn');
+        function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); }
+        menuBtn.onclick = () => { sidebar.classList.add('open'); overlay.classList.add('active'); };
+        closeSidebarBtn.onclick = closeSidebar; overlay.onclick = closeSidebar;
+        document.querySelectorAll('.sidebar-item').forEach(el => { el.onclick = () => { currentPage = el.dataset.page || 'dashboard'; localStorage.setItem('zenithox_current_page', currentPage); renderPage(); closeSidebar(); }; });
+        document.getElementById('themeToggle')?.addEventListener('click', () => { document.body.classList.toggle('light'); });
+        
+        const langBtn = document.getElementById('langSelectorBtn'), langDropdown = document.getElementById('langDropdown');
+        langBtn.onclick = (e) => { e.stopPropagation(); langDropdown.classList.toggle('active'); };
+        document.querySelectorAll('.lang-option').forEach(opt => { opt.onclick = () => { currentLang = opt.dataset.lang; updateUILanguage(); langDropdown.classList.remove('active'); }; });
+        document.addEventListener('click', () => langDropdown.classList.remove('active'));
+        document.getElementById('avatarBtn')?.addEventListener('click', () => { currentPage = 'profile'; localStorage.setItem('zenithox_current_page', 'profile'); renderPage(); closeSidebar(); });
+        
+        const canvas = document.getElementById('particles-canvas'), ctx = canvas.getContext('2d'); let width, height, particles = [];
+        function initParticles() { particles = []; for(let i=0;i<100;i++) particles.push({ x:Math.random()*width, y:Math.random()*height, radius:Math.random()*2+1, vx:(Math.random()-0.5)*0.2, vy:(Math.random()-0.5)*0.2, color:`rgba(139,92,246,${Math.random()*0.4+0.2})` }); }
+        function drawParticles() { ctx.clearRect(0,0,width,height); particles.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,p.radius,0,Math.PI*2); ctx.fillStyle=p.color; ctx.fill(); p.x+=p.vx; p.y+=p.vy; if(p.x<0) p.x=width; if(p.x>width) p.x=0; if(p.y<0) p.y=height; if(p.y>height) p.y=0; }); requestAnimationFrame(drawParticles); }
+        function resizeCanvas() { width=window.innerWidth; height=window.innerHeight; canvas.width=width; canvas.height=height; initParticles(); }
+        window.addEventListener('resize', resizeCanvas); resizeCanvas(); drawParticles();
+        
+        startMetricsSimulation();
+        loadServerFromFirestore().then(() => renderPage());
+    </script>
+</body>
+</html>
