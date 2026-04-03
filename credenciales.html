@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credenciales de tu Servidor - Zenithox</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0A0C15, #121623);
+            color: #EFF3F8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .card {
+            background: rgba(18, 22, 35, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .logo {
+            margin-bottom: 30px;
+        }
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #A78BFA, #6366F1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .credentials-box {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+ {
+            margin: 16px 0;
+            text-align: left;
+        }
+        .credential-label {
+            font-size: 14px;
+            color: #A78BFA;
+            margin-bottom: 6px;
+        }
+        .credential-value {
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            word-break: break-all: 16px;
+            color: #EFF3F8;
+        }
+        .copy-btn {
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            color: white;
+            padding: 8px 16px;
+            border0px;
+            cursor: pointer;
+            margin-top: 12px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .copy-btn:hover {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+        }
+        .access-btn {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        .access-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+        .alert {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(185, 129, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #10B981;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">
+            <h1>ZENITHOX</h1>
+            <p style="color: #A0A5C0;">Tu servidor está listo para usar</p>
+        </div>
+
+        <div class="credentials-box">
+            <h2 style="margin-bottom: 20px; color: #A78BFA;">Credenciales de Acceso</h2>
+
+            <div class="credential-item">
+                <div class="credential-label">Usuario</div>
+                <div class="credential-value" id="username">cliente_12345</div>
+                <button class="copy-btn" onclick="copyText('cliente_12345')">Copiar</button>
+            </div>
+
+            <div class="credential-item">
+                <div class="credential-label">Contraseña</div>
+                <div class="credential-value" id="password">pass_abc123xyz</div>
+                <button class="copy-btn" onclick="copyText('pass_abc123xyz')">Copiar</button>
+            </div>
+
+            <div class="credential-item">
+                <div class="credential-label">Panel de Administración</div>
+                <div class="credential-value" id="panel-url">https://panel.cliente123.zenithox.com</div>
+                <button class="copy-btn" onclick="copyText('https://panel.cliente123.zenithox.com')">Copiar</button>
+            </div>
+
+            <div class="credential-item">
+                <div class="credential-label">IP Pública del Servidor</div>
+                <div class="credential-value" id="server-ip">103.90.160.107</div>
+                <button class="copy-btn" onclick="copyText('103.90.160.107')">Copiar</button>
+            </div>
+
+            <div class="credential-item">
+                <div class="credential Minecraft</div>
+                <div class="credential-value" id="server-port">25565</div>
+                <button class="copy-btn" onclick="copyText('25565')">Copiar</button>
+            </div>
+        </div>
+
+        <a href="login-panel.html" class="access-btn">
+            Acceder al Panel de Administración
+        </a>
+
+        <div class="alert">
+            <strong>✓ ¡Listo!</strong> Tus credenciales han sido generadas. Guárdalas en un lugar seguro.
+        </div>
+    </div>
+
+    <script>
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copiado al portapapeles: ' + text);
+            });
+        }
+
+        // En un sistema real, estos datos vendrían de un backend o de la URL
+        // Por ejemplo: ?user=cliente123&pass=contraseña123
+        const urlParams = new URLSearchParams(window.location.search);
+        const user = urlParams.get('user') || 'cliente_12345';
+        const pass = urlParams.get('pass') || 'pass_abc123xyz';
+        const serverIp = urlParams.get('ip') || '103.90.160.107';
+        const serverPort = urlParams.get('port') || '25565';
+
+        document.getElementById('username').textContent = user;
+        document.getElementById('password').textContent = pass;
+        document.getElementById('server-ip').textContent = serverIp;
+        document.getElementById('server-port').textContent = serverPort;
+        document.getElementById('panel-url').textContent = `https://panel.${user}.zenithox.com`;
+    </script>
+</body>
+</html>
