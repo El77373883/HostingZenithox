@@ -1,1 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Felicidades! | Zenithox</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0A0C15;
+            color: #EFF3F8;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Confeti (gorritos) */
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #FFD700; /* dorado */
+            border-radius: 50%;
+            animation: fall linear forwards;
+            z-index: 1;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 40px 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            min-height: 00vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6, #10B981);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 20px rgba(99,102,241,0.5); }
+            50% { text-shadow: 0 0 40px rgba(139,92,246,0.8); }
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #A78BFA;
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .message {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+            font-size: 1.1rem;
+            text-align: left;
+            max-width: 400px;
+        }
+
+        .message strong {
+            color: #10B981;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #6B7280;
+            text-align: center;
+        }
+
+        /* Iconos animados */
+        .celebration-icon {
+            font-size: 4rem;
+            margin: 20px 0;
+            animation: bounce 1.2s infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-20px); }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .subtitle { font-size: 1.1rem; }
+            .container { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="celebration-icon">
+            🎉
+        </div>
+
+        <h1>¡Felicidades por tu compra!</h1>
+        <p class="subtitle">Tu servidor está listo para usar</p>
+
+        <div class="message">
+            <strong>Gracias por tu compra — Profesional Premium</strong><br>
+            Tu servidor ya está desplegado y listo. ¡Disfrútalo!
+        </div>
+
+        <button class="btn" onclick="goToPanel()">
+            <i class="fas fa-door-open"></i> Acceder al Panel de Administración
+        </button>
+
+        <div class="footer">
+            Zenithox Hosting • Seguro, rápido y profesional
+        </div>
+    </div>
+
+    <script>
+        // Generar confeti (gorritos)
+        function createConfetti() {
+            const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
+            const container = document.body;
+
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.width = `${Math.random() * 12 + 8}px`;
+                confetti.style.height = confetti.style.width;
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                confetti.style.animationDelay = `${Math.random() * 1}s`;
+                container.appendChild(confetti);
+            }
+        }
+
+        // Redirigir al panel
+        function goToPanel() {
+            // Opción 1: Ir directo al login-panel.html (recomendado)
+            window.location.href = 'login-panel.html';
+
+            // Opción 2: Si quieres que vaya a credenciales.html primero:
+            // window.location.href = 'credenciales.html';
+        }
+
+        // Iniciar al cargar
+        window.onload = () => {
+            createConfetti();
+        };
+    </script>
+</body>
+</html>
+
 
