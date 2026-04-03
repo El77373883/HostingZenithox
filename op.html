@@ -25,7 +25,7 @@ min-height:100vh;
 overflow-x:hidden;
 }
 
-/* particles */
+/* PARTICLES */
 
 #particles-js{
 position:fixed;
@@ -34,7 +34,7 @@ height:100%;
 z-index:-3;
 }
 
-/* lightning */
+/* LIGHTNING */
 
 #lightning{
 position:fixed;
@@ -73,7 +73,7 @@ animation:flash .5s linear;
 
 }
 
-/* header */
+/* HEADER */
 
 .header{
 display:flex;
@@ -96,7 +96,7 @@ color:white;
 border-radius:6px;
 }
 
-/* hero */
+/* HERO */
 
 .hero{
 text-align:center;
@@ -110,14 +110,12 @@ animation:float 5s infinite ease-in-out;
 }
 
 @keyframes float{
-
 0%{transform:translateY(0)}
 50%{transform:translateY(-12px)}
 100%{transform:translateY(0)}
-
 }
 
-/* layout */
+/* LAYOUT */
 
 .container{
 max-width:1200px;
@@ -135,7 +133,7 @@ border-radius:14px;
 border:1px solid rgba(255,255,255,.05);
 }
 
-/* plans */
+/* PLANS */
 
 .plans{
 display:grid;
@@ -163,7 +161,7 @@ border-color:#8b5cf6;
 background:#1e293b;
 }
 
-/* sliders */
+/* SLIDERS */
 
 .slider{
 width:100%;
@@ -175,7 +173,7 @@ margin-bottom:6px;
 opacity:.8;
 }
 
-/* inputs */
+/* INPUTS */
 
 .input{
 width:100%;
@@ -187,7 +185,7 @@ color:white;
 margin-bottom:10px;
 }
 
-/* payments */
+/* PAYMENTS */
 
 .payments{
 display:grid;
@@ -209,7 +207,7 @@ border-color:#8b5cf6;
 background:#1e293b;
 }
 
-/* buttons */
+/* BUTTONS */
 
 button{
 padding:14px;
@@ -231,7 +229,7 @@ margin-top:15px;
 background:linear-gradient(135deg,#7c3aed,#6366f1);
 }
 
-/* summary */
+/* SUMMARY */
 
 .summary-item{
 display:flex;
@@ -245,6 +243,38 @@ justify-content:space-between;
 font-size:20px;
 font-weight:700;
 margin-top:10px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width:900px){
+
+.container{
+grid-template-columns:1fr;
+padding:20px;
+gap:20px;
+}
+
+.plans{
+grid-template-columns:repeat(3,1fr);
+}
+
+}
+
+@media (max-width:500px){
+
+.plans{
+grid-template-columns:repeat(2,1fr);
+}
+
+.hero h1{
+font-size:26px;
+}
+
+.container{
+padding:15px;
+}
+
 }
 
 </style>
@@ -383,7 +413,7 @@ margin-top:10px;
 
 <script>
 
-/* particles */
+/* PARTICLES */
 
 particlesJS("particles-js",{
 particles:{
@@ -394,7 +424,7 @@ line_linked:{enable:true}
 }
 })
 
-/* lightning */
+/* LIGHTNING */
 
 function createLightning(){
 
@@ -417,7 +447,7 @@ createLightning()
 }
 },1200)
 
-/* update config */
+/* UPDATE */
 
 function update(){
 
