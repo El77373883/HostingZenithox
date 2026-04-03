@@ -3,262 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Zenithox Minecraft Hosting</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-
 <style>
-
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-
-body{
-background:#020617;
-color:white;
-min-height:100vh;
-overflow-x:hidden;
-}
-
-/* PROMO BAR */
-
-.promo{
-background:linear-gradient(90deg,#7c3aed,#6366f1);
-text-align:center;
-padding:10px;
-font-size:14px;
-display:flex;
-justify-content:center;
-align-items:center;
-gap:10px;
-}
-
-.copy-btn{
-background:white;
-color:#000;
-border:none;
-padding:5px 10px;
-border-radius:6px;
-cursor:pointer;
-font-weight:600;
-}
-
-/* animated title */
-
-.animated-title{
-font-size:40px;
-font-weight:700;
-background:linear-gradient(90deg,#7c3aed,#22c55e,#38bdf8,#7c3aed);
-background-size:300%;
--webkit-background-clip:text;
-color:transparent;
-animation:colorFlow 6s linear infinite;
-}
-
-@keyframes colorFlow{
-0%{background-position:0%}
-100%{background-position:300%}
-}
-
-/* minecraft logo */
-
-.mc-logo{
-width:160px;
-margin-top:20px;
-animation:floatLogo 4s ease-in-out infinite;
-}
-
-@keyframes floatLogo{
-0%{transform:translateY(0)}
-50%{transform:translateY(-12px)}
-100%{transform:translateY(0)}
-}
-
-/* particles */
-
-#particles-js{
-position:fixed;
-width:100%;
-height:100%;
-z-index:-3;
-}
-
-/* lightning */
-
-#lightning{
-position:fixed;
-width:100%;
-height:100%;
-top:0;
-left:0;
-pointer-events:none;
-z-index:-2;
-}
-
-.bolt{
-position:absolute;
-top:-20%;
-width:3px;
-height:140%;
-background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.9),rgba(255,255,255,0));
-opacity:0;
-animation:flash .5s linear;
-}
-
-@keyframes flash{
-0%{opacity:0}
-10%{opacity:1}
-20%{opacity:.4}
-30%{opacity:1}
-100%{opacity:0}
-}
-
-/* header */
-
-.header{
-display:flex;
-justify-content:space-between;
-padding:20px 40px;
-border-bottom:1px solid rgba(255,255,255,.05);
-}
-
-.logo{
-font-size:22px;
-font-weight:700;
-color:#8b5cf6;
-}
-
-/* layout */
-
-.container{
-max-width:1200px;
-margin:auto;
-padding:40px;
-display:grid;
-grid-template-columns:1fr 420px;
-gap:40px;
-}
-
-.card{
-background:#0f172a;
-padding:30px;
-border-radius:14px;
-border:1px solid rgba(255,255,255,.05);
-}
-
-/* dropdown plans */
-
-.dropdown{
-margin-bottom:20px;
-}
-
-.plan-list{
-display:none;
-margin-top:10px;
-grid-template-columns:repeat(3,1fr);
-gap:8px;
-}
-
-.plan{
-background:#020617;
-padding:10px;
-text-align:center;
-border-radius:8px;
-cursor:pointer;
-}
-
-.plan:hover{
-background:#1e293b;
-}
-
-/* sliders */
-
-.slider{
-width:100%;
-margin-bottom:15px;
-}
-
-.slider-value{
-margin-bottom:6px;
-opacity:.8;
-}
-
-/* inputs */
-
-.input{
-width:100%;
-padding:12px;
-border:none;
-background:#020617;
-border-radius:8px;
-color:white;
-margin-bottom:10px;
-}
-
-/* payments */
-
-.payments{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-}
-
-.payment{
-background:#020617;
-padding:12px;
-border-radius:8px;
-cursor:pointer;
-text-align:center;
-border:2px solid transparent;
-}
-
-.payment.active{
-border-color:#8b5cf6;
-background:#1e293b;
-}
-
-/* buttons */
-
-button{
-padding:14px;
-border-radius:10px;
-border:none;
-background:#111827;
-color:white;
-cursor:pointer;
-}
-
-.primary{
-width:100%;
-margin-top:15px;
-background:linear-gradient(135deg,#7c3aed,#6366f1);
-}
-
-.refund{
-margin-top:20px;
-font-size:13px;
-opacity:.8;
-text-align:center;
-}
-
-/* responsive */
-
-@media (max-width:900px){
-
-.container{
-grid-template-columns:1fr;
-padding:20px;
-}
-
-.plan-list{
-grid-template-columns:repeat(2,1fr);
-}
-
-}
-
+body{background:#020617;color:white;min-height:100vh;overflow-x:hidden}
+.promo{background:linear-gradient(90deg,#7c3aed,#6366f1);text-align:center;padding:10px;font-size:14px;display:flex;justify-content:center;align-items:center;gap:10px}
+.copy-btn{background:white;color:#000;border:none;padding:5px 10px;border-radius:6px;cursor:pointer;font-weight:600}
+.animated-title{font-size:40px;font-weight:700;background:linear-gradient(90deg,#7c3aed,#22c55e,#38bdf8,#7c3aed);background-size:300%;-webkit-background-clip:text;color:transparent;animation:colorFlow 6s linear infinite}
+@keyframes colorFlow{0%{background-position:0%}100%{background-position:300%}}
+.mc-logo{width:160px;margin-top:20px;animation:floatLogo 4s ease-in-out infinite}
+@keyframes floatLogo{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
+#particles-js{position:fixed;width:100%;height:100%;z-index:-3}
+#lightning{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;z-index:-2}
+.bolt{position:absolute;top:-20%;width:3px;height:140%;background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.9),rgba(255,255,255,0));opacity:0;animation:flash .5s linear}
+@keyframes flash{0%{opacity:0}10%{opacity:1}20%{opacity:.4}30%{opacity:1}100%{opacity:0}}
+.header{display:flex;justify-content:space-between;padding:20px 40px;border-bottom:1px solid rgba(255,255,255,.05)}
+.logo{font-size:22px;font-weight:700;color:#8b5cf6}
+.container{max-width:900px;margin:auto;padding:40px}
+.card{background:#0f172a;padding:30px;border-radius:14px;border:1px solid rgba(255,255,255,.05)}
+.input{width:100%;padding:12px;border:none;background:#020617;border-radius:8px;color:white;margin-bottom:10px}
+.payments{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.payment{background:#020617;padding:12px;border-radius:8px;cursor:pointer;text-align:center;border:2px solid transparent;transition:.2s}
+.payment:hover{background:#1e293b}
+.payment.active{border-color:#8b5cf6;background:#1e293b}
+button{padding:14px;border-radius:10px;border:none;background:#111827;color:white;cursor:pointer}
+.primary{width:100%;margin-top:15px;background:linear-gradient(135deg,#7c3aed,#6366f1)}
+.refund{margin-top:20px;font-size:13px;opacity:.8;text-align:center}
+@media (max-width:900px){.container{padding:20px}}
 </style>
 </head>
-
 <body>
 
 <div class="promo">
@@ -274,88 +49,35 @@ grid-template-columns:repeat(2,1fr);
 </div>
 
 <div style="text-align:center;padding:50px 20px">
-
 <h1 class="animated-title">Zenithox Minecraft Hosting</h1>
-
 <img class="mc-logo" src="https://pngimg.com/uploads/minecraft/minecraft_PNG7.png">
-
 </div>
 
 <div class="container">
 
 <div class="card">
 
-<h3>Quick Plans</h3>
-
-<div class="dropdown">
-
-<button onclick="togglePlans()">Seleccionar Plan</button>
-
-<div id="planList" class="plan-list">
-
-<div class="plan">1GB</div>
-<div class="plan">2GB</div>
-<div class="plan">4GB</div>
-<div class="plan">6GB</div>
-<div class="plan">8GB</div>
-<div class="plan">10GB</div>
-<div class="plan">12GB</div>
-<div class="plan">16GB</div>
-<div class="plan">32GB</div>
-
-</div>
-
-</div>
-
-<div class="slider-value">RAM <span id="ramValue">4</span>GB</div>
-<input id="ram" type="range" min="1" max="32" value="4" class="slider">
-
-<div class="slider-value">CPU <span id="cpuValue">2</span></div>
-<input id="cpu" type="range" min="1" max="16" value="2" class="slider">
-
-<div class="slider-value">Storage <span id="storageValue">40</span>GB</div>
-<input id="storage" type="range" min="20" max="500" value="40" step="20" class="slider">
-
-<h3>Servers</h3>
-
-<select id="servers" class="input">
-<option value="1">1 Server</option>
-<option value="2">2 Servers</option>
-</select>
-
 <h3>Customer</h3>
-
 <input class="input" placeholder="Full Name">
 <input class="input" placeholder="Email">
 
 <h3>Payment</h3>
-
 <div class="payments">
-
 <div class="payment">Card</div>
 <div class="payment">PayPal</div>
 <div class="payment">Apple Pay</div>
 <div class="payment">Google Pay</div>
 <div class="payment">Gift Card</div>
 <div class="payment">Balance</div>
-
 </div>
-
-</div>
-
-<div class="card">
 
 <h3>Order Summary</h3>
-
-<p>RAM: <span id="sumRam">4GB</span></p>
-<p>CPU: <span id="sumCpu">2</span></p>
-<p>Storage: <span id="sumStorage">40GB</span></p>
-<p>Servers: <span id="sumServers">1</span></p>
-
-<p><b>Price: <span id="price">$0</span></b></p>
+<p>Producto: Servidor Minecraft</p>
+<p>Plan: Zenithox Premium</p>
+<p>Duración: 1 Mes</p>
+<p><b>Price: $0 (modo demo)</b></p>
 
 <input id="coupon" class="input" placeholder="Discount Code">
-
 <button onclick="applyCoupon()">Apply Code</button>
 
 <button class="primary" onclick="checkout()">Create Server</button>
@@ -369,76 +91,15 @@ Si no estás satisfecho con nuestro servicio puedes solicitar un reembolso dentr
 </div>
 
 <script>
-
 particlesJS("particles-js",{particles:{number:{value:80},size:{value:3},move:{speed:2},line_linked:{enable:true}}})
-
-function createLightning(){
-let bolt=document.createElement("div")
-bolt.className="bolt"
-bolt.style.left=Math.random()*100+"%"
-document.getElementById("lightning").appendChild(bolt)
-setTimeout(()=>{bolt.remove()},500)
-}
-
+function createLightning(){let bolt=document.createElement("div");bolt.className="bolt";bolt.style.left=Math.random()*100+"%";document.getElementById("lightning").appendChild(bolt);setTimeout(()=>{bolt.remove()},500)}
 setInterval(()=>{if(Math.random()<0.5){createLightning()}},1200)
 
-function togglePlans(){
-let list=document.getElementById("planList")
-list.style.display=list.style.display==="grid"?"none":"grid"
-}
+function copyCode(){navigator.clipboard.writeText("FIRST10");alert("Código copiado")}
+function applyCoupon(){let code=document.getElementById("coupon").value.toUpperCase();if(code==="FIRST10"){alert("10% discount applied")}else{alert("Invalid code")}}
+function checkout(){alert("Pago procesado (modo demo)")}
 
-document.querySelectorAll(".plan").forEach(p=>{
-p.onclick=()=>{
-document.getElementById("ram").value=parseInt(p.innerText)
-update()
-document.getElementById("planList").style.display="none"
-}
-})
-
-function update(){
-
-let ram=document.getElementById("ram").value
-let cpu=document.getElementById("cpu").value
-let storage=document.getElementById("storage").value
-let servers=document.getElementById("servers").value
-
-document.getElementById("ramValue").innerText=ram
-document.getElementById("cpuValue").innerText=cpu
-document.getElementById("storageValue").innerText=storage
-
-document.getElementById("sumRam").innerText=ram+"GB"
-document.getElementById("sumCpu").innerText=cpu
-document.getElementById("sumStorage").innerText=storage+"GB"
-document.getElementById("sumServers").innerText=servers
-
-}
-
-document.querySelectorAll(".slider").forEach(s=>s.oninput=update)
-document.getElementById("servers").onchange=update
-
-function copyCode(){
-navigator.clipboard.writeText("FIRST10")
-alert("Código copiado")
-}
-
-function applyCoupon(){
-
-let code=document.getElementById("coupon").value.toUpperCase()
-
-if(code==="FIRST10"){
-alert("10% discount applied")
-}else{
-alert("Invalid code")
-}
-
-}
-
-function checkout(){
-alert("Server created in TEST MODE ($0)")
-}
-
-update()
-
+document.querySelectorAll(".payment").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".payment").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}})
 </script>
 
 </body>
