@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Zenithox | Enterprise Server Management Console</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #60a5fa;
+            --secondary: #8b5cf6;
+            --secondary-dark: #7c3aed;
+            --success: #10b981;
+            --success-dark: #059669;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --danger-dark: #dc2626;
+            --dark-bg: #0a0c10;
+            --dark-card: #111318;
+            --dark-elevated: #1a1d24;
+            --dark-hover: #252a33;
+            --border: rgba(59, 130, 246, 0.15);
+            --border-light: rgba(255, 255, 255, 0.05);
+            --text: #e2e8f0;
+            --text-muted: #6c757d;
+            --text-light: #a0aec0;
+            --glass: rgba(17, 19, 24, 0.95);
+            --glass-light: rgba(26, 29, 36, 0.8);
+            --sidebar-width: 280px;
+            --sidebar-collapsed: 80px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.5); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-card);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed);
+        }
+
+        .sidebar.collapsed .sidebar-header h2,
+        .sidebar.collapsed .nav-item span,
+        .sidebar.collapsed .user-details,
+        .sidebar.collapsed .sidebar-footer .btn-logout span {
+            display: none;
+        }
+
+        .sidebar.collapsed .nav-item {
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .sidebar.collapsed .user-info {
+            justify-content: center;
+        }
+
+        .sidebar.collapsed .btn-logout {
+            justify-content: center;
+        }
+
+        /* Toggle Button */
+        .menu-toggle {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            z-index: 1001;
+            background: var(--dark-elevated);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .menu-toggle svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text);
+        }
+
+        .menu-toggle:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .menu-toggle:hover svg {
+            stroke: white;
+        }
+
+        /* Sidebar Header */
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        /* Navigation */
+        .sidebar-nav {
+            padding: 0 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.85rem 1rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            stroke-width: 1.5;
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--text);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            color: var(--primary);
+            border-left: 2px solid var(--primary);
+        }
+
+        /* User Section */
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            background: rgba(10, 12, 16, 0.95);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: var(--dark-elevated);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .user-info:hover {
+            background: var(--dark-hover);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .user-email {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 0.75rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 10px;
+            color: #f87171;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--danger);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .sidebar.collapsed ~ .main-content {
+            margin-left: var(--sidebar-collapsed);
+        }
+
+        /* Header */
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+            animation: slideInLeft 0.5s ease;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text), var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .server-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1.25rem;
+            background: var(--dark-elevated);
+            border-radius: 100px;
+            border: 1px solid var(--border);
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: glowPulse 2s infinite;
+        }
+
+        .status-indicator.running {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            animation: statusPulse 1.5s infinite;
+        }
+
+        .status-indicator.stopped {
+            background: var(--danger);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--dark-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .stat-unit {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .stat-change {
+            font-size: 0.7rem;
+            color: var(--success);
+        }
+
+        /* Server Control Cards */
+        .control-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-card {
+            background: var(--dark-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .control-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .control-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .control-card:hover::before {
+            left: 100%;
+        }
+
+        .control-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 1rem;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .control-card.start .control-icon { background: rgba(16, 185, 129, 0.1); }
+        .control-card.stop .control-icon { background: rgba(239, 68, 68, 0.1); }
+        .control-card.restart .control-icon { background: rgba(245, 158, 11, 0.1); }
+
+        .control-title {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .control-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Console */
+        .console-wrapper {
+            background: var(--dark-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.6s ease;
+        }
+
+        .console-header {
+            padding: 1rem 1.5rem;
+            background: var(--dark-elevated);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .console-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+
+        .console-output {
+            background: #010101;
+            padding: 1.5rem;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #4ade80;
+            height: 350px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .console-line {
+            border-left: 2px solid var(--primary);
+            padding-left: 1rem;
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .console-input-area {
+            display: flex;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: var(--dark-elevated);
+            border-top: 1px solid var(--border);
+        }
+
+        .console-input {
+            flex: 1;
+            background: var(--dark-card);
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            color: var(--text);
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+
+        .console-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Tabs */
+        .tabs-container {
+            background: var(--dark-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tabs-header {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: var(--dark-elevated);
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 0.6rem 1.25rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.85rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--text);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-pane {
+            display: none;
+            padding: 1.5rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* Config Cards */
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .setting-card {
+            background: var(--dark-elevated);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .setting-card:hover {
+            border-color: var(--primary);
+        }
+
+        .setting-card h4 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .setting-field {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--dark-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .setting-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* File Browser */
+        .file-browser {
+            background: var(--dark-elevated);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .file-path {
+            padding: 1rem;
+            background: var(--dark-card);
+            border-bottom: 1px solid var(--border);
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+
+        .file-list {
+            padding: 0.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--dark-card);
+            border-radius: 10px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .file-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            transform: translateX(5px);
+        }
+
+        .file-size {
+            margin-left: auto;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        /* Resource Monitor */
+        .resource-monitor {
+            background: var(--dark-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .resource-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .resource-bar {
+            background: var(--dark-elevated);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .resource-fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .resource-fill.cpu { background: linear-gradient(90deg, var(--primary), var(--secondary)); width: 0%; }
+        .resource-fill.ram { background: linear-gradient(90deg, var(--success), var(--primary)); width: 0%; }
+        .resource-fill.disk { background: linear-gradient(90deg, var(--warning), var(--primary)); width: 0%; }
+
+        .resource-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        /* Activity Log */
+        .activity-log {
+            background: var(--dark-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .activity-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .activity-time {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            min-width: 80px;
+        }
+
+        .activity-icon {
+            width: 28px;
+            height: 28px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--dark-card);
+            border-radius: 24px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--border);
+        }
+
+        .modal-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .control-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .menu-toggle {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .content-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .menu-toggle {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Toggle Button -->
+    <div class="menu-toggle" onclick="toggleSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>ZENITHOX</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-item active" onclick="switchTab('dashboard')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                </svg>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('console')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                <span>Console</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('logs')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>Logs</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('configuration')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span>Configuration</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('plugins')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                </svg>
+                <span>Plugins</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('database')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/>
+                </svg>
+                <span>Database</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('files')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+                </svg>
+                <span>File Manager</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('backups')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                </svg>
+                <span>Backups</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('network')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                </svg>
+                <span>Network</span>
+            </div>
+            <div class="nav-item" onclick="switchTab('users')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+                <span>Users</span>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">Administrator</div>
+                    <div class="user-email" id="userEmail">admin@zenithox.com</div>
+                </div>
+            </div>
+            <button class="btn-logout" onclick="logout()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                <span>Disconnect</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <div class="content-header">
+            <h1 class="page-title" id="pageTitle">Server Dashboard</h1>
+            <div class="server-status-badge">
+                <div class="status-indicator stopped" id="statusIndicator"></div>
+                <span id="statusText">Offline</span>
+                <span id="serverNameDisplay">zenithox-node-01</span>
+            </div>
+        </div>
+
+        <!-- DASHBOARD SECTION -->
+        <div id="dashboardSection">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">CPU USAGE</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="10"/></svg>
+                    </div>
+                    <div class="stat-value" id="cpuValue">0<span class="stat-unit">%</span></div>
+                    <div class="stat-change">● Idle</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">MEMORY USAGE</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M8 6v12M16 6v12M6 6h12M6 18h12"/></svg>
+                    </div>
+                    <div class="stat-value" id="ramValue">0<span class="stat-unit">MB</span></div>
+                    <div class="stat-change">/ 2048 MB</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">DISK USAGE</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12v8H4v-8M12 2v8m0 0-3-3m3 3 3-3"/></svg>
+                    </div>
+                    <div class="stat-value" id="diskValue">0<span class="stat-unit">GB</span></div>
+                    <div class="stat-change">/ 50 GB</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <span class="stat-title">UPTIME</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="stat-value" id="uptimeValue">0<span class="stat-unit">h</span></div>
+                    <div class="stat-change">Last start: --:--</div>
+                </div>
+            </div>
+
+            <!-- Resource Monitor -->
+            <div class="resource-monitor">
+                <div class="resource-title">RESOURCE MONITOR</div>
+                <div class="resource-stats">
+                    <span>CPU: <span id="cpuPercent">0</span>%</span>
+                    <span>RAM: <span id="ramPercent">0</span>%</span>
+                    <span>DISK: <span id="diskPercent">0</span>%</span>
+                </div>
+                <div class="resource-bar"><div class="resource-fill cpu" id="cpuFill"></div></div>
+                <div class="resource-bar" style="margin-top: 0.5rem;"><div class="resource-fill ram" id="ramFill"></div></div>
+                <div class="resource-bar" style="margin-top: 0.5rem;"><div class="resource-fill disk" id="diskFill"></div></div>
+            </div>
+
+            <!-- Control Cards -->
+            <div class="control-grid">
+                <div class="control-card start" onclick="startServer()">
+                    <div class="control-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+                    <div class="control-title">Start Instance</div>
+                    <div class="control-desc">Boot server daemon</div>
+                </div>
+                <div class="control-card stop" onclick="stopServer()">
+                    <div class="control-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="6" y="4" width="12" height="16" rx="1"/></svg></div>
+                    <div class="control-title">Stop Instance</div>
+                    <div class="control-desc">Graceful shutdown</div>
+                </div>
+                <div class="control-card restart" onclick="restartServer()">
+                    <div class="control-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 12a8 8 0 01-8 8 8 8 0 01-8-8 8 8 0 018-8 8 8 0 016 3"/><polyline points="20 4 20 8 16 8"/></svg></div>
+                    <div class="control-title">Restart Instance</div>
+                    <div class="control-desc">Reboot server process</div>
+                </div>
+            </div>
+
+            <!-- Activity Log -->
+            <div class="activity-log">
+                <div class="console-header">
+                    <span class="console-title">RECENT ACTIVITY</span>
+                </div>
+                <div id="activityList">
+                    <div class="activity-item"><span class="activity-time">Just now</span><div class="activity-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><span>System initialized</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONSOLE SECTION -->
+        <div class="console-wrapper" id="consoleSection" style="display: none;">
+            <div class="console-header">
+                <span class="console-title">TERMINAL • LIVE STREAM</span>
+                <button class="btn-logout" style="background: rgba(59,130,246,0.1); padding: 0.4rem 1rem; width: auto;" onclick="clearConsole()">Clear</button>
+            </div>
+            <div class="console-output" id="consoleOutput">
+                <div class="console-line">[system] Initializing server environment...</div>
+                <div class="console-line">[system] Loading server.properties</div>
+                <div class="console-line">[system] Starting Minecraft server on port 25565</div>
+                <div class="console-line">[system] Server ready. Type 'help' for commands.</div>
+            </div>
+            <div class="console-input-area">
+                <input type="text" class="console-input" id="consoleInput" placeholder="Enter command...">
+                <button class="btn-logout" style="background: var(--primary); color: white; width: auto; padding: 0.75rem 1.5rem;" onclick="sendCommand()">Execute</button>
+            </div>
+        </div>
+
+        <!-- LOGS SECTION -->
+        <div class="tabs-container" id="logsSection" style="display: none;">
+            <div class="tabs-header">
+                <button class="tab-btn active" data-log="application">Application</button>
+                <button class="tab-btn" data-log="error">Error Logs</button>
+                <button class="tab-btn" data-log="access">Access Logs</button>
+            </div>
+            <div class="tab-pane active" id="appLogs">
+                <div class="console-output" style="height: 400px; background: var(--dark-card);">
+                    <div class="console-line">[2025-03-28 10:30:15] [INFO] Server started successfully</div>
+                    <div class="console-line">[2025-03-28 10:30:16] [INFO] World loaded: world (seed: -284758293)</div>
+                    <div class="console-line">[2025-03-28 10:30:18] [INFO] Preparing spawn area: 45%</div>
+                    <div class="console-line">[2025-03-28 10:30:19] [INFO] Preparing spawn area: 100%</div>
+                    <div class="console-line">[2025-03-28 10:30:20] [INFO] Server ready for connections</div>
+                    <div class="console-line">[2025-03-28 10:31:05] [INFO] Player Steve joined the game</div>
+                    <div class="console-line">[2025-03-28 10:32:12] [INFO] Player Steve issued server command: /help</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONFIGURATION SECTION -->
+        <div class="tabs-container" id="configurationSection" style="display: none;">
+            <div class="config-grid">
+                <div class="setting-card">
+                    <h4>Server Settings</h4>
+                    <input type="text" class="setting-field" id="serverNameConfig" placeholder="Server Name" value="Zenithox Node">
+                    <input type="text" class="setting-field" id="motdConfig" placeholder="MOTD" value="§a§lZenithox §6§lPremium §r§7| Minecraft Hosting">
+                    <input type="number" class="setting-field" id="maxPlayers" placeholder="Max Players" value="50">
+                    <select class="setting-field" id="difficulty">
+                        <option value="peaceful">Peaceful</option>
+                        <option value="easy">Easy</option>
+                        <option value="normal" selected>Normal</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+                <div class="setting-card">
+                    <h4>Game Settings</h4>
+                    <select class="setting-field" id="gamemode">
+                        <option value="survival" selected>Survival</option>
+                        <option value="creative">Creative</option>
+                        <option value="adventure">Adventure</option>
+                        <option value="spectator">Spectator</option>
+                    </select>
+                    <select class="setting-field" id="levelType">
+                        <option value="default">Default</option>
+                        <option value="flat">Flat</option>
+                        <option value="large_biomes">Large Biomes</option>
+                        <option value="amplified">Amplified</option>
+                    </select>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <label><input type="checkbox" id="pvpEnabled" checked> Enable PVP</label>
+                        <label><input type="checkbox" id="commandBlocks"> Command Blocks</label>
+                    </div>
+                </div>
+                <div class="setting-card">
+                    <h4>Advanced Settings</h4>
+                    <input type="number" class="setting-field" id="viewDistance" placeholder="View Distance" value="10">
+                    <input type="number" class="setting-field" id="tickRate" placeholder="Tick Rate" value="20">
+                    <select class="setting-field" id="networkCompression">
+                        <option value="256">Compression Threshold: 256</option>
+                        <option value="512">Compression Threshold: 512</option>
+                        <option value="1024">Compression Threshold: 1024</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn-logout" style="background: var(--primary); color: white; margin-top: 1.5rem;" onclick="saveConfig()">Save Configuration</button>
+        </div>
+
+        <!-- PLUGINS SECTION -->
+        <div class="tabs-container" id="pluginsSection" style="display: none;">
+            <div class="console-header" style="justify-content: space-between;">
+                <span class="console-title">INSTALLED PLUGINS</span>
+                <button class="btn-logout" style="background: var(--primary); color: white; width: auto; padding: 0.5rem 1rem;" onclick="openModal('plugin')">Install Plugin</button>
+            </div>
+            <div style="padding: 1rem;">
+                <div class="file-item" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><span>EssentialsX</span></div>
+                    <span style="color: var(--success);">● Active</span>
+                </div>
+                <div class="file-item" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><span>LuckPerms</span></div>
+                    <span style="color: var(--success);">● Active</span>
+                </div>
+                <div class="file-item" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><span>WorldGuard</span></div>
+                    <span style="color: var(--success);">● Active</span>
+                </div>
+                <div class="file-item" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg><span>Vault</span></div>
+                    <span style="color: var(--success);">● Active</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATABASE SECTION -->
+        <div class="tabs-container" id="databaseSection" style="display: none;">
+            <div class="config-grid">
+                <div class="setting-card">
+                    <h4>MySQL Connection</h4>
+                    <input type="text" class="setting-field" placeholder="Host" value="localhost" id="dbHost">
+                    <input type="text" class="setting-field" placeholder="Port" value="3306" id="dbPort">
+                    <input type="text" class="setting-field" placeholder="Database" value="zenithox_server" id="dbName">
+                </div>
+                <div class="setting-card">
+                    <h4>Credentials</h4>
+                    <input type="text" class="setting-field" placeholder="Username" value="server_user" id="dbUser">
+                    <input type="password" class="setting-field" placeholder="Password" value="••••••••" id="dbPass">
+                    <button class="btn-logout" style="background: var(--primary); color: white; margin-top: 0.5rem;" onclick="testConnection()">Test Connection</button>
+                </div>
+                <div class="setting-card">
+                    <h4>Database Statistics</h4>
+                    <div style="margin-bottom: 0.5rem;">📊 Size: <span id="dbSize">156 MB</span></div>
+                    <div style="margin-bottom: 0.5rem;">📈 Tables: <span id="dbTables">24</span></div>
+                    <div>🔄 Last backup: <span id="lastBackup">2025-03-28 02:00</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILE MANAGER SECTION -->
+        <div class="tabs-container" id="filesSection" style="display: none;">
+            <div class="file-browser">
+                <div class="file-path">/home/container/</div>
+                <div class="file-list" id="fileList">
+                    <div class="file-item folder"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg><span>plugins/</span><span class="file-size">2.3 MB</span></div>
+                    <div class="file-item folder"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg><span>world/</span><span class="file-size">1.2 GB</span></div>
+                    <div class="file-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg><span>server.properties</span><span class="file-size">2.1 KB</span></div>
+                    <div class="file-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg><span>server.jar</span><span class="file-size">48.2 MB</span></div>
+                    <div class="file-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg><span>eula.txt</span><span class="file-size">112 B</span></div>
+                    <div class="file-item"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg><span>banned-players.json</span><span class="file-size">324 B</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BACKUPS SECTION -->
+        <div class="tabs-container" id="backupsSection" style="display: none;">
+            <div class="console-header" style="justify-content: space-between;">
+                <span class="console-title">BACKUP HISTORY</span>
+                <button class="btn-logout" style="background: var(--primary); color: white; width: auto; padding: 0.5rem 1rem;" onclick="createBackup()">Create Backup</button>
+            </div>
+            <div style="padding: 1rem;">
+                <div class="file-item" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg><span>backup_20250328_0230.tar.gz</span></div>
+                    <span>2.3 GB</span>
+                    <span style="color: var(--success);">Completed</span>
+                </div>
+                <div class="file-item" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg><span>backup_20250327_0230.tar.gz</span></div>
+                    <span>2.3 GB</span>
+                    <span style="color: var(--success);">Completed</span>
+                </div>
+                <div class="file-item" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg><span>backup_20250326_0230.tar.gz</span></div>
+                    <span>2.2 GB</span>
+                    <span style="color: var(--success);">Completed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- NETWORK SECTION -->
+        <div class="tabs-container" id="networkSection" style="display: none;">
+            <div class="config-grid">
+                <div class="setting-card">
+                    <h4>Network Information</h4>
+                    <input type="text" class="setting-field" placeholder="IP Address" value="203.0.113.45" readonly>
+                    <input type="text" class="setting-field" placeholder="Port" value="25565" readonly>
+                    <input type="text" class="setting-field" placeholder="Connection String" value="203.0.113.45:25565" readonly>
+                    <div class="resource-bar" style="margin-top: 1rem;"><div class="resource-fill" style="width: 65%; background: var(--primary);"></div></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;"><span>Network Traffic</span><span>65%</span></div>
+                </div>
+                <div class="setting-card">
+                    <h4>Firewall Rules</h4>
+                    <input type="text" class="setting-field" placeholder="Allowed IPs" value="*">
+                    <input type="text" class="setting-field" placeholder="Blocked IPs" value="">
+                    <button class="btn-logout" style="background: var(--primary); color: white; width: 100%;" onclick="configureFirewall()">Configure Firewall</button>
+                </div>
+                <div class="setting-card">
+                    <h4>Security</h4>
+                    <div>🔒 SSL Certificate: <span style="color: var(--success);">Active</span></div>
+                    <div>🛡️ DDoS Protection: <span style="color: var(--success);">Enabled</span></div>
+                    <div>🌐 Rate Limiting: <span style="color: var(--warning);">Standard</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- USERS SECTION -->
+        <div class="tabs-container" id="usersSection" style="display: none;">
+            <div class="console-header" style="justify-content: space-between;">
+                <span class="console-title">SERVER USERS</span>
+                <button class="btn-logout" style="background: var(--primary); color: white; width: auto; padding: 0.5rem 1rem;" onclick="openModal('user')">Add User</button>
+            </div>
+            <div style="padding: 1rem;">
+                <div class="file-item" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg><span>Steve</span></div>
+                    <span>OP • Admin</span>
+                    <span>Last seen: 10 min ago</span>
+                </div>
+                <div class="file-item" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg><span>Alex</span></div>
+                    <span>Moderator</span>
+                    <span>Last seen: 2 hours ago</span>
+                </div>
+                <div class="file-item" style="justify-content: space-between;">
+                    <div style="display: flex; gap: 0.75rem; align-items: center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg><span>Herobrine</span></div>
+                    <span>Player</span>
+                    <span>Last seen: 1 day ago</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalTitle">Install Plugin</div>
+            <div class="modal-body" id="modalBody">
+                <input type="text" class="setting-field" placeholder="Plugin URL or file name" id="modalInput">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-logout" onclick="closeModal()">Cancel</button>
+                <button class="btn-logout" style="background: var(--primary); color: white;" onclick="confirmModal()">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get server info from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const serverId = urlParams.get('id');
+        const serverName = urlParams.get('name') || 'zenithox-node-01';
+        
+        document.getElementById('serverNameDisplay').innerHTML = serverName;
+        
+        let currentStatus = 'stopped';
+        let uptimeSeconds = 0;
+        let uptimeInterval;
+        
+        function updateStatus(status) {
+            currentStatus = status;
+            const indicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            if (status === 'running') {
+                indicator.className = 'status-indicator running';
+                statusText.innerHTML = 'Online';
+                startUptimeCounter();
+                addActivity('Server started successfully');
+            } else {
+                indicator.className = 'status-indicator stopped';
+                statusText.innerHTML = 'Offline';
+                if (uptimeInterval) clearInterval(uptimeInterval);
+                uptimeSeconds = 0;
+                document.getElementById('uptimeValue').innerHTML = '0<span class="stat-unit">h</span>';
+                addActivity('Server stopped');
+            }
+        }
+        
+        function startUptimeCounter() {
+            if (uptimeInterval) clearInterval(uptimeInterval);
+            uptimeInterval = setInterval(() => {
+                uptimeSeconds++;
+                const hours = Math.floor(uptimeSeconds / 3600);
+                document.getElementById('uptimeValue').innerHTML = hours + '<span class="stat-unit">h</span>';
+            }, 1000);
+        }
+        
+        function updateResources() {
+            if (currentStatus === 'running') {
+                const cpu = Math.floor(Math.random() * 30) + 10;
+                const ram = Math.floor(Math.random() * 40) + 20;
+                const disk = 45 + Math.floor(Math.random() * 10);
+                
+                document.getElementById('cpuValue').innerHTML = cpu + '<span class="stat-unit">%</span>';
+                document.getElementById('ramValue').innerHTML = Math.floor(ram * 20.48) + '<span class="stat-unit">MB</span>';
+                document.getElementById('diskValue').innerHTML = Math.floor(disk * 0.5) + '<span class="stat-unit">GB</span>';
+                document.getElementById('cpuPercent').innerHTML = cpu;
+                document.getElementById('ramPercent').innerHTML = ram;
+                document.getElementById('diskPercent').innerHTML = disk;
+                document.getElementById('cpuFill').style.width = cpu + '%';
+                document.getElementById('ramFill').style.width = ram + '%';
+                document.getElementById('diskFill').style.width = disk + '%';
+            }
+        }
+        
+        function addActivity(message) {
+            const activityList = document.getElementById('activityList');
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = 'activity-item';
+            div.innerHTML = `<span class="activity-time">${time}</span><div class="activity-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><span>${message}</span>`;
+            activityList.insertBefore(div, activityList.firstChild);
+            if (activityList.children.length > 10) {
+                activityList.removeChild(activityList.lastChild);
+            }
+        }
+        
+        function switchTab(tab) {
+            const sections = ['dashboardSection', 'consoleSection', 'logsSection', 'configurationSection', 'pluginsSection', 'databaseSection', 'filesSection', 'backupsSection', 'networkSection', 'usersSection'];
+            sections.forEach(s => {
+                const el = document.getElementById(s);
+                if (el) el.style.display = 'none';
+            });
+            
+            const selected = document.getElementById(tab + 'Section');
+            if (selected) selected.style.display = 'block';
+            
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            const titles = {
+                dashboard: 'Server Dashboard',
+                console: 'Server Console',
+                logs: 'System Logs',
+                configuration: 'Configuration',
+                plugins: 'Plugin Manager',
+                database: 'Database Management',
+                files: 'File Manager',
+                backups: 'Backup System',
+                network: 'Network Settings',
+                users: 'User Management'
+            };
+            document.getElementById('pageTitle').innerHTML = titles[tab] || 'Server Dashboard';
+        }
+        
+        function startServer() {
+            updateStatus('running');
+            addConsoleLine('[system] Starting server instance...');
+            setTimeout(() => {
+                addConsoleLine('[system] Server started successfully on port 25565');
+                addConsoleLine('[system] Ready for connections');
+                addActivity('Server started successfully');
+            }, 1500);
+        }
+        
+        function stopServer() {
+            updateStatus('stopped');
+            addConsoleLine('[system] Stopping server instance...');
+            addConsoleLine('[system] Saving world data...');
+            setTimeout(() => {
+                addConsoleLine('[system] Server stopped gracefully');
+                addActivity('Server stopped');
+            }, 1000);
+        }
+        
+        function restartServer() {
+            addConsoleLine('[system] Restarting server...');
+            addActivity('Server restart initiated');
+            setTimeout(() => {
+                updateStatus('running');
+                addConsoleLine('[system] Server restarted successfully');
+                addActivity('Server restarted');
+            }, 2000);
+        }
+        
+        function addConsoleLine(line) {
+            const output = document.getElementById('consoleOutput');
+            const div = document.createElement('div');
+            div.className = 'console-line';
+            div.innerHTML = line;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearConsole() {
+            document.getElementById('consoleOutput').innerHTML = '';
+            addConsoleLine('[system] Console cleared');
+        }
+        
+        function sendCommand() {
+            const input = document.getElementById('consoleInput');
+            if (input.value.trim()) {
+                addConsoleLine(`> ${input.value}`);
+                setTimeout(() => {
+                    addConsoleLine(`[server] Command executed: ${input.value}`);
+                }, 100);
+                input.value = '';
+            }
+        }
+        
+        function saveConfig() {
+            const serverName = document.getElementById('serverNameConfig').value;
+            const motd = document.getElementById('motdConfig').value;
+            const maxPlayers = document.getElementById('maxPlayers').value;
+            addActivity(`Configuration saved: ${serverName}, ${maxPlayers} players max`);
+            alert('Configuration saved successfully');
+        }
+        
+        function testConnection() {
+            addActivity('Database connection test initiated');
+            setTimeout(() => {
+                alert('Database connection successful!');
+                addActivity('Database connection successful');
+            }, 500);
+        }
+        
+        function createBackup() {
+            addActivity('Backup creation started');
+            setTimeout(() => {
+                addActivity('Backup completed successfully');
+                alert('Backup created successfully');
+            }, 2000);
+        }
+        
+        function configureFirewall() {
+            alert('Firewall configuration panel would open here');
+            addActivity('Firewall configuration accessed');
+        }
+        
+        function openModal(type) {
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modalTitle');
+            const body = document.getElementById('modalBody');
+            if (type === 'plugin') {
+                title.innerHTML = 'Install Plugin';
+                body.innerHTML = '<input type="text" class="setting-field" placeholder="Plugin URL or file name" id="modalInput">';
+            } else {
+                title.innerHTML = 'Add User';
+                body.innerHTML = '<input type="text" class="setting-field" placeholder="Username" id="modalInput"><input type="text" class="setting-field" placeholder="Role (admin/moderator/player)" id="modalRole" style="margin-top: 0.5rem;">';
+            }
+            modal.classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+        
+        function confirmModal() {
+            const input = document.getElementById('modalInput');
+            if (input && input.value) {
+                addActivity(`Action confirmed: ${input.value}`);
+                alert(`Action completed: ${input.value}`);
+            }
+            closeModal();
+        }
+        
+        function logout() {
+            window.location.href = 'login.html';
+        }
+        
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+        
+        // Load user data
+        const userData = JSON.parse(localStorage.getItem('user') || '{}');
+        if (userData.name) {
+            document.getElementById('userName').innerHTML = userData.name;
+            document.getElementById('userEmail').innerHTML = userData.email || 'admin@zenithox.com';
+            document.getElementById('userAvatar').innerHTML = userData.name.charAt(0).toUpperCase();
+        }
+        
+        // Event listeners
+        document.getElementById('consoleInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendCommand();
+        });
+        
+        document.querySelectorAll('[data-log]').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-log]').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Initialize
+        updateStatus('stopped');
+        setInterval(updateResources, 3000);
+        updateResources();
+        
+        // Add initial activity
+        addActivity('System initialized');
+        addActivity('Server panel ready');
+    </script>
+</body>
+</html>

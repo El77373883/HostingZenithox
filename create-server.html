@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Server - Zenithox</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f1419;
+            --bg-secondary: #1a1f29;
+            --bg-sidebar: #15191f;
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --text: #ffffff;
+            --text-muted: #8b92a5;
+            --border: rgba(59, 130, 246, 0.1);
+            --success: #10b981;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 2rem;
+        }
+
+        .back-btn:hover {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: var(--primary);
+        }
+
+        .back-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.75rem;
+            animation: gradientShift 3s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.125rem;
+        }
+
+        /* STEP INDICATOR */
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .step.active .step-number {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .step-label {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+        }
+
+        .step.active .step-label {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        /* SECTION */
+        .section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title svg {
+            width: 28px;
+            height: 28px;
+            color: var(--primary);
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        /* LOCATION GRID */
+        .location-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .location-card {
+            background: rgba(59, 130, 246, 0.05);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .location-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.2);
+        }
+
+        .location-card.selected {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .location-card .flag {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .location-card .name {
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .location-card .ping {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* ENGINE GRID */
+        .engine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .engine-card {
+            background: rgba(59, 130, 246, 0.05);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .engine-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .engine-card.selected {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+            border-color: var(--primary);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .engine-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 1rem;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .engine-icon img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .engine-name {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* VERSION SELECTOR */
+        .version-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 1rem;
+        }
+
+        .version-btn {
+            padding: 1rem;
+            background: rgba(59, 130, 246, 0.05);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .version-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .version-btn.selected {
+            background: var(--primary);
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        /* SERVER CONFIG */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9375rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.9375rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.08);
+        }
+
+        /* SUMMARY */
+        .summary-card {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--success);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: var(--text-muted);
+        }
+
+        .summary-value {
+            font-weight: 600;
+        }
+
+        /* BUTTONS */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .header h1 { font-size: 2rem; }
+            .section { padding: 1.5rem; }
+            .step-indicator { flex-wrap: wrap; }
+            .location-grid, .engine-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+            .btn-group { flex-direction: column; }
+            .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <button class="back-btn" onclick="location.href='client-area.html'">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                <span>Back to Dashboard</span>
+            </button>
+            <h1>Create Your Server</h1>
+            <p>Follow the steps below to deploy your Minecraft server</p>
+        </div>
+
+        <!-- STEP INDICATOR -->
+        <div class="step-indicator">
+            <div class="step active" id="step1">
+                <div class="step-number">1</div>
+                <div class="step-label">Location</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <div class="step-label">Engine</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <div class="step-label">Version</div>
+            </div>
+            <div class="step" id="step4">
+                <div class="step-number">4</div>
+                <div class="step-label">Config</div>
+            </div>
+        </div>
+
+        <!-- STEP 1: LOCATION -->
+        <div class="section" id="sectionLocation">
+            <div class="section-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Choose Server Location
+            </div>
+            <p class="section-subtitle">Select the datacenter closest to your players for the best performance</p>
+
+            <div class="location-grid">
+                <div class="location-card" data-location="US East">
+                    <div class="flag">🇺🇸</div>
+                    <div class="name">US East</div>
+                    <div class="ping">New York</div>
+                </div>
+                <div class="location-card" data-location="US West">
+                    <div class="flag">🇺🇸</div>
+                    <div class="name">US West</div>
+                    <div class="ping">Los Angeles</div>
+                </div>
+                <div class="location-card" data-location="Europe">
+                    <div class="flag">🇪🇺</div>
+                    <div class="name">Europe</div>
+                    <div class="ping">Frankfurt</div>
+                </div>
+                <div class="location-card" data-location="Asia">
+                    <div class="flag">🇸🇬</div>
+                    <div class="name">Asia</div>
+                    <div class="ping">Singapore</div>
+                </div>
+                <div class="location-card" data-location="Oceania">
+                    <div class="flag">🇦🇺</div>
+                    <div class="name">Oceania</div>
+                    <div class="ping">Sydney</div>
+                </div>
+                <div class="location-card" data-location="Latin America">
+                    <div class="flag">🇧🇷</div>
+                    <div class="name">Latin America</div>
+                    <div class="ping">São Paulo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 2: ENGINE -->
+        <div class="section" id="sectionEngine" style="display:none;">
+            <div class="section-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Select Server Engine
+            </div>
+            <p class="section-subtitle">Choose the software that will power your Minecraft server</p>
+
+            <div class="engine-grid">
+                <div class="engine-card" data-engine="Vanilla">
+                    <div class="engine-icon">
+                        <img src="https://i.imgur.com/JiEALtX.png" alt="Vanilla">
+                    </div>
+                    <div class="engine-name">Vanilla</div>
+                </div>
+                <div class="engine-card" data-engine="Paper">
+                    <div class="engine-icon">
+                        <img src="https://i.imgur.com/JTE5DiY.png" alt="Paper">
+                    </div>
+                    <div class="engine-name">Paper</div>
+                </div>
+                <div class="engine-card" data-engine="Spigot">
+                    <div class="engine-icon">
+                        <img src="https://i.imgur.com/XjqOAQe.png" alt="Spigot">
+                    </div>
+                    <div class="engine-name">Spigot</div>
+                </div>
+                <div class="engine-card" data-engine="Purpur">
+                    <div class="engine-icon">
+                        <img src="https://i.imgur.com/h8BQwMA.png" alt="Purpur">
+                    </div>
+                    <div class="engine-name">Purpur</div>
+                </div>
+                <div class="engine-card" data-engine="Bukkit">
+                    <div class="engine-icon">
+                        <img src="https://i.imgur.com/8F7eWK8.png" alt="Bukkit">
+                    </div>
+                    <div class="engine-name">Bukkit</div>
+                </div>
+                <div class="engine-card" data-engine="Forge">
+                    <div class="engine-icon">
+                        <img src="https://i.imgur.com/s8F0Nfz.png" alt="Forge">
+                    </div>
+                    <div class="engine-name">Forge</div>
+                </div>
+                <div class="engine-card" data-engine="Fabric">
+                    <div class="engine-icon">
+                        <img src="https://i.imgur.com/BqIsXbD.png" alt="Fabric">
+                    </div>
+                    <div class="engine-name">Fabric</div>
+                </div>
+                <div class="engine-card" data-engine="Quilt">
+                    <div class="engine-icon">
+                        <img src="https://i.imgur.com/KqU4fVH.png" alt="Quilt">
+                    </div>
+                    <div class="engine-name">Quilt</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: VERSION -->
+        <div class="section" id="sectionVersion" style="display:none;">
+            <div class="section-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                </svg>
+                Select Minecraft Version
+            </div>
+            <p class="section-subtitle">Choose the version compatible with your engine</p>
+
+            <div class="version-grid" id="versionGrid">
+                <!-- Versions loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- STEP 4: CONFIG -->
+        <div class="section" id="sectionConfig" style="display:none;">
+            <div class="section-title">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Server Configuration
+            </div>
+            <p class="section-subtitle">Customize your server settings</p>
+
+            <div class="form-group">
+                <label class="form-label">Server Name</label>
+                <input type="text" class="form-input" id="serverName" placeholder="My Awesome Server">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Max Players</label>
+                <select class="form-select" id="maxPlayers">
+                    <option value="10">10 Players</option>
+                    <option value="20" selected>20 Players</option>
+                    <option value="50">50 Players</option>
+                    <option value="100">100 Players</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Server Plan</label>
+                <select class="form-select" id="serverPlan">
+                    <option value="Basic - 2GB RAM - $5/month">Basic - 2GB RAM - $5/month</option>
+                    <option value="Pro - 4GB RAM - $10/month" selected>Pro - 4GB RAM - $10/month</option>
+                    <option value="Ultra - 8GB RAM - $20/month">Ultra - 8GB RAM - $20/month</option>
+                </select>
+            </div>
+
+            <!-- SUMMARY -->
+            <div class="summary-card">
+                <div class="summary-title">Server Summary</div>
+                <div class="summary-item">
+                    <span class="summary-label">Location</span>
+                    <span class="summary-value" id="summaryLocation">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Engine</span>
+                    <span class="summary-value" id="summaryEngine">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Version</span>
+                    <span class="summary-value" id="summaryVersion">-</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Plan</span>
+                    <span class="summary-value" id="summaryPlan">Pro - 4GB RAM - $10/month</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVIGATION BUTTONS -->
+        <div class="btn-group">
+            <button class="btn btn-secondary" id="btnBack" style="display:none;">Back</button>
+            <button class="btn btn-primary" id="btnNext">Next</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+        const app = initializeApp({
+            apiKey: "AIzaSyBExxDIdnTHZJZbOUsxfj7x9Z1MlAEKMWM",
+            authDomain: "zenithox-3628f.firebaseapp.com",
+            projectId: "zenithox-3628f",
+            storageBucket: "zenithox-3628f.firebasestorage.app",
+            messagingSenderId: "817872713498",
+            appId: "1:817872713498:web:8a6cb78e829f37a3441ea3"
+        });
+
+        const auth = getAuth(app);
+
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            }
+        });
+
+        // VERSIONS BY ENGINE
+        const versions = {
+            'Vanilla': ['1.21.1', '1.21', '1.20.6', '1.20.4', '1.20.1', '1.19.4', '1.19.2', '1.18.2', '1.17.1', '1.16.5', '1.12.2'],
+            'Paper': ['1.21.1', '1.21', '1.20.6', '1.20.4', '1.20.1', '1.19.4', '1.19.2', '1.18.2', '1.17.1', '1.16.5'],
+            'Spigot': ['1.21.1', '1.21', '1.20.6', '1.20.4', '1.20.1', '1.19.4', '1.19.2', '1.18.2', '1.17.1', '1.16.5', '1.12.2'],
+            'Purpur': ['1.21.1', '1.21', '1.20.6', '1.20.4', '1.20.1', '1.19.4', '1.19.2', '1.18.2'],
+            'Bukkit': ['1.21', '1.20.4', '1.19.4', '1.18.2', '1.16.5', '1.12.2'],
+            'Forge': ['1.21.1', '1.20.6', '1.20.1', '1.19.4', '1.19.2', '1.18.2', '1.16.5', '1.12.2'],
+            'Fabric': ['1.21.1', '1.21', '1.20.6', '1.20.4', '1.20.1', '1.19.4', '1.19.2', '1.18.2'],
+            'Quilt': ['1.21.1', '1.21', '1.20.6', '1.20.4', '1.20.1', '1.19.4']
+        };
+
+        let currentStep = 1;
+        let selectedLocation = null;
+        let selectedEngine = null;
+        let selectedVersion = null;
+
+        const steps = {
+            1: { section: 'sectionLocation', step: 'step1' },
+            2: { section: 'sectionEngine', step: 'step2' },
+            3: { section: 'sectionVersion', step: 'step3' },
+            4: { section: 'sectionConfig', step: 'step4' }
+        };
+
+        // LOCATION SELECTION
+        document.querySelectorAll('.location-card').forEach(card => {
+            card.onclick = () => {
+                document.querySelectorAll('.location-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedLocation = card.dataset.location;
+                updateSummary();
+            };
+        });
+
+        // ENGINE SELECTION
+        document.querySelectorAll('.engine-card').forEach(card => {
+            card.onclick = () => {
+                document.querySelectorAll('.engine-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedEngine = card.dataset.engine;
+                loadVersions(selectedEngine);
+                updateSummary();
+            };
+        });
+
+        // LOAD VERSIONS
+        function loadVersions(engine) {
+            const grid = document.getElementById('versionGrid');
+            grid.innerHTML = '';
+            
+            versions[engine].forEach(version => {
+                const btn = document.createElement('div');
+                btn.className = 'version-btn';
+                btn.textContent = version;
+                btn.onclick = () => {
+                    document.querySelectorAll('.version-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedVersion = version;
+                    updateSummary();
+                };
+                grid.appendChild(btn);
+            });
+        }
+
+        // UPDATE SUMMARY
+        function updateSummary() {
+            if (selectedLocation) {
+                document.getElementById('summaryLocation').textContent = selectedLocation;
+            }
+            if (selectedEngine) {
+                document.getElementById('summaryEngine').textContent = selectedEngine;
+            }
+            if (selectedVersion) {
+                document.getElementById('summaryVersion').textContent = selectedVersion;
+            }
+        }
+
+        // NAVIGATION
+        document.getElementById('btnNext').onclick = () => {
+            if (currentStep === 1 && !selectedLocation) {
+                alert('Please select a location');
+                return;
+            }
+            if (currentStep === 2 && !selectedEngine) {
+                alert('Please select an engine');
+                return;
+            }
+            if (currentStep === 3 && !selectedVersion) {
+                alert('Please select a version');
+                return;
+            }
+
+            if (currentStep < 4) {
+                document.getElementById(steps[currentStep].section).style.display = 'none';
+                document.getElementById(steps[currentStep].step).classList.remove('active');
+                currentStep++;
+                document.getElementById(steps[currentStep].section).style.display = 'block';
+                document.getElementById(steps[currentStep].step).classList.add('active');
+                document.getElementById('btnBack').style.display = 'block';
+
+                if (currentStep === 4) {
+                    document.getElementById('btnNext').textContent = 'Proceed to Checkout';
+                }
+            } else {
+                proceedToCheckout();
+            }
+        };
+
+        document.getElementById('btnBack').onclick = () => {
+            document.getElementById(steps[currentStep].section).style.display = 'none';
+            document.getElementById(steps[currentStep].step).classList.remove('active');
+            currentStep--;
+            document.getElementById(steps[currentStep].section).style.display = 'block';
+            document.getElementById(steps[currentStep].step).classList.add('active');
+
+            if (currentStep === 1) {
+                document.getElementById('btnBack').style.display = 'none';
+            }
+
+            document.getElementById('btnNext').textContent = 'Next';
+        };
+
+        // PROCEED TO CHECKOUT - Guardar config y redirigir
+        function proceedToCheckout() {
+            const name = document.getElementById('serverName').value;
+            const plan = document.getElementById('serverPlan').value;
+            const maxPlayers = document.getElementById('maxPlayers').value;
+
+            if (!name) {
+                alert('Please enter a server name');
+                return;
+            }
+
+            // Guardar configuración en sessionStorage
+            const serverConfig = {
+                name: name,
+                location: selectedLocation,
+                engine: selectedEngine,
+                version: selectedVersion,
+                plan: plan,
+                maxPlayers: parseInt(maxPlayers)
+            };
+
+            sessionStorage.setItem('serverConfig', JSON.stringify(serverConfig));
+
+            // Redirigir a checkout
+            window.location.href = 'checkout.html';
+        }
+
+        // UPDATE PLAN IN SUMMARY
+        document.getElementById('serverPlan').onchange = (e) => {
+            const planText = e.target.options[e.target.selectedIndex].text;
+            document.getElementById('summaryPlan').textContent = planText;
+        };
+    </script>
+</body>
+</html>

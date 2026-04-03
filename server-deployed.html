@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Deployed - Zenithox</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #0f1419;
+            --dark-card: #1a1f29;
+            --text: #ffffff;
+            --text-muted: #8b92a5;
+            --border: rgba(59, 130, 246, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        /* Animated Background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+        }
+
+        .background::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveGrid 20s linear infinite;
+        }
+
+        @keyframes moveGrid {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Success Banner */
+        .success-banner {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            animation: slideDown 0.6s ease;
+            box-shadow: 0 20px 60px rgba(16, 185, 129, 0.4);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 3rem;
+            animation: bounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .success-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .success-subtitle {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease 0.3s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Card */
+        .main-card {
+            background: var(--dark-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease 0.4s both;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header svg {
+            width: 32px;
+            height: 32px;
+            color: var(--primary);
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Server Info */
+        .server-info {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .info-value {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Credentials Section */
+        .credentials-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .credential-item {
+            background: rgba(15, 20, 25, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .credential-item:hover {
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .credential-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .credential-value-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .credential-value {
+            flex: 1;
+            font-size: 1.125rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .btn-copy {
+            padding: 0.5rem 1rem;
+            background: var(--primary);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-copy:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-copy.copied {
+            background: var(--success);
+            animation: pulse 0.5s;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .instructions h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+
+        .instructions ol {
+            padding-left: 1.5rem;
+            color: var(--text-muted);
+        }
+
+        .instructions li {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .btn-action {
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--dark-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        /* Warning */
+        .warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .warning svg {
+            width: 24px;
+            height: 24px;
+            color: var(--warning);
+            flex-shrink: 0;
+            margin-top: 0.125rem;
+        }
+
+        .warning-text {
+            font-size: 0.9375rem;
+            color: var(--text-muted);
+        }
+
+        /* Loading */
+        .loading-overlay {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(59, 130, 246, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .main-card {
+                padding: 1.5rem;
+            }
+
+            .success-title {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .credential-value-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-copy {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background">
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <div class="loading-overlay" id="loading">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading server details...</div>
+        </div>
+    </div>
+
+    <div class="container" id="mainContent" style="display:none;">
+        <!-- Success Banner -->
+        <div class="success-banner">
+            <div class="success-icon">🚀</div>
+            <h1 class="success-title">¡Servidor Desplegado!</h1>
+            <p class="success-subtitle">Tu servidor Minecraft está listo y funcionando</p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="main-card">
+            <div class="card-header">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                </svg>
+                <h2 class="card-title">Información del Servidor</h2>
+            </div>
+
+            <!-- Server Info -->
+            <div class="server-info">
+                <div class="info-row">
+                    <span class="info-label">Nombre del Servidor</span>
+                    <span class="info-value" id="serverName">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Ubicación</span>
+                    <span class="info-value" id="serverLocation">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Motor</span>
+                    <span class="info-value" id="serverEngine">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Versión</span>
+                    <span class="info-value" id="serverVersion">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Plan</span>
+                    <span class="info-value" id="serverPlan">-</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Estado</span>
+                    <span class="info-value" style="color: var(--success);" id="serverStatus">Running</span>
+                </div>
+            </div>
+
+            <!-- Credentials Section -->
+            <div class="credentials-section">
+                <h3 class="section-title">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                    </svg>
+                    Credenciales de Acceso
+                </h3>
+
+                <div class="credential-item">
+                    <div class="credential-label">Panel URL</div>
+                    <div class="credential-value-container">
+                        <div class="credential-value" id="panelUrl">https://panel.zenithox.com</div>
+                        <button class="btn-copy" onclick="copyToClipboard('panelUrl', this)">Copiar</button>
+                    </div>
+                </div>
+
+                <div class="credential-item">
+                    <div class="credential-label">Usuario</div>
+                    <div class="credential-value-container">
+                        <div class="credential-value" id="username">-</div>
+                        <button class="btn-copy" onclick="copyToClipboard('username', this)">Copiar</button>
+                    </div>
+                </div>
+
+                <div class="credential-item">
+                    <div class="credential-label">Contraseña</div>
+                    <div class="credential-value-container">
+                        <div class="credential-value" id="password">-</div>
+                        <button class="btn-copy" onclick="copyToClipboard('password', this)">Copiar</button>
+                    </div>
+                </div>
+
+                <div class="credential-item">
+                    <div class="credential-label">IP del Servidor</div>
+                    <div class="credential-value-container">
+                        <div class="credential-value" id="serverIp">-</div>
+                        <button class="btn-copy" onclick="copyToClipboard('serverIp', this)">Copiar</button>
+                    </div>
+                </div>
+
+                <div class="credential-item">
+                    <div class="credential-label">Puerto</div>
+                    <div class="credential-value-container">
+                        <div class="credential-value" id="serverPort">25565</div>
+                        <button class="btn-copy" onclick="copyToClipboard('serverPort', this)">Copiar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <div class="instructions">
+                <h3>📋 Cómo acceder a tu panel</h3>
+                <ol>
+                    <li>Copia la URL del panel y ábrela en tu navegador</li>
+                    <li>Ingresa tu usuario y contraseña</li>
+                    <li>Una vez dentro, podrás administrar tu servidor</li>
+                    <li>Para conectarte desde Minecraft, usa la IP del servidor y el puerto</li>
+                    <li>¡Disfruta de tu servidor!</li>
+                </ol>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-action btn-primary" onclick="openPanel()">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                    </svg>
+                    Abrir Panel
+                </button>
+                <button class="btn-action btn-secondary" onclick="window.location.href='client-area.html'">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="20" height="20">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Ir al Dashboard
+                </button>
+            </div>
+
+            <!-- Warning -->
+            <div class="warning">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <div class="warning-text">
+                    <strong>Importante:</strong> Guarda estas credenciales en un lugar seguro. Si olvidas tu contraseña, puedes restablecerla desde el dashboard. Por seguridad, te recomendamos cambiar la contraseña después del primer inicio de sesión.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, query, where, getDocs, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const app = initializeApp({
+            apiKey: "AIzaSyBExxDIdnTHZJZbOUsxfj7x9Z1MlAEKMWM",
+            authDomain: "zenithox-3628f.firebaseapp.com",
+            projectId: "zenithox-3628f",
+            storageBucket: "zenithox-3628f.firebasestorage.app",
+            messagingSenderId: "817872713498",
+            appId: "1:817872713498:web:8a6cb78e829f37a3441ea3"
+        });
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Generate random credentials
+        function generateCredentials(serverName, userEmail) {
+            const username = userEmail.split('@')[0] + '_' + Math.random().toString(36).substring(2, 6);
+            const password = generateSecurePassword();
+            const ip = generateServerIP();
+            
+            return { username, password, ip };
+        }
+
+        function generateSecurePassword() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789!@#$%';
+            let password = '';
+            for (let i = 0; i < 16; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
+        function generateServerIP() {
+            const locations = {
+                'US East': '104.168.42',
+                'US West': '192.223.35',
+                'Europe': '185.194.76',
+                'Asia': '103.214.89',
+                'Oceania': '156.234.67',
+                'Latin America': '177.54.123'
+            };
+            
+            // Default IP structure
+            return '104.168.42.' + Math.floor(Math.random() * 254 + 1);
+        }
+
+        // Create particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 3 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Load server data
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            createParticles();
+
+            try {
+                // Get the most recent server for this user
+                const q = query(
+                    collection(db, 'servers'),
+                    where('userId', '==', user.uid),
+                    orderBy('createdAt', 'desc'),
+                    limit(1)
+                );
+
+                const snapshot = await getDocs(q);
+                
+                if (snapshot.empty) {
+                    alert('No se encontró información del servidor');
+                    window.location.href = 'client-area.html';
+                    return;
+                }
+
+                const serverData = snapshot.docs[0].data();
+                const credentials = generateCredentials(serverData.name, user.email);
+
+                // Populate server info
+                document.getElementById('serverName').textContent = serverData.name;
+                document.getElementById('serverLocation').textContent = serverData.location;
+                document.getElementById('serverEngine').textContent = serverData.engine;
+                document.getElementById('serverVersion').textContent = serverData.version;
+                document.getElementById('serverPlan').textContent = serverData.plan;
+
+                // Populate credentials
+                document.getElementById('username').textContent = credentials.username;
+                document.getElementById('password').textContent = credentials.password;
+                document.getElementById('serverIp').textContent = credentials.ip;
+
+                // Hide loading, show content
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error loading server:', error);
+                alert('Error al cargar la información del servidor');
+                window.location.href = 'client-area.html';
+            }
+        });
+
+        // Copy to clipboard function
+        window.copyToClipboard = function(elementId, button) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.textContent;
+                button.textContent = '✓ Copiado';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        };
+
+        // Open panel function
+        window.openPanel = function() {
+            const panelUrl = document.getElementById('panelUrl').textContent;
+            window.open(panelUrl, '_blank');
+        };
+    </script>
+</body>
+</html>
