@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenithox | Checkout Seguro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0c15, #121623);
+            color: #eff3f8;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .checkout-container {
+            background: rgba(18, 22, 35, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 32px;
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .refund-banner {
+            background: linear-gradient(90deg, #6366F1, #A78BFA);
+            padding: 12px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .promo-banner {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 16px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            display align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .plan-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .plan-price {
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #A78BFA, #6366F1);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 10px 0;
+        }
+
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #A78BFA;
+            margin: 24px 0;
+            font-weight: 500;
+        }
+
+        .btn {
+            padding: 16px;
+            border-radius: 16px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366F1, #A78BFA);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(18, 22, 35, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 16px 20px;
+            border-radius: 16px;
+            border-left: 4px solid #10B981;
+            transform: translateX(100%);
+            animation: slideIn 0.3s forwards;
+        }
+
+        @keyframes slideIn {
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="checkout-container">
+    <!-- Banner de reembolso -->
+    <div class="refund-banner">
+        💸 ¡Garantía de reembolso de 15 días si no estás satisfecho!
+    </div>
+
+    <!-- Promoción -->
+    <div class="promo-banner">
+        <i class="fas fa-tag"></i>
+        <span>10% OFF en tu primera compra con:</span>
+        <span style="background:rgba(139,92,246,0.2); padding:4px 8px; border-radius:4px;">FIRST10</span>
+    </div>
+
+    <!-- Plan -->
+    <div class="plan-card">
+        <h2>Plan Premium de Prueba</h2>
+        <p>Acceso completo a todos los recursos</p>
+        <div class="plan-price">€0.00</div>
+        <p>Ideal para probar nuestro servicio</p>
+    </div>
+
+    <!-- Seguridad -->
+    <div class="secure-badge">
+        <i class="fas fa-lock"></i> Pagos 100% seguros y protegidos por Stripe & PCI-DSS
+    </div>
+
+    <!-- Botón de pago -->
+    <button class="btn btn-primary" id="checkoutButton">
+        Proceder al Pago Seguro
+    </button>
+
+    <p style="text-align: center; margin-top: 16px; color: #A0A5C0; font-size: 14px;">
+        <i class="fas fa-shield-alt"></i> Tus datos están cifrados y nunca salen de este sitio.
+    </p>
+</div>
+
+<script type="module">
+    // Importar Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBExxDIdnj7x9Z1MlAEKMWM",
+        authDomain: "zenithox-3628f.firebaseapp.com",
+        projectId: "zenithox-3628f",
+        storageBucket: "zenithox-3628f.firebasestorage.app",
+        messagingSenderId: "817872713498",
+        appId: "1:817872713498:web:8a6cb78e829f37a3441ea3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Botón de checkout
+    document.getElementById('checkoutButton').addEventListener('click', async () => {
+        // Simular proceso de pago (en producción: iría a Stripe o PayPal)
+        showNotification('🔒 Procesando pago...', 'Verificando datos de forma segura...', 'info');
+
+        // Sim (€0.00)
+        setTimeout(async () => {
+            // Guardar en Firestore como "pago exitoso"
+            await setDoc(doc(db, "payments", Date.now().toString()), {
+                status: "success",
+                email: "cliente@ejemplo.com", // En producción, sería dinámico
+                amount: 0,
+                timestamp: new Date(),
+                promo: "FIRST10"
+            });
+
+            showNotification('✅ Pago exitoso', 'Redirigiendo...', 'success');
+            setTimeout(() => {
+                window.location.href = 'congratulations.html';
+            }, 1500);
+        }, 2000);
+    });
+
+    function showNotification(title, msg, type) {
+        const notif = document.createElement('div');
+        notif.className = `notification ${type}`;
+        notif.innerHTML = `
+            <div style="display:flex;align-items:center;gap:12px;">
+                <i class="fas ${type==='success'?'fa-check-circle':'fa-exclamation-circle'}" style="color:${type==='success'?'#10B981':'#F59E0B'};"></i>
+                <div>
+                    <div><strong>${title}</strong></div>
+                    <div style="font-size:14px;color:#A0A5C0;">${msg}</div>
+                </div>
+            </div>
+        `;
+        notif.style.cssText = `
+            position: fixed; top: 20px; right: 20px; background: rgba(18,22,35,0.95); 
+            backdrop-filter: blur(12px); padding: 16px 20px; border-radius: 16px;
+            border-left: 4px solid ${type==='success'?'#10B981':'#F59E0B'}; 
+            z-index: 1000; transform: translateX(100%); animation: slideIn 0.3s forwards;
+        `;
+        document.body.appendChild(notif);
+        setTimeout(() => notif.remove(), 3000);
+    }
+
+    @keyframes slideIn { to { transform: translateX(0); } }
+</script>
+
+<!-- Font Awesome -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</body>
+</html>
+
