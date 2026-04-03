@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout - Hosting</title>
+<title>Checkout Premium</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
 
@@ -19,60 +20,48 @@ font-family:'Inter',sans-serif;
 body{
 background:#0f172a;
 color:white;
-display:flex;
-flex-direction:column;
-align-items:center;
 min-height:100vh;
 }
 
-/* Banner descuento */
+/* banner */
 
-.discount-banner{
-width:100%;
+.banner{
 background:linear-gradient(90deg,#6366f1,#8b5cf6);
-text-align:center;
 padding:12px;
+text-align:center;
 font-weight:600;
-letter-spacing:0.5px;
-animation:slideDown 1s ease;
+animation:slideDown .8s ease;
 }
 
 @keyframes slideDown{
-from{transform:translateY(-100%);}
-to{transform:translateY(0);}
+from{transform:translateY(-100%)}
+to{transform:translateY(0)}
 }
 
 /* container */
 
 .container{
-width:100%;
 max-width:1100px;
-margin-top:40px;
+margin:auto;
+padding:30px;
 display:grid;
 grid-template-columns:1fr 420px;
 gap:40px;
-padding:20px;
 }
 
-/* card */
+/* cards */
 
 .card{
 background:#1e293b;
 border-radius:14px;
 padding:30px;
-box-shadow:0 15px 40px rgba(0,0,0,0.4);
-animation:fadeUp 0.8s ease;
+box-shadow:0 20px 50px rgba(0,0,0,0.5);
+animation:fadeUp .8s ease;
 }
 
 @keyframes fadeUp{
-from{
-opacity:0;
-transform:translateY(20px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
+from{opacity:0; transform:translateY(25px)}
+to{opacity:1; transform:translateY(0)}
 }
 
 h2{
@@ -85,33 +74,34 @@ margin-bottom:20px;
 width:100%;
 padding:14px;
 margin-bottom:15px;
-border:none;
 border-radius:8px;
+border:none;
 background:#334155;
 color:white;
-font-size:14px;
 }
 
 .input:focus{
 outline:2px solid #6366f1;
 }
 
-/* payments */
+/* payment methods */
 
 .payments{
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:10px;
-margin-top:15px;
+gap:12px;
 }
 
 .payment{
 background:#334155;
-padding:12px;
+padding:14px;
 border-radius:8px;
 cursor:pointer;
-text-align:center;
-transition:0.3s;
+display:flex;
+align-items:center;
+gap:10px;
+justify-content:center;
+transition:.25s;
 font-weight:600;
 }
 
@@ -120,12 +110,33 @@ background:#6366f1;
 transform:scale(1.05);
 }
 
-/* order summary */
+/* coupon */
+
+.coupon{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.coupon input{
+flex:1;
+}
+
+.coupon button{
+background:#6366f1;
+border:none;
+padding:12px 16px;
+border-radius:8px;
+color:white;
+cursor:pointer;
+}
+
+/* summary */
 
 .summary-item{
 display:flex;
 justify-content:space-between;
-margin-bottom:12px;
+margin-bottom:10px;
 font-size:14px;
 }
 
@@ -139,7 +150,7 @@ justify-content:space-between;
 
 /* button */
 
-.checkout-btn{
+.checkout{
 width:100%;
 margin-top:25px;
 padding:16px;
@@ -150,21 +161,23 @@ color:white;
 font-size:16px;
 font-weight:700;
 cursor:pointer;
-transition:0.3s;
+transition:.3s;
 }
 
-.checkout-btn:hover{
+.checkout:hover{
 transform:scale(1.03);
-box-shadow:0 10px 30px rgba(99,102,241,0.6);
+box-shadow:0 10px 30px rgba(99,102,241,.6);
 }
 
-/* secure */
+/* trust */
 
-.secure{
+.trust{
 margin-top:20px;
+display:flex;
+justify-content:center;
+gap:20px;
 font-size:13px;
-opacity:0.7;
-text-align:center;
+opacity:.7;
 }
 
 @media(max-width:900px){
@@ -180,48 +193,61 @@ grid-template-columns:1fr;
 
 <body>
 
-<div class="discount-banner">
-🎉 10% DE DESCUENTO EN TU PRIMER SERVIDOR — Usa el código: <b>FIRST10</b>
+<div class="banner">
+🎉 10% de descuento en tu primer servidor — Código: <b>FIRST10</b>
 </div>
 
 <div class="container">
 
-<!-- Checkout -->
+<!-- checkout -->
 
 <div class="card">
 
-<h2>Información de pago</h2>
+<h2><i class="fa-solid fa-user"></i> Información</h2>
 
 <input class="input" placeholder="Nombre completo">
-
 <input class="input" placeholder="Correo electrónico">
-
 <input class="input" placeholder="Dirección">
-
 <input class="input" placeholder="Ciudad">
-
 <input class="input" placeholder="Código postal">
 
-<h2>Método de pago</h2>
+<h2><i class="fa-solid fa-credit-card"></i> Método de pago</h2>
 
 <div class="payments">
 
-<div class="payment">💳 Tarjeta</div>
-<div class="payment">🅿️ PayPal</div>
-<div class="payment">🍎 Apple Pay</div>
-<div class="payment">🤖 Google Pay</div>
-<div class="payment">💰 Crypto</div>
-<div class="payment">⚡ Stripe</div>
+<div class="payment">
+<i class="fa-brands fa-cc-visa"></i> Visa
+</div>
 
+<div class="payment">
+<i class="fa-brands fa-cc-mastercard"></i> Mastercard
+</div>
+
+<div class="payment">
+<i class="fa-brands fa-paypal"></i> PayPal
+</div>
+
+<div class="payment">
+<i class="fa-brands fa-stripe"></i> Stripe
+</div>
+
+<div class="payment">
+<i class="fa-brands fa-apple-pay"></i> Apple Pay
+</div>
+
+<div class="payment">
+<i class="fa-brands fa-google-pay"></i> Google Pay
 </div>
 
 </div>
 
-<!-- Resumen -->
+</div>
+
+<!-- summary -->
 
 <div class="card">
 
-<h2>Resumen del pedido</h2>
+<h2><i class="fa-solid fa-cart-shopping"></i> Resumen</h2>
 
 <div class="summary-item">
 <span>Servidor Minecraft</span>
@@ -234,28 +260,76 @@ grid-template-columns:1fr;
 </div>
 
 <div class="summary-item">
-<span>Descuento</span>
-<span>-10%</span>
+<span>RAM</span>
+<span>4GB</span>
 </div>
 
-<hr style="opacity:0.2;margin:15px 0;">
+<div class="summary-item" id="discountRow" style="display:none;">
+<span>Descuento</span>
+<span id="discountAmount">-$0</span>
+</div>
+
+<hr style="opacity:.2;margin:15px 0;">
 
 <div class="total">
 <span>Total</span>
-<span>$9.00</span>
+<span id="total">$10.00</span>
 </div>
 
-<button class="checkout-btn">
-Completar Compra
+<div class="coupon">
+
+<input id="couponInput" class="input" placeholder="Código de descuento">
+
+<button onclick="applyCoupon()">
+Canjear
 </button>
 
-<div class="secure">
-🔒 Pagos seguros protegidos con encriptación SSL
 </div>
+
+<button class="checkout">
+<i class="fa-solid fa-lock"></i> Pagar ahora
+</button>
+
+<div class="trust">
+
+<span><i class="fa-solid fa-lock"></i> SSL Seguro</span>
+<span><i class="fa-solid fa-shield-halved"></i> Protección</span>
+<span><i class="fa-solid fa-bolt"></i> Pago instantáneo</span>
 
 </div>
 
 </div>
+
+</div>
+
+<script>
+
+let price = 10;
+
+function applyCoupon(){
+
+let code = document.getElementById("couponInput").value.toUpperCase();
+
+if(code === "FIRST10"){
+
+let discount = price * 0.10;
+let total = price - discount;
+
+document.getElementById("discountRow").style.display="flex";
+document.getElementById("discountAmount").innerText = "-$"+discount.toFixed(2);
+document.getElementById("total").innerText = "$"+total.toFixed(2);
+
+alert("Código aplicado: 10% de descuento 🎉");
+
+}else{
+
+alert("Código inválido");
+
+}
+
+}
+
+</script>
 
 </body>
 </html>
