@@ -5,24 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zenithox Checkout</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 
 <style>
 
-*{box-sizing:border-box;margin:0;padding:0;font-family:Inter}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter;
+}
 
 body{
 background:#020617;
 color:white;
-min-height:100vh
+min-height:100vh;
 }
+
+/* particles */
 
 #particles-js{
 position:fixed;
 width:100%;
 height:100%;
-z-index:-1
+z-index:-1;
 }
 
 /* header */
@@ -30,42 +38,54 @@ z-index:-1
 .header{
 display:flex;
 justify-content:space-between;
+align-items:center;
 padding:20px 40px;
 background:#020617;
-border-bottom:1px solid rgba(255,255,255,.05)
+border-bottom:1px solid rgba(255,255,255,.05);
 }
 
 .logo{
-font-weight:700;
 font-size:22px;
-color:#a78bfa
+font-weight:700;
+color:#a78bfa;
 }
 
 .currency{
 background:#0f172a;
 border:none;
+color:white;
 padding:8px 12px;
 border-radius:6px;
-color:white
 }
 
 /* hero */
 
 .hero{
 text-align:center;
-padding:50px 20px
+padding:60px 20px;
 }
 
-.hero img{
-width:130px;
+.host-icon{
+width:90px;
 margin-bottom:20px;
-animation:float 6s infinite ease-in-out
+animation:float 6s infinite ease-in-out;
 }
 
 @keyframes float{
+
 0%{transform:translateY(0)}
-50%{transform:translateY(-10px)}
+50%{transform:translateY(-12px)}
 100%{transform:translateY(0)}
+
+}
+
+.hero h1{
+font-size:38px;
+margin-bottom:10px;
+}
+
+.hero p{
+opacity:.7;
 }
 
 /* layout */
@@ -76,31 +96,33 @@ margin:auto;
 padding:40px;
 display:grid;
 grid-template-columns:1fr 420px;
-gap:40px
+gap:40px;
 }
 
 .card{
 background:#0f172a;
 padding:30px;
 border-radius:14px;
-border:1px solid rgba(255,255,255,.05)
+border:1px solid rgba(255,255,255,.05);
 }
+
+/* section */
 
 .section-title{
 margin-bottom:10px;
-font-weight:600
+font-weight:600;
 }
 
 /* sliders */
 
 .slider{
 width:100%;
-margin-bottom:15px
+margin-bottom:15px;
 }
 
 .slider-value{
-margin-bottom:10px;
-opacity:.8
+margin-bottom:8px;
+opacity:.8;
 }
 
 /* payments */
@@ -108,7 +130,7 @@ opacity:.8
 .payments{
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:10px
+gap:10px;
 }
 
 .payment{
@@ -117,12 +139,13 @@ padding:12px;
 border-radius:8px;
 cursor:pointer;
 text-align:center;
-border:2px solid transparent
+border:2px solid transparent;
+transition:.2s;
 }
 
 .payment.active{
 border-color:#a78bfa;
-background:#1e293b
+background:#1e293b;
 }
 
 /* inputs */
@@ -134,7 +157,7 @@ border:none;
 border-radius:8px;
 background:#020617;
 color:white;
-margin-bottom:10px
+margin-bottom:10px;
 }
 
 /* summary */
@@ -142,7 +165,7 @@ margin-bottom:10px
 .summary-item{
 display:flex;
 justify-content:space-between;
-margin-bottom:10px
+margin-bottom:10px;
 }
 
 .total{
@@ -150,33 +173,86 @@ display:flex;
 justify-content:space-between;
 font-size:20px;
 font-weight:700;
-margin-top:10px
+margin-top:10px;
 }
 
+/* botones premium */
+
 button{
-padding:14px;
-border:none;
-border-radius:8px;
-cursor:pointer
+padding:14px 18px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,0.08);
+background:#111827;
+color:white;
+font-weight:600;
+letter-spacing:.3px;
+cursor:pointer;
+transition:all .25s ease;
+position:relative;
+overflow:hidden;
+box-shadow:0 4px 14px rgba(0,0,0,0.35);
 }
+
+button::before{
+content:"";
+position:absolute;
+top:0;
+left:-120%;
+width:120%;
+height:100%;
+background:linear-gradient(
+90deg,
+transparent,
+rgba(255,255,255,0.15),
+transparent
+);
+transition:.5s;
+}
+
+button:hover::before{
+left:120%;
+}
+
+button:hover{
+transform:translateY(-2px);
+box-shadow:0 10px 25px rgba(0,0,0,0.45);
+border-color:rgba(255,255,255,0.2);
+}
+
+button:active{
+transform:scale(.97);
+}
+
+/* boton principal */
 
 .primary{
 width:100%;
 margin-top:20px;
-background:linear-gradient(90deg,#7c3aed,#6366f1);
-color:white;
-font-weight:600
+background:linear-gradient(135deg,#7c3aed,#6366f1);
+border:none;
+font-weight:700;
+box-shadow:0 6px 20px rgba(124,58,237,.35);
 }
+
+.primary:hover{
+box-shadow:0 12px 30px rgba(124,58,237,.45);
+}
+
+/* policy */
 
 .policy{
 margin-top:20px;
 font-size:13px;
 opacity:.7;
-text-align:center
+text-align:center;
 }
 
 @media(max-width:900px){
-.container{grid-template-columns:1fr}
+
+.container{
+grid-template-columns:1fr;
+}
+
 }
 
 </style>
@@ -200,9 +276,15 @@ text-align:center
 
 <div class="hero">
 
-<img src="https://media.giphy.com/media/xT0xeJpnrWC4XWblEk/giphy.gif">
+<svg class="host-icon" viewBox="0 0 24 24" fill="#a78bfa">
+<rect x="3" y="4" width="18" height="6" rx="2"/>
+<rect x="3" y="14" width="18" height="6" rx="2"/>
+<circle cx="7" cy="7" r="1.5" fill="#020617"/>
+<circle cx="7" cy="17" r="1.5" fill="#020617"/>
+</svg>
 
-<h1>Zenithox Cloud Servers</h1>
+<h1>Zenithox Cloud Hosting</h1>
+<p>High performance infrastructure</p>
 
 </div>
 
@@ -273,6 +355,7 @@ text-align:center
 </div>
 
 <input id="coupon" class="input" placeholder="Discount Code">
+
 <button onclick="applyCoupon()">Apply Code</button>
 
 <button class="primary" onclick="checkout()">Create Server</button>
@@ -287,8 +370,6 @@ Refunds available up to 15 days after purchase
 
 <script>
 
-/* particles */
-
 particlesJS("particles-js",{
 particles:{
 number:{value:80},
@@ -298,22 +379,13 @@ line_linked:{enable:true}
 }
 })
 
-let currency="USD"
 let discount=0
-
-let ram=4
-let cpu=2
-let storage=40
-
-let payment=null
-
-/* sliders */
 
 function update(){
 
-ram=document.getElementById("ram").value
-cpu=document.getElementById("cpu").value
-storage=document.getElementById("storage").value
+let ram=document.getElementById("ram").value
+let cpu=document.getElementById("cpu").value
+let storage=document.getElementById("storage").value
 
 document.getElementById("ramValue").innerText=ram
 document.getElementById("cpuValue").innerText=cpu
@@ -323,50 +395,23 @@ document.getElementById("sumRam").innerText=ram+"GB"
 document.getElementById("sumCpu").innerText=cpu
 document.getElementById("sumStorage").innerText=storage+"GB"
 
-/* pricing formula */
-
 let price=(ram*1)+(cpu*2)+(storage*0.02)
 
 price=price-(price*discount)
 
-document.getElementById("price").innerText=format(price)
-document.getElementById("total").innerText=format(price)
+document.getElementById("price").innerText="$"+price.toFixed(2)
+document.getElementById("total").innerText="$"+price.toFixed(2)
 
 }
 
-document.querySelectorAll(".slider").forEach(s=>{
-s.oninput=update
-})
-
-/* payment */
+document.querySelectorAll(".slider").forEach(s=>s.oninput=update)
 
 document.querySelectorAll(".payment").forEach(p=>{
 p.onclick=()=>{
 document.querySelectorAll(".payment").forEach(x=>x.classList.remove("active"))
 p.classList.add("active")
-payment=p.innerText
 }
 })
-
-/* currency */
-
-document.getElementById("currency").onchange=e=>{
-currency=e.target.value
-update()
-}
-
-function format(v){
-
-v=v.toFixed(2)
-
-if(currency==="EUR") return "€"+v
-if(currency==="MXN") return "$"+v+" MXN"
-
-return "$"+v
-
-}
-
-/* coupon */
 
 function applyCoupon(){
 
@@ -384,14 +429,7 @@ update()
 }
 
 function checkout(){
-
-if(!payment){
-alert("Select payment method")
-return
-}
-
-alert("Server created: "+ram+"GB RAM / "+cpu+" CPU / "+storage+"GB Storage")
-
+alert("Server created successfully")
 }
 
 update()
