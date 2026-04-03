@@ -11,12 +11,7 @@
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 
 body{
 background:#020617;
@@ -25,7 +20,30 @@ min-height:100vh;
 overflow-x:hidden;
 }
 
-/* PARTICLES */
+/* PROMO BAR */
+
+.promo{
+background:linear-gradient(90deg,#7c3aed,#6366f1);
+text-align:center;
+padding:10px;
+font-size:14px;
+display:flex;
+justify-content:center;
+align-items:center;
+gap:10px;
+}
+
+.copy-btn{
+background:white;
+color:#000;
+border:none;
+padding:5px 10px;
+border-radius:6px;
+cursor:pointer;
+font-weight:600;
+}
+
+/* particles */
 
 #particles-js{
 position:fixed;
@@ -34,7 +52,7 @@ height:100%;
 z-index:-3;
 }
 
-/* LIGHTNING */
+/* lightning */
 
 #lightning{
 position:fixed;
@@ -58,22 +76,18 @@ rgba(255,255,255,.9),
 rgba(255,255,255,0)
 );
 opacity:0;
-filter:blur(1px);
-transform:skewX(-20deg);
 animation:flash .5s linear;
 }
 
 @keyframes flash{
-
 0%{opacity:0}
 10%{opacity:1}
 20%{opacity:.4}
 30%{opacity:1}
 100%{opacity:0}
-
 }
 
-/* HEADER */
+/* header */
 
 .header{
 display:flex;
@@ -96,11 +110,11 @@ color:white;
 border-radius:6px;
 }
 
-/* HERO */
+/* hero */
 
 .hero{
 text-align:center;
-padding:60px 20px;
+padding:50px 20px;
 }
 
 .hero svg{
@@ -115,7 +129,7 @@ animation:float 5s infinite ease-in-out;
 100%{transform:translateY(0)}
 }
 
-/* LAYOUT */
+/* layout */
 
 .container{
 max-width:1200px;
@@ -133,13 +147,17 @@ border-radius:14px;
 border:1px solid rgba(255,255,255,.05);
 }
 
-/* PLANS */
+/* dropdown plans */
 
-.plans{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:8px;
+.dropdown{
 margin-bottom:20px;
+}
+
+.plan-list{
+display:none;
+margin-top:10px;
+grid-template-columns:repeat(3,1fr);
+gap:8px;
 }
 
 .plan{
@@ -148,20 +166,13 @@ padding:10px;
 text-align:center;
 border-radius:8px;
 cursor:pointer;
-border:2px solid transparent;
-transition:.2s;
 }
 
 .plan:hover{
 background:#1e293b;
 }
 
-.plan.active{
-border-color:#8b5cf6;
-background:#1e293b;
-}
-
-/* SLIDERS */
+/* sliders */
 
 .slider{
 width:100%;
@@ -173,7 +184,7 @@ margin-bottom:6px;
 opacity:.8;
 }
 
-/* INPUTS */
+/* inputs */
 
 .input{
 width:100%;
@@ -185,7 +196,7 @@ color:white;
 margin-bottom:10px;
 }
 
-/* PAYMENTS */
+/* payments */
 
 .payments{
 display:grid;
@@ -207,7 +218,7 @@ border-color:#8b5cf6;
 background:#1e293b;
 }
 
-/* BUTTONS */
+/* buttons */
 
 button{
 padding:14px;
@@ -216,11 +227,6 @@ border:none;
 background:#111827;
 color:white;
 cursor:pointer;
-transition:.25s;
-}
-
-button:hover{
-transform:translateY(-2px);
 }
 
 .primary{
@@ -229,50 +235,24 @@ margin-top:15px;
 background:linear-gradient(135deg,#7c3aed,#6366f1);
 }
 
-/* SUMMARY */
+/* refund */
 
-.summary-item{
-display:flex;
-justify-content:space-between;
-margin-bottom:10px;
+.refund{
+margin-top:20px;
+font-size:13px;
+opacity:.8;
+text-align:center;
 }
-
-.total{
-display:flex;
-justify-content:space-between;
-font-size:20px;
-font-weight:700;
-margin-top:10px;
-}
-
-/* RESPONSIVE */
 
 @media (max-width:900px){
 
 .container{
 grid-template-columns:1fr;
 padding:20px;
-gap:20px;
 }
 
-.plans{
-grid-template-columns:repeat(3,1fr);
-}
-
-}
-
-@media (max-width:500px){
-
-.plans{
+.plan-list{
 grid-template-columns:repeat(2,1fr);
-}
-
-.hero h1{
-font-size:26px;
-}
-
-.container{
-padding:15px;
 }
 
 }
@@ -281,6 +261,11 @@ padding:15px;
 </head>
 
 <body>
+
+<div class="promo">
+10% de descuento en tu primer servidor — Código: <b>FIRST10</b>
+<button class="copy-btn" onclick="copyCode()">Copiar</button>
+</div>
 
 <div id="particles-js"></div>
 <div id="lightning"></div>
@@ -304,8 +289,7 @@ padding:15px;
 <rect x="3" y="14" width="18" height="6" rx="2"/>
 </svg>
 
-<h1>Zenithox Hosting</h1>
-<p>Checkout test environment</p>
+<h1>Zenithox Cloud Hosting</h1>
 
 </div>
 
@@ -315,7 +299,11 @@ padding:15px;
 
 <h3>Quick Plans</h3>
 
-<div class="plans">
+<div class="dropdown">
+
+<button onclick="togglePlans()">Seleccionar Plan</button>
+
+<div id="planList" class="plan-list">
 
 <div class="plan">1GB</div>
 <div class="plan">2GB</div>
@@ -326,6 +314,8 @@ padding:15px;
 <div class="plan">12GB</div>
 <div class="plan">16GB</div>
 <div class="plan">32GB</div>
+
+</div>
 
 </div>
 
@@ -391,21 +381,18 @@ padding:15px;
 
 <div class="summary-item">
 <span>Price</span>
-<span>$0</span>
+<span id="price">$0</span>
 </div>
 
-<hr style="opacity:.2;margin:10px 0">
+<input id="coupon" class="input" placeholder="Discount Code">
 
-<div class="total">
-<span>Total</span>
-<span>$0</span>
-</div>
-
-<input class="input" placeholder="Discount Code">
-
-<button>Apply Code</button>
+<button onclick="applyCoupon()">Apply Code</button>
 
 <button class="primary" onclick="checkout()">Create Server</button>
+
+<div class="refund">
+Si no estás satisfecho con nuestro servicio puedes solicitar un reembolso dentro de los primeros 15 días después de tu compra.
+</div>
 
 </div>
 
@@ -413,41 +400,30 @@ padding:15px;
 
 <script>
 
-/* PARTICLES */
-
-particlesJS("particles-js",{
-particles:{
-number:{value:80},
-size:{value:3},
-move:{speed:2},
-line_linked:{enable:true}
-}
-})
-
-/* LIGHTNING */
+particlesJS("particles-js",{particles:{number:{value:80},size:{value:3},move:{speed:2},line_linked:{enable:true}}})
 
 function createLightning(){
-
 let bolt=document.createElement("div")
 bolt.className="bolt"
-
 bolt.style.left=Math.random()*100+"%"
-
 document.getElementById("lightning").appendChild(bolt)
-
-setTimeout(()=>{
-bolt.remove()
-},500)
-
+setTimeout(()=>{bolt.remove()},500)
 }
 
-setInterval(()=>{
-if(Math.random()<0.5){
-createLightning()
-}
-},1200)
+setInterval(()=>{if(Math.random()<0.5){createLightning()}},1200)
 
-/* UPDATE */
+function togglePlans(){
+let list=document.getElementById("planList")
+list.style.display=list.style.display==="grid"?"none":"grid"
+}
+
+document.querySelectorAll(".plan").forEach(p=>{
+p.onclick=()=>{
+document.getElementById("ram").value=parseInt(p.innerText)
+update()
+document.getElementById("planList").style.display="none"
+}
+})
 
 function update(){
 
@@ -470,19 +446,22 @@ document.getElementById("sumServers").innerText=servers
 document.querySelectorAll(".slider").forEach(s=>s.oninput=update)
 document.getElementById("servers").onchange=update
 
-document.querySelectorAll(".payment").forEach(p=>{
-p.onclick=()=>{
-document.querySelectorAll(".payment").forEach(x=>x.classList.remove("active"))
-p.classList.add("active")
+function copyCode(){
+navigator.clipboard.writeText("FIRST10")
+alert("Código copiado")
 }
-})
 
-document.querySelectorAll(".plan").forEach(p=>{
-p.onclick=()=>{
-document.getElementById("ram").value=parseInt(p.innerText)
-update()
+function applyCoupon(){
+
+let code=document.getElementById("coupon").value.toUpperCase()
+
+if(code==="FIRST10"){
+alert("10% discount applied")
+}else{
+alert("Invalid code")
 }
-})
+
+}
 
 function checkout(){
 alert("Server created in TEST MODE ($0)")
