@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Zenithox Minecraft Hosting</title>
+<title>Zenithox | Hosting Profesional</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 <script src="https://js.stripe.com/v3/"></script>
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
@@ -11,22 +11,23 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
 body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspective:1000px;}
 
+/* Header */
+.header{display:flex;justify-content:space-between;padding:20px 40px;border-bottom:1px solid rgba(255,255,255,.05);}
+.logo{font-size:22px;font-weight:700;color:#8b5cf6;}
+
 /* Promo Bar */
-.promo{position:relative;background:linear-gradient(90deg,#7c3aed,#6366f1);text12px 10px;font-size:14px;display:flex;justify-content:center;align-items:center;gap:10px;overflow:hidden;border-radius:12px;margin:15px 10px;}
+.promo{position:relative;background:linear-gradient(90deg,#7c3aed,#6366f1);text-align:center;padding:12px 10px;font-size:14px;display:flex;justify-content:center;align-items:center;gap:10px;overflow:hidden;border-radius:12px;margin:15px 10px;}
 .copy-btn{background:white;color:#000;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:600;transition:all .3s;font-size:14px;}
 .copy-btn:hover{background:#f3f3f3;transform:scale(1.05);}
 .copy-check{display:none;margin-left:5px;color:#22d399;font-weight:700;transition:all .3s;}
 
-/* Confetti */
-.confetti-piece{position:absolute;width:8px;height:8px;background:yellow;top:0;animation:fall 2s linear infinite;opacity:0;}
-@keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(120px) rotate(360deg);opacity:0}}
-
-/* animated title */
-.animated-title{font-size:clamp(28px, 6vw, 42px);font-weight:700;background:linear-gradient(90deg,#7c3aed,#22c55e,#38bdf8,#7c3aed);background-size:300%;-webkit-background-clip:text;color:transparent;animation:colorFlow 6s linear infinite;text-shadow:1px 1px 5px rgba(0,0,0,.3);margin:20px 10px;}
+/* Title */
+.title{font-size:clamp(28px, 6vw, 42px);font-weight:700;background:linear-gradient(90deg,#7c3aed,#22c55e,#38bdf8,#7c3aed);background-size:300%;-webkit-background-clip:text;color:transparent;animation:colorFlow 6s linear infinite;text-shadow:1px 1px 5px rgba(0,0,0,.3);margin:20px 10px;text-align:center;}
 @keyframes colorFlow{0%{background-position:0%}100%{background-position:300%}}
 
-/* minecraft logo */
+/* Minecraft Logo */
 .mc-logo{width:clamp(100px, 20vw, 160px);margin-top:20px;animation:floatLogo 4s ease-in-out infinite;margin:20px auto;}
+@keyframes floatLogo{0%{transform:translateY(0)}50%{transform:translateY(-12px)}100%{transform:translateY(0)}}
 
 /* particles */
 #particles-js{position:fixed;width:100%;height:100%;z-index:-3;}
@@ -35,10 +36,6 @@ body{background:#020617;color:white;min-height:100vh;overflow-x:hidden;perspecti
 #lightning{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;z-index:-2;}
 .bolt{position:absolute;top:-20%;width:3px;height:140%;background:linear-gradient(to bottom,rgba(255,255,255,0),rgba(255,255,255,.9),rgba(255,255,255,0));opacity:0;animation:flash .5s linear;}
 @keyframes flash{0%{opacity:0}10%{opacity:1}20%{opacity:.4}30%{opacity:1}100%{opacity:0}}
-
-/* header */
-.header{display:flex;justify-content:space-between;padding:20px 40px;border-bottom:1px solid rgba(255,255,255,.05);}
-.logo{font-size:22px;font-weight:700;color:#8b5cf6;}
 
 /* layout */
 .container{max-width:1200px;margin:auto;padding:20px;gap:20px;}
@@ -68,8 +65,7 @@ button:hover{transform:scale(1.03);}
 /* 100% seguro */
 .secure-msg{margin-bottom:15px;font-size:14px;font-weight:700;color:#34d399;text-align:center;transition:all .3s;}
 
-/* refund animación profesional */
-.refund{margin-top:20px;font-size:13px;opacity:.8;text-align:center;line-height:1.5;background:rgba(255,255,255,.05);padding:14px;border-radius:12px;transform-style:preserve-3d;transition:transform .3s;}
+/* refund.refund{margin-top:20px;font-size:13px;opacity:.8;text-align:center;line-height:1.5;background:rgba(255,255,255,.05);padding:14px;border-radius:12px;transform-style:preserve-3d;transition:transform .3s;}
 
 /* footer */
 .footer{margin-top:30px;text-align:center;font-size:12px;color:rgba(255,255,255,.6);opacity:.8;}
@@ -100,7 +96,6 @@ button:hover{transform:scale(1.03);}
 10% de descuento en tu primer servidor — Código: <b>FIRST10</b>
 <button class="copy-btn" onclick="copyCode()">Copiar</button>
 <span class="copy-check" id="copyCheck">✔</span>
-<div id="confetti-container"></div>
 </div>
 
 <div id="particles-js"></div>
@@ -108,9 +103,8 @@ button:hover{transform:scale(1.03);}
 
 <div class="header"><div class="logo">Zenithox</div></div>
 
-<div style="text-align:center;padding:30px 10px">
-<h1 class="animated-title">Zenithox Minecraft Hosting</h1mc-logo" src="https://pngimg.com/uploads/minecraft/minecraft_PNG7.png">
-</div>
+<h1 class="title">Zenithox Hosting Profesional</h1>
+<img class="mc-logo" src="https://pngimg.com/uploads/minecraft/minecraft_PNG7.png">
 
 <div class="container">
 <div class="card">
@@ -169,10 +163,7 @@ function selectPayment(el){document.querySelectorAll(".payment").forEach(p=>p.cl
 function copyCode(){navigator.clipboard.writeText("FIRST10");let check=document.getElementById("copyCheck");check.style.display="inline";setTimeout(()=>{check.style.display="none"},1200)}
 
 // Coupon
-function applyCoupon(){let code=documentFIRST10"){alert("10% discount applied")}else{alert("Código inválido")}}
-
-// Confetti
-function createConfetti(){const container=document.getElementById("confetti-container");for(let i=0;i<20;i++){let c=document.createElement("div");c.className="confetti-piece";c.style.backgroundColor=['#f87171','#34d399','#60a5fa','#facc15','#f472b6'][Math.floor(Math.random()*5)];c.style.left=Math.random()*100+"%";c.style.animationDelay=Math.random()*1+"s";container.appendChild(c);setTimeout(()=>{c.remove()},2000)}};setInterval(createConfetti,1500);
+function applyCoupon(){let code=document.getElementById("coupon").value.toUpperCase();if(code==="FIRST10"){alert("10% discount applied")}else{alert("Código inválido")}}
 
 // Stripe integration
 const stripe = Stripe('pk_test_...'); // Reemplaza con tu clave pública real
