@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fondos Insuficientes | Zenithox</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0A0C15;
+            color: #EFF3F8;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 40px auto;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .icon {
+            font-size: 6rem;
+            margin: 24px 0;
+            color: #F59E0B;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: #F59E0B;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #A78BFA;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .message {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #F59E0B, #D97706);
+            border: none;
+            color: white;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #6B7280;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 16px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">💸</div>
+        <h1>Fondos Insuficientes</h1>
+        <p class="subtitle">No tienes saldo suficiente para completar la compra</p>
+
+        <div class="message">
+            <strong>Saldo actual:</strong> $0.00<br>
+            <strong>Requerido:</strong> $10.00 (Plan Profesional Premium)<br><br>
+            Para continuar, recarga tu cuenta o selecciona un plan gratuito.
+        </div>
+
+        <button class="btn" onclick="goToBilling()">
+            <i class="fas fa-wallet"></i> Recargar Cuenta
+        </button>
+
+        <button class="btn" style="background: linear-gradient(135deg, #6366F1,8B5CF6); margin-top: 12px;" onclick="goToPlans()">
+            <i class="fas fa-cubes"></i> Ver Planes Gratuitos
+        </button>
+
+        <div class="footer">
+            Zenithox Hosting • Tu servidor está esperando
+        </div>
+    </div>
+
+    <script>
+        function goToBilling() {
+            window.location.href = 'billing.html'; // o 'client-area.html'
+        }
+
+        function goToPlans() {
+            window.location.href = 'create-server.html';
+        }
+    </script>
+</body>
+</html>
+
