@@ -21,15 +21,13 @@
             position: relative;
         }
 
-        /* Confeti (gorritos) */
-        .confetti {
+        /* Emojis flotantes */
+        .emoji {
             position: absolute;
-            width: 12px;
-            height: 12px;
-            background: #FFD700; /* dorado */
-            border-radius: 50%;
-            animation: fall linear forwards;
+            font-size: 1.8rem;
+            pointer-events: none;
             z-index: 1;
+            animation: fall linear forwards;
         }
 
         @keyframes fall {
@@ -46,18 +44,18 @@
             padding: 40px 20px;
             max-width: 600px;
             margin: 0 auto;
-            min-height: 00vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
         }
 
         h1 {
             font-size: 2.5rem;
             font-weight: 800;
             margin-bottom: 16px;
-            background: linear-gradient(135deg, #6366F1, #8B5CF6, #10B981);
+            background: linear-gradient(135deg, #6366F1, #8B5CF6, #10B81);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -65,7 +63,7 @@
         }
 
         @keyframes pulse {
-            0%, 100% { text-shadow: 0 0 20px rgba(99,102,241,0.5); }
+            0%, 100% { text-shadow: 0 0 2px rgba(99,102,241,0.5); }
             50% { text-shadow: 0 0 40px rgba(139,92,246,0.8); }
         }
 
@@ -78,7 +76,7 @@
 
         .message {
             background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129,0.3);
             border-radius: 16px;
             padding: 24px;
             margin: 24px 0;
@@ -108,7 +106,7 @@
 
         .btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, .4);
         }
 
         .footer {
@@ -116,18 +114,6 @@
             font-size: 14px;
             color: #6B7280;
             text-align: center;
-        }
-
-        /* Iconos animados */
-        .celebration-icon {
-            font-size: 4rem;
-            margin: 20px 0;
-            animation: bounce 1.2s infinite alternate;
-        }
-
-        @keyframes bounce {
-            from { transform: translateY(0); }
-            to { transform: translateY(-20px); }
         }
 
         @media (max-width: 768px) {
@@ -139,16 +125,12 @@
 </head>
 <body>
     <div class="container">
-        <div class="celebration-icon">
-            🎉
-        </div>
-
         <h1>¡Felicidades por tu compra!</h1>
         <p class="subtitle">Tu servidor está listo para usar</p>
 
         <div class="message">
             <strong>Gracias por tu compra — Profesional Premium</strong><br>
-            Tu servidor ya está desplegado y listo. ¡Disfrútalo!
+            ¡Tu servidor ya está desplegado y listo! 🚀
         </div>
 
         <button class="btn" onclick="goToPanel()">
@@ -161,39 +143,56 @@
     </div>
 
     <script>
-        // Generar confeti (gorritos)
-        function createConfetti() {
-            const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
-            const container = document.body;
+        // Emojis festivos
+        const emojis = ['🥳', '💥', '🎉', '✨', '🚀', '🌟', '🎁', '🔥', '🎊', '💫'];
 
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.width = `${Math.random() * 12 + 8}px`;
-                confetti.style.height = confetti.style.width;
-                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
-                confetti.style.animationDelay = `${Math.random() * 1}s`;
-                container.appendChild(confetti);
-            }
+        function createEmoji() {
+            const emoji = document.createElement('div');
+            emoji.classList.add('emoji');
+            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            // Posición aleatoria en
+            const left = Math.random() * 100;
+            emoji.style.left = `${left}%`;
+            
+            // Tamaño aleatorio
+            const size = Math.random() * 20 + 16;
+            emoji.style.fontSize = `${size}px`;
+            
+            // Duración y velocidad aleatorias
+            const duration = Math.random() * 3 + 2;
+            const delay = Math.random() * 1;
+            emoji.style.animationDuration = `${duration}s`;
+            emoji.style.animationDelay = `${delay}s`;
+            
+            document.body.appendChild(emoji);
+
+            // Eliminar después la animación
+            setTimeout(() => {
+                emoji.remove();
+            }, (duration + delay) * 1000);
         }
 
-        // Redirigir al panel
-        function goToPanel() {
-            // Opción 1: Ir directo al login-panel.html (recomendado)
-            window.location.href = 'login-panel.html';
-
-            // Opción 2: Si quieres que vaya a credenciales.html primero:
-            // window.location.href = 'credenciales.html';
+        // Generar 80 emojis en ráfaga (explosión)
+        function launchCelebration() {
+            for (let i = 0; i < 80; i++) {
+                setTimeout(createEmoji, i * 50);
+            }
         }
 
         // Iniciar al cargar
         window.onload = () => {
-            createConfetti();
+            launchCelebration();
         };
+
+        // Redirigir al panel
+        function goToPanel() {
+            // Opción 1: Ir directo al login-panel.html
+            window.location.href = 'login-panel.html';
+
+            // Opción 2: Si prefieres ir a credenciales.html primero:
+            // window.location.href = 'credenciales.html';
+        }
     </script>
 </body>
 </html>
-
-
