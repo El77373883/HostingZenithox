@@ -8,6 +8,8 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
 <style>
 
 *{
@@ -18,9 +20,19 @@ font-family:Inter;
 }
 
 body{
-background:#0f172a;
+background:#020617;
 color:white;
 min-height:100vh;
+overflow-x:hidden;
+}
+
+/* particles */
+
+#particles-js{
+position:fixed;
+width:100%;
+height:100%;
+z-index:-1;
 }
 
 /* header */
@@ -30,31 +42,54 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 padding:20px 40px;
-background:#020617;
+background:rgba(2,6,23,.7);
+backdrop-filter:blur(10px);
 border-bottom:1px solid rgba(255,255,255,.05);
 }
 
 .logo{
-font-size:20px;
+font-size:22px;
 font-weight:700;
+letter-spacing:1px;
 color:#a78bfa;
 }
 
 .currency{
-background:#1e293b;
+background:#0f172a;
 border:none;
 padding:8px 12px;
 border-radius:6px;
 color:white;
 }
 
-/* banner */
+/* hero */
 
-.banner{
-background:linear-gradient(90deg,#7c3aed,#6366f1);
-padding:10px;
+.hero{
 text-align:center;
-font-weight:600;
+padding:60px 20px;
+}
+
+.hero img{
+width:140px;
+margin-bottom:20px;
+animation:float 6s infinite ease-in-out;
+}
+
+@keyframes float{
+
+0%{transform:translateY(0px)}
+50%{transform:translateY(-10px)}
+100%{transform:translateY(0px)}
+
+}
+
+.hero h1{
+font-size:40px;
+margin-bottom:10px;
+}
+
+.hero p{
+opacity:.7;
 }
 
 /* layout */
@@ -71,10 +106,16 @@ gap:40px;
 /* cards */
 
 .card{
-background:#020617;
+background:rgba(15,23,42,.7);
+border-radius:14px;
 padding:30px;
-border-radius:12px;
-box-shadow:0 20px 60px rgba(0,0,0,.6);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.05);
+transition:.3s;
+}
+
+.card:hover{
+transform:translateY(-4px);
 }
 
 /* plans */
@@ -87,22 +128,22 @@ margin-bottom:25px;
 }
 
 .plan{
-background:#1e293b;
+background:#020617;
 padding:20px;
 border-radius:10px;
-text-align:center;
 cursor:pointer;
+text-align:center;
 border:2px solid transparent;
-transition:.2s;
+transition:.25s;
 }
 
 .plan:hover{
-background:#7c3aed;
+border-color:#7c3aed;
 }
 
 .plan.active{
 border-color:#a78bfa;
-background:#7c3aed;
+background:#0f172a;
 }
 
 /* inputs */
@@ -111,9 +152,9 @@ background:#7c3aed;
 width:100%;
 padding:12px;
 margin-bottom:12px;
-background:#1e293b;
-border:none;
 border-radius:8px;
+border:none;
+background:#020617;
 color:white;
 }
 
@@ -126,17 +167,16 @@ gap:10px;
 }
 
 .payment{
-background:#1e293b;
+background:#020617;
 padding:12px;
 border-radius:8px;
-text-align:center;
 cursor:pointer;
+text-align:center;
 border:2px solid transparent;
 }
 
 .payment.active{
 border-color:#a78bfa;
-background:#7c3aed;
 }
 
 /* summary */
@@ -155,7 +195,7 @@ font-weight:700;
 margin-top:10px;
 }
 
-/* buttons */
+/* button */
 
 button{
 padding:14px;
@@ -170,6 +210,12 @@ margin-top:20px;
 background:linear-gradient(90deg,#7c3aed,#6366f1);
 color:white;
 font-weight:700;
+transition:.3s;
+}
+
+.checkout:hover{
+transform:scale(1.03);
+box-shadow:0 10px 30px rgba(124,58,237,.4);
 }
 
 /* policy */
@@ -197,57 +243,61 @@ grid-template-columns:1fr;
 
 <body>
 
+<div id="particles-js"></div>
+
 <div class="header">
 
-<div class="logo">
-Zenithox
-</div>
+<div class="logo">Zenithox</div>
 
-<select class="currency" id="currency">
-
-<option value="USD">$ USD</option>
-<option value="EUR">€ EUR</option>
-<option value="MXN">$ MXN</option>
-
+<select class="currency">
+<option>USD</option>
+<option>EUR</option>
+<option>MXN</option>
 </select>
 
 </div>
 
-<div class="banner">
-🎉 10% de descuento en tu primer servidor — código FIRST10
+<div class="hero">
+
+<img src="https://media.giphy.com/media/3o7TKtnuHOHHUjR38Y/giphy.gif">
+
+<h1>Zenithox Cloud Servers</h1>
+
+<p>High performance hosting infrastructure</p>
+
 </div>
 
 <div class="container">
 
 <div class="card">
 
-<h2>Selecciona tu plan</h2>
+<h2>Server Plan</h2>
 
 <div class="plans">
 
-<div class="plan" data-plan="2GB">2GB RAM</div>
-<div class="plan" data-plan="4GB">4GB RAM</div>
-<div class="plan" data-plan="8GB">8GB RAM</div>
-<div class="plan" data-plan="16GB">16GB RAM</div>
+<div class="plan">2GB RAM</div>
+<div class="plan">4GB RAM</div>
+<div class="plan">8GB RAM</div>
+<div class="plan">16GB RAM</div>
 
 </div>
 
-<h2>Información</h2>
+<h2>Billing Information</h2>
 
-<input class="input" placeholder="Nombre">
+<input class="input" placeholder="Full Name">
 
-<input class="input" placeholder="Correo">
+<input class="input" placeholder="Email">
 
-<h2>Método de pago</h2>
+<h2>Payment Method</h2>
 
 <div class="payments">
 
-<div class="payment">Tarjeta</div>
+<div class="payment">Card</div>
 <div class="payment">PayPal</div>
 <div class="payment">Apple Pay</div>
 <div class="payment">Google Pay</div>
 <div class="payment">Gift Card</div>
-<div class="payment">Saldo</div>
+<div class="payment">Balance</div>
 
 </div>
 
@@ -255,49 +305,36 @@ Zenithox
 
 <div class="card">
 
-<h2>Resumen</h2>
+<h2>Order Summary</h2>
 
 <div class="summary-item">
 <span>Plan</span>
-<span id="planName">Ninguno</span>
+<span>None</span>
 </div>
 
 <div class="summary-item">
-<span>Precio</span>
-<span id="price">$0</span>
-</div>
-
-<div class="summary-item" id="discountRow" style="display:none">
-
-<span>Descuento</span>
-
-<span id="discountValue"></span>
-
+<span>Price</span>
+<span>$0</span>
 </div>
 
 <hr style="opacity:.2;margin:10px 0">
 
 <div class="total">
-
 <span>Total</span>
-
-<span id="total">$0</span>
-
+<span>$0</span>
 </div>
 
-<input id="couponInput" class="input" placeholder="Código de descuento">
+<input class="input" placeholder="Discount Code">
 
-<button onclick="applyCoupon()">Aplicar</button>
+<button class="checkout">
 
-<button class="checkout" onclick="checkout()">
-
-Crear servidor
+Create Server
 
 </button>
 
 <div class="policy">
 
-📜 Si no estás satisfecho con nuestros servicios, los reembolsos estarán disponibles hasta 15 días vigentes desde el día de tu compra.
+Refunds are available up to 15 days from the date of purchase.
 
 </div>
 
@@ -307,80 +344,16 @@ Crear servidor
 
 <script>
 
-let selectedPlan=null
-let selectedPayment=null
+particlesJS("particles-js",{
 
-document.querySelectorAll(".plan").forEach(plan=>{
-
-plan.onclick=()=>{
-
-document.querySelectorAll(".plan").forEach(p=>p.classList.remove("active"))
-
-plan.classList.add("active")
-
-selectedPlan=plan.dataset.plan
-
-document.getElementById("planName").innerText=selectedPlan
-
+particles:{
+number:{value:80},
+size:{value:3},
+move:{speed:2},
+line_linked:{enable:true}
 }
 
-})
-
-document.querySelectorAll(".payment").forEach(pay=>{
-
-pay.onclick=()=>{
-
-document.querySelectorAll(".payment").forEach(p=>p.classList.remove("active"))
-
-pay.classList.add("active")
-
-selectedPayment=pay.innerText
-
-}
-
-})
-
-function applyCoupon(){
-
-let code=document.getElementById("couponInput").value.toUpperCase()
-
-if(code==="FIRST10"){
-
-document.getElementById("discountRow").style.display="flex"
-
-document.getElementById("discountValue").innerText="10%"
-
-alert("Código aplicado")
-
-}else{
-
-alert("Código inválido")
-
-}
-
-}
-
-function checkout(){
-
-if(!selectedPlan){
-
-alert("Selecciona un plan")
-
-return
-
-}
-
-if(!selectedPayment){
-
-alert("Selecciona método de pago")
-
-return
-
-}
-
-alert("Servidor creado en Zenithox con plan "+selectedPlan)
-
-}
+});
 
 </script>
 
