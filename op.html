@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout - Hosting</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:#0f172a;
+color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
+min-height:100vh;
+}
+
+/* Banner descuento */
+
+.discount-banner{
+width:100%;
+background:linear-gradient(90deg,#6366f1,#8b5cf6);
+text-align:center;
+padding:12px;
+font-weight:600;
+letter-spacing:0.5px;
+animation:slideDown 1s ease;
+}
+
+@keyframes slideDown{
+from{transform:translateY(-100%);}
+to{transform:translateY(0);}
+}
+
+/* container */
+
+.container{
+width:100%;
+max-width:1100px;
+margin-top:40px;
+display:grid;
+grid-template-columns:1fr 420px;
+gap:40px;
+padding:20px;
+}
+
+/* card */
+
+.card{
+background:#1e293b;
+border-radius:14px;
+padding:30px;
+box-shadow:0 15px 40px rgba(0,0,0,0.4);
+animation:fadeUp 0.8s ease;
+}
+
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+h2{
+margin-bottom:20px;
+}
+
+/* inputs */
+
+.input{
+width:100%;
+padding:14px;
+margin-bottom:15px;
+border:none;
+border-radius:8px;
+background:#334155;
+color:white;
+font-size:14px;
+}
+
+.input:focus{
+outline:2px solid #6366f1;
+}
+
+/* payments */
+
+.payments{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin-top:15px;
+}
+
+.payment{
+background:#334155;
+padding:12px;
+border-radius:8px;
+cursor:pointer;
+text-align:center;
+transition:0.3s;
+font-weight:600;
+}
+
+.payment:hover{
+background:#6366f1;
+transform:scale(1.05);
+}
+
+/* order summary */
+
+.summary-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:12px;
+font-size:14px;
+}
+
+.total{
+font-size:20px;
+font-weight:700;
+margin-top:20px;
+display:flex;
+justify-content:space-between;
+}
+
+/* button */
+
+.checkout-btn{
+width:100%;
+margin-top:25px;
+padding:16px;
+border:none;
+border-radius:10px;
+background:linear-gradient(90deg,#6366f1,#8b5cf6);
+color:white;
+font-size:16px;
+font-weight:700;
+cursor:pointer;
+transition:0.3s;
+}
+
+.checkout-btn:hover{
+transform:scale(1.03);
+box-shadow:0 10px 30px rgba(99,102,241,0.6);
+}
+
+/* secure */
+
+.secure{
+margin-top:20px;
+font-size:13px;
+opacity:0.7;
+text-align:center;
+}
+
+@media(max-width:900px){
+
+.container{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="discount-banner">
+🎉 10% DE DESCUENTO EN TU PRIMER SERVIDOR — Usa el código: <b>FIRST10</b>
+</div>
+
+<div class="container">
+
+<!-- Checkout -->
+
+<div class="card">
+
+<h2>Información de pago</h2>
+
+<input class="input" placeholder="Nombre completo">
+
+<input class="input" placeholder="Correo electrónico">
+
+<input class="input" placeholder="Dirección">
+
+<input class="input" placeholder="Ciudad">
+
+<input class="input" placeholder="Código postal">
+
+<h2>Método de pago</h2>
+
+<div class="payments">
+
+<div class="payment">💳 Tarjeta</div>
+<div class="payment">🅿️ PayPal</div>
+<div class="payment">🍎 Apple Pay</div>
+<div class="payment">🤖 Google Pay</div>
+<div class="payment">💰 Crypto</div>
+<div class="payment">⚡ Stripe</div>
+
+</div>
+
+</div>
+
+<!-- Resumen -->
+
+<div class="card">
+
+<h2>Resumen del pedido</h2>
+
+<div class="summary-item">
+<span>Servidor Minecraft</span>
+<span>$10.00</span>
+</div>
+
+<div class="summary-item">
+<span>Ubicación</span>
+<span>USA</span>
+</div>
+
+<div class="summary-item">
+<span>Descuento</span>
+<span>-10%</span>
+</div>
+
+<hr style="opacity:0.2;margin:15px 0;">
+
+<div class="total">
+<span>Total</span>
+<span>$9.00</span>
+</div>
+
+<button class="checkout-btn">
+Completar Compra
+</button>
+
+<div class="secure">
+🔒 Pagos seguros protegidos con encriptación SSL
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
