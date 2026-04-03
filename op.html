@@ -22,7 +22,7 @@ body{background:#020617;color:white;min-height:100vh;overflow-x:hidden}
 .header{display:flex;justify-content:space-between;padding:20px 40px;border-bottom:1px solid rgba(255,255,255,.05)}
 .logo{font-size:22px;font-weight:700;color:#8b5cf6}
 .container{max-width:900px;margin:auto;padding:40px}
-.card{background:#0f172a;padding:30px;border-radius:14px;border:1px solid rgba(255,255,255,.05)}
+.card{background:rgba(15,23,42,0.95);padding:30px;border-radius:14px;border:1px solid rgba(255,255,255,.05);box-shadow:0 8px 20px rgba(0,0,0,0.3)}
 .input{width:100%;padding:12px;border:none;background:#020617;border-radius:8px;color:white;margin-bottom:10px}
 .payments{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .payment{background:#020617;padding:12px;border-radius:8px;cursor:pointer;text-align:center;border:2px solid transparent;transition:.2s}
@@ -31,6 +31,9 @@ body{background:#020617;color:white;min-height:100vh;overflow-x:hidden}
 button{padding:14px;border-radius:10px;border:none;background:#111827;color:white;cursor:pointer}
 .primary{width:100%;margin-top:15px;background:linear-gradient(135deg,#7c3aed,#6366f1)}
 .refund{margin-top:20px;font-size:13px;opacity:.8;text-align:center}
+.product-summary{background:#1e293b;padding:15px;border-radius:10px;margin-bottom:15px;border:1px solid rgba(255,255,255,.1)}
+.product-summary h4{margin-bottom:8px;color:#8b5cf6}
+.product-summary p{margin-bottom:5px;opacity:.85}
 @media (max-width:900px){.container{padding:20px}}
 </style>
 </head>
@@ -54,7 +57,6 @@ button{padding:14px;border-radius:10px;border:none;background:#111827;color:whit
 </div>
 
 <div class="container">
-
 <div class="card">
 
 <h3>Customer</h3>
@@ -72,10 +74,16 @@ button{padding:14px;border-radius:10px;border:none;background:#111827;color:whit
 </div>
 
 <h3>Order Summary</h3>
-<p>Producto: Servidor Minecraft</p>
-<p>Plan: Zenithox Premium</p>
-<p>Duración: 1 Mes</p>
-<p><b>Price: $0 (modo demo)</b></p>
+<div class="product-summary">
+<h4>Producto:</h4>
+<p>Servidor Minecraft</p>
+<h4>Plan:</h4>
+<p>Zenithox Premium</p>
+<h4>Duración:</h4>
+<p>1 Mes</p>
+<h4>Price:</h4>
+<p>$0 (modo demo)</p>
+</div>
 
 <input id="coupon" class="input" placeholder="Discount Code">
 <button onclick="applyCoupon()">Apply Code</button>
@@ -87,7 +95,6 @@ Si no estás satisfecho con nuestro servicio puedes solicitar un reembolso dentr
 </div>
 
 </div>
-
 </div>
 
 <script>
@@ -98,7 +105,6 @@ setInterval(()=>{if(Math.random()<0.5){createLightning()}},1200)
 function copyCode(){navigator.clipboard.writeText("FIRST10");alert("Código copiado")}
 function applyCoupon(){let code=document.getElementById("coupon").value.toUpperCase();if(code==="FIRST10"){alert("10% discount applied")}else{alert("Invalid code")}}
 function checkout(){alert("Pago procesado (modo demo)")}
-
 document.querySelectorAll(".payment").forEach(btn=>{btn.onclick=()=>{document.querySelectorAll(".payment").forEach(b=>b.classList.remove("active"));btn.classList.add("active")}})
 </script>
 
