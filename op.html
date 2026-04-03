@@ -9,36 +9,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',sans-serif;
-}
-
-body{
-background:#0f172a;
-color:white;
-min-height:100vh;
-}
-
-/* banner */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#0f172a;color:white;min-height:100vh;}
 
 .banner{
 background:linear-gradient(90deg,#6366f1,#8b5cf6);
 padding:12px;
 text-align:center;
 font-weight:600;
-animation:slideDown .8s ease;
 }
-
-@keyframes slideDown{
-from{transform:translateY(-100%)}
-to{transform:translateY(0)}
-}
-
-/* container */
 
 .container{
 max-width:1100px;
@@ -49,26 +28,14 @@ grid-template-columns:1fr 420px;
 gap:40px;
 }
 
-/* cards */
-
 .card{
 background:#1e293b;
 border-radius:14px;
 padding:30px;
 box-shadow:0 20px 50px rgba(0,0,0,0.5);
-animation:fadeUp .8s ease;
 }
 
-@keyframes fadeUp{
-from{opacity:0; transform:translateY(25px)}
-to{opacity:1; transform:translateY(0)}
-}
-
-h2{
-margin-bottom:20px;
-}
-
-/* inputs */
+h2{margin-bottom:20px;}
 
 .input{
 width:100%;
@@ -79,12 +46,6 @@ border:none;
 background:#334155;
 color:white;
 }
-
-.input:focus{
-outline:2px solid #6366f1;
-}
-
-/* payment methods */
 
 .payments{
 display:grid;
@@ -99,39 +60,19 @@ border-radius:8px;
 cursor:pointer;
 display:flex;
 align-items:center;
-gap:10px;
 justify-content:center;
-transition:.25s;
-font-weight:600;
-}
-
-.payment:hover{
-background:#6366f1;
-transform:scale(1.05);
-}
-
-/* coupon */
-
-.coupon{
-display:flex;
 gap:10px;
-margin-top:15px;
+font-weight:600;
+border:2px solid transparent;
+transition:.25s;
 }
 
-.coupon input{
-flex:1;
-}
+.payment:hover{background:#6366f1;}
 
-.coupon button{
+.payment.active{
 background:#6366f1;
-border:none;
-padding:12px 16px;
-border-radius:8px;
-color:white;
-cursor:pointer;
+border-color:#a78bfa;
 }
-
-/* summary */
 
 .summary-item{
 display:flex;
@@ -141,65 +82,56 @@ font-size:14px;
 }
 
 .total{
-font-size:20px;
-font-weight:700;
-margin-top:20px;
 display:flex;
 justify-content:space-between;
+font-size:20px;
+font-weight:700;
+margin-top:10px;
 }
 
-/* button */
+.coupon{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.coupon input{flex:1;}
+
+button{
+padding:14px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+}
 
 .checkout{
 width:100%;
-margin-top:25px;
-padding:16px;
-border:none;
-border-radius:10px;
+margin-top:20px;
 background:linear-gradient(90deg,#6366f1,#8b5cf6);
 color:white;
-font-size:16px;
-font-weight:700;
-cursor:pointer;
-transition:.3s;
 }
 
-.checkout:hover{
-transform:scale(1.03);
-box-shadow:0 10px 30px rgba(99,102,241,.6);
-}
-
-/* trust */
-
-.trust{
+.policy{
 margin-top:20px;
-display:flex;
-justify-content:center;
-gap:20px;
 font-size:13px;
 opacity:.7;
+text-align:center;
 }
 
 @media(max-width:900px){
-
-.container{
-grid-template-columns:1fr;
+.container{grid-template-columns:1fr;}
 }
-
-}
-
 </style>
 </head>
 
 <body>
 
 <div class="banner">
-🎉 10% de descuento en tu primer servidor — Código: <b>FIRST10</b>
+🎉 10% de descuento en tu primer servidor — Usa código <b>FIRST10</b>
 </div>
 
 <div class="container">
-
-<!-- checkout -->
 
 <div class="card">
 
@@ -215,35 +147,16 @@ grid-template-columns:1fr;
 
 <div class="payments">
 
-<div class="payment">
-<i class="fa-brands fa-cc-visa"></i> Visa
-</div>
-
-<div class="payment">
-<i class="fa-brands fa-cc-mastercard"></i> Mastercard
-</div>
-
-<div class="payment">
-<i class="fa-brands fa-paypal"></i> PayPal
-</div>
-
-<div class="payment">
-<i class="fa-brands fa-stripe"></i> Stripe
-</div>
-
-<div class="payment">
-<i class="fa-brands fa-apple-pay"></i> Apple Pay
-</div>
-
-<div class="payment">
-<i class="fa-brands fa-google-pay"></i> Google Pay
-</div>
+<div class="payment"><i class="fa-brands fa-cc-visa"></i> Visa</div>
+<div class="payment"><i class="fa-brands fa-cc-mastercard"></i> Mastercard</div>
+<div class="payment"><i class="fa-brands fa-paypal"></i> PayPal</div>
+<div class="payment"><i class="fa-solid fa-gift"></i> Tarjeta de regalo</div>
+<div class="payment"><i class="fa-solid fa-wallet"></i> Usar saldo</div>
+<div class="payment"><i class="fa-brands fa-google-pay"></i> Google Pay</div>
 
 </div>
 
 </div>
-
-<!-- summary -->
 
 <div class="card">
 
@@ -255,21 +168,16 @@ grid-template-columns:1fr;
 </div>
 
 <div class="summary-item">
-<span>Ubicación</span>
-<span>USA</span>
-</div>
-
-<div class="summary-item">
 <span>RAM</span>
 <span>4GB</span>
 </div>
 
-<div class="summary-item" id="discountRow" style="display:none;">
+<div id="discountRow" class="summary-item" style="display:none;">
 <span>Descuento</span>
-<span id="discountAmount">-$0</span>
+<span id="discountAmount"></span>
 </div>
 
-<hr style="opacity:.2;margin:15px 0;">
+<hr style="opacity:.2;margin:10px 0;">
 
 <div class="total">
 <span>Total</span>
@@ -280,22 +188,17 @@ grid-template-columns:1fr;
 
 <input id="couponInput" class="input" placeholder="Código de descuento">
 
-<button onclick="applyCoupon()">
-Canjear
-</button>
+<button onclick="applyCoupon()">Canjear</button>
 
 </div>
 
-<button class="checkout">
+<button class="checkout" onclick="checkout()">
 <i class="fa-solid fa-lock"></i> Pagar ahora
 </button>
 
-<div class="trust">
-
-<span><i class="fa-solid fa-lock"></i> SSL Seguro</span>
-<span><i class="fa-solid fa-shield-halved"></i> Protección</span>
-<span><i class="fa-solid fa-bolt"></i> Pago instantáneo</span>
-
+<div class="policy">
+🔒 Pagos protegidos con SSL<br>
+📜 Si no estás satisfecho con nuestros servicios, los reembolsos estarán disponibles hasta 15 días vigentes desde el día de tu compra.
 </div>
 
 </div>
@@ -305,27 +208,50 @@ Canjear
 <script>
 
 let price = 10;
+let selectedPayment = null;
+
+document.querySelectorAll(".payment").forEach(el=>{
+el.onclick=()=>{
+document.querySelectorAll(".payment").forEach(p=>p.classList.remove("active"));
+el.classList.add("active");
+selectedPayment = el.innerText;
+}
+})
 
 function applyCoupon(){
 
-let code = document.getElementById("couponInput").value.toUpperCase();
+let code=document.getElementById("couponInput").value.toUpperCase();
 
-if(code === "FIRST10"){
+if(code==="FIRST10"){
 
-let discount = price * 0.10;
-let total = price - discount;
+let discount=price*0.10;
+let total=price-discount;
 
 document.getElementById("discountRow").style.display="flex";
-document.getElementById("discountAmount").innerText = "-$"+discount.toFixed(2);
-document.getElementById("total").innerText = "$"+total.toFixed(2);
+document.getElementById("discountAmount").innerText="- $"+discount.toFixed(2);
+document.getElementById("total").innerText="$"+total.toFixed(2);
 
-alert("Código aplicado: 10% de descuento 🎉");
+alert("Código aplicado: 10% de descuento");
 
 }else{
 
 alert("Código inválido");
 
 }
+
+}
+
+function checkout(){
+
+if(!selectedPayment){
+
+alert("Selecciona un método de pago");
+
+return;
+
+}
+
+alert("Procesando pago con: "+selectedPayment);
 
 }
 
